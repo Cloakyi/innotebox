@@ -51,8 +51,7 @@ import java.io.File
  *
  * ZWEI GETRENNTE SYSTEME, nicht verwechseln: Das hier faerbt die KARTE. Die
  * Farbe eines Tags faerbt nur dessen Chip und den Punkt im Drawer. Eine Notiz
- * behaelt ihren Tag, wenn man sie umfaerbt, und umgekehrt -- genau so steht es
- * in Abschnitt 5a der Spezifikation.
+ * behaelt ihren Tag, wenn man sie umfaerbt, und umgekehrt.
  *
  * Standard steht bewusst an erster Stelle: es ist der Weg zurueck, und den
  * sucht man haeufiger als eine bestimmte Farbe.

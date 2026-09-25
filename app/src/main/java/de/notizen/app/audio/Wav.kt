@@ -9,11 +9,11 @@ import java.io.RandomAccessFile
  *
  * WAV und nicht ein gepacktes Format: Die Aufnahme ist das Original, aus dem
  * sich alles andere wieder herstellen lässt. Sie zu komprimieren hieße, den
- * einen Bestandteil zu beschädigen, der nicht nachproduzierbar ist — und ein
+ * einen Bestandteil zu beschädigen, der nicht nachproduzierbar ist, und ein
  * roher PCM-Strom ohne Kopf wäre eine Datei, die außerhalb dieser App niemand
  * öffnen kann.
  *
- * Der Kopf enthält zwei Längenangaben, die man erst am **Ende** kennt. Deshalb
+ * Der Kopf enthält zwei Längenangaben, die man erst am Ende kennt. Deshalb
  * wird beim Start Platz freigelassen ([platzFuerKopf]) und beim Schließen
  * nachgetragen ([kopfNachtragen]). Wer stattdessen erst am Ende die ganze Datei
  * neu schreibt, verdoppelt bei langen Aufnahmen den Platzbedarf und riskiert,
@@ -31,7 +31,7 @@ fun platzFuerKopf(strom: OutputStream) {
  * Trägt die Längen nach.
  *
  * Bleibt die Datei leer, wird sie gelöscht statt mit einem Kopf ohne Inhalt
- * zurückgelassen — eine 44 Byte große Audiodatei, die sich öffnen lässt und
+ * zurückgelassen, eine 44 Byte große Audiodatei, die sich öffnen lässt und
  * nichts enthält, ist irreführender als gar keine.
  */
 fun kopfNachtragen(datei: File, audioBytes: Long) {

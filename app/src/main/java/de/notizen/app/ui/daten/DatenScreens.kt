@@ -111,21 +111,21 @@ class DatenViewModel @Inject constructor(
 /**
  * Sicherung und Wiederherstellung.
  *
- * **Die Datei waehlt das System.** Beide Knoepfe oeffnen den Dateiwaehler von
+ * Die Datei waehlt das System. Beide Knoepfe oeffnen den Dateiwaehler von
  * Android. Die App bekommt danach eine Adresse, die auf genau diese eine Datei
  * zeigt, und braucht keine Berechtigung auf den Speicher.
  *
- * **Der Typ ist `application/octet-stream` und nicht `application/zip`.** Der
+ * Der Typ ist `application/octet-stream` und nicht `application/zip`. Der
  * Dateiwaehler haengt eine Endung an, die zum angegebenen Typ passt, sobald die
  * vorgeschlagene nicht dazu passt. Bei `application/zip` bekaeme die Datei
  * `.notesbak.zip`; zu `application/octet-stream` gehoert keine Endung, also
  * bleibt der vorgeschlagene Name stehen.
  *
- * **Gelesen wird ungefiltert.** `.notesbak` ist keine bei Android bekannte
+ * Gelesen wird ungefiltert. `.notesbak` ist keine bei Android bekannte
  * Endung. Ein Filter auf `application/zip` blendete die eigene Sicherung aus,
  * und der Nutzer staende vor einem leeren Dateiwaehler.
  *
- * **[lieseSicherung] kommt von aussen**, aus einem Dateimanager. Der Weg fuehrt
+ * [lieseSicherung] kommt von aussen, aus einem Dateimanager. Der Weg fuehrt
  * ueber diesen Bildschirm und nicht am ihm vorbei: Hier steht der Fortschritt,
  * und hier steht hinterher, was eingelesen wurde. Im Verborgenen einzulesen
  * waere schneller und niemand wuesste danach, was geschehen ist.
@@ -528,7 +528,7 @@ fun SyncScreen(
 /**
  * Woran der Abgleich gerade arbeitet.
  *
- * **Ein Balken mit Anteil, wo es einen gibt, und ein unbestimmter, wo nicht.**
+ * Ein Balken mit Anteil, wo es einen gibt, und ein unbestimmter, wo nicht.
  * Beim Holen und Schicken ist bekannt, wie viele Notizen es sind; beim
  * Vorbereiten und Aufraeumen nicht. Einen Anteil zu erfinden, damit der Balken
  * huebscher aussieht, waere eine Auskunft, die niemand geprueft hat.

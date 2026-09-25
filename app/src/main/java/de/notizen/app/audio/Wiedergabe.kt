@@ -30,9 +30,9 @@ data class Abspielstatus(
 /**
  * Spielt Aufnahmen ab.
  *
- * **Einer für die ganze App.** Zwei gleichzeitig laufende Aufnahmen wären
- * Lärm, und der Abspieler muss von der Karte in der Übersicht **und** vom
- * geöffneten Editor aus bedienbar sein — beide sehen denselben Zustand. Startet
+ * Einer für die ganze App. Zwei gleichzeitig laufende Aufnahmen wären
+ * Lärm, und der Abspieler muss von der Karte in der Übersicht und vom
+ * geöffneten Editor aus bedienbar sein, beide sehen denselben Zustand. Startet
  * man eine zweite Notiz, hört die erste auf.
  *
  * Die Position wird abgefragt und nicht gemeldet: `MediaPlayer` hat keinen
@@ -54,7 +54,7 @@ class Wiedergabe @Inject constructor() {
     private var gesprochen: List<Sprechabschnitt> = emptyList()
 
     /**
-     * Startet, pausiert oder wechselt — je nachdem, was gerade läuft.
+     * Startet, pausiert oder wechselt, je nachdem, was gerade läuft.
      *
      * Ein einziger Einstieg statt `start`/`pause`/`wechsle`: Die Oberfläche hat
      * genau einen Knopf dafür, also soll sie auch genau eine Frage stellen
@@ -131,7 +131,7 @@ class Wiedergabe @Inject constructor() {
      * Legt fest, welche Stellen beim Abspielen übersprungen werden.
      *
      * Eine leere Liste heißt: alles abspielen. Die Abschnitte kommen aus
-     * derselben Zerlegung wie das Transkript — was man hört, ist genau das, was
+     * derselben Zerlegung wie das Transkript, was man hört, ist genau das, was
      * im Text steht.
      */
     fun setzeUeberspringen(abschnitte: List<Sprechabschnitt>) {
@@ -142,7 +142,7 @@ class Wiedergabe @Inject constructor() {
      * Gibt den Abspieler frei.
      *
      * Muss beim Verlassen gerufen werden: Ein `MediaPlayer`, den niemand
-     * freigibt, hält eine Audiospur des Systems offen — und davon gibt es nur
+     * freigibt, hält eine Audiospur des Systems offen, und davon gibt es nur
      * eine begrenzte Zahl für das ganze Gerät.
      */
     fun loslassen() {

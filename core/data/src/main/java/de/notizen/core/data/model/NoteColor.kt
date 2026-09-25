@@ -7,13 +7,13 @@ package de.notizen.core.data.model
  * HIER STEHEN BEWUSST KEINE FARBWERTE.
  *
  * Gespeichert und synchronisiert wird ausschliesslich der Enum-NAME. Die
- * konkreten Tonwerte sind Client-Sache: Android leitet in Phase 4 helle und
+ * konkreten Tonwerte sind Client-Sache: Android leitet helle und
  * dunkle Container-Toene ab, der Web-Client darf eigene verwenden. Ein
  * gespeicherter Rohfarbwert saehe in einem der beiden Theme-Modi immer falsch
  * aus -- und dieses Modul hat ohnehin keine UI-Abhaengigkeiten.
  *
  * Die Referenzwerte (Google-Kalender-Palette) und die daraus abgeleiteten
- * Tonwerte leben in :app. Siehe Spezifikation Abschnitt 5a.
+ * Tonwerte leben in :app.
  */
 enum class NoteColor {
     /** Keine eigene Farbe: die Karte uebernimmt die Theme-Flaeche (surface). */

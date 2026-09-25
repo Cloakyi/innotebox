@@ -34,7 +34,7 @@ sealed interface Tagesergebnis {
  * 2. Pruefbericht: kommt aus demselben Lauf.
  * 3. Selbstheilung: hat der Lauf schon getan (fehlende Dateien neu hochgeladen).
  * 4. Purge nach SYNC.md 7.
- * 5. Snapshot, **nur ohne Befund**. Ein kaputter Stand wird nie zum Backup.
+ * 5. Snapshot, nur ohne Befund. Ein kaputter Stand wird nie zum Backup.
  *
  * Einmal je Kalendertag beim ersten Oeffnen der App, und auf Knopfdruck
  * („Jetzt sichern", dann mit Uhrzeit im Namen).

@@ -13,7 +13,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
 /**
- * Wann die App sich sperrt (Phase 19).
+ * Wann die App sich sperrt.
  *
  * Die Regeln sind klein, aber jede davon ist am Geraet aergerlich, wenn sie
  * falsch ist: eine Sperre bei jeder Drehung, eine Sperre, die nach dem Start

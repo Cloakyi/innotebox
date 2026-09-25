@@ -19,7 +19,7 @@ data class Sicherheit(
     val aufnahmeschutzAn: Boolean = false,
 )
 
-/** Der Abschnitt „Sicherheit" in den Einstellungen (Phase 19). */
+/** Der Abschnitt „Sicherheit" in den Einstellungen. */
 @HiltViewModel
 class SicherheitViewModel @Inject constructor(
     private val einstellungen: Einstellungen,

@@ -31,7 +31,7 @@ import kotlin.coroutines.resume
  * `android.jar` der API 37 geprüft. Ob das Gerät den Dienst hat, misst
  * [Uebersetzungspruefung]; hier wird nur übersetzt.
  *
- * **Sprachpakete lädt die App nicht selbst.** Fehlt ein Paar, führt
+ * Sprachpakete lädt die App nicht selbst. Fehlt ein Paar, führt
  * [einstellungen] in die Systemeinstellung, in der man es lädt.
  */
 @Singleton

@@ -32,14 +32,14 @@ data class Tagesinhalt(
 /**
  * Was der Kalender gerade zeigt.
  *
- * **Die Notizen kommen aus der Datenbank und melden sich von selbst, die
- * fremden Termine nicht.** Der Kalender-Anbieter kennt keinen Fluss. Sie werden
+ * Die Notizen kommen aus der Datenbank und melden sich von selbst, die
+ * fremden Termine nicht. Der Kalender-Anbieter kennt keinen Fluss. Sie werden
  * deshalb geholt, wenn sich der Zeitraum ändert und wenn der Bildschirm wieder
  * aufgeht. Ein Termin, den jemand nebenher in der Kalender-App anlegt, erscheint
  * hier also erst beim nächsten Hinsehen. Das ist der ehrliche Preis dafür, nicht
  * im Sekundentakt einen fremden Anbieter zu befragen.
  *
- * **Der Zeitraum hängt an der Ansicht, nicht am Monat.** Er ist eine reine
+ * Der Zeitraum hängt an der Ansicht, nicht am Monat. Er ist eine reine
  * Rechnung aus Ansicht und Anker (`bereich`) und läuft durch
  * `distinctUntilChanged`: Wer im Monatsraster einen anderen Tag antippt, ändert
  * den Zeitraum nicht, und dann wird auch nichts neu geladen.

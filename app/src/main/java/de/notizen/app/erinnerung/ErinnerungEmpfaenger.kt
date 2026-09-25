@@ -132,9 +132,9 @@ class ErinnerungEmpfaenger : BroadcastReceiver() {
 /**
  * Stellt die Wecker nach einem Neustart wieder.
  *
- * Android vergisst beim Ausschalten **alle** Alarme. Ohne diesen Empfänger
+ * Android vergisst beim Ausschalten alle Alarme. Ohne diesen Empfänger
  * wäre jede Erinnerung nach dem nächsten Neustart des Geräts still
- * verschwunden — und zwar so, dass man es erst merkt, wenn sie nicht kommt.
+ * verschwunden, und zwar so, dass man es erst merkt, wenn sie nicht kommt.
  */
 @AndroidEntryPoint
 class NeustartEmpfaenger : BroadcastReceiver() {

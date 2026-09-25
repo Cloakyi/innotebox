@@ -123,7 +123,7 @@ class FolderRepositoryTest : DatenbankTestbasis() {
     // -------------------------------------------- Herkunft nach dem Loeschen
 
     /**
-     * Phase 14a fuer 14c: Was beim Loeschen „nur der Ordner" herausrueckt,
+     * Was beim Loeschen „nur der Ordner" herausrueckt,
      * merkt sich, woher es kam. Der Ordner im Papierkorb zeigt es spaeter
      * ausgegraut als seinen frueheren Inhalt.
      */
@@ -204,7 +204,7 @@ class FolderRepositoryTest : DatenbankTestbasis() {
     // ------------------------------------------------ Archiv im Ordnermodus
 
     /**
-     * Phase 14b: Archivieren im Ordnersystem ruehrt die Stufe nicht an, merkt
+     * Archivieren im Ordnersystem ruehrt die Stufe nicht an, merkt
      * sich die Herkunft und nimmt die Notiz aus dem normalen Baum heraus.
      */
     @Test

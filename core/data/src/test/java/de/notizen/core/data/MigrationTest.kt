@@ -20,20 +20,20 @@ import java.io.File
 /**
  * Migrationen der lokalen Datenbank.
  *
- * **Der Grund, warum es diesen Test überhaupt gibt:** Die App benutzt bewusst
+ * Der Grund, warum es diesen Test überhaupt gibt: Die App benutzt bewusst
  * kein `fallbackToDestructiveMigration`. Die lokale Datenbank ist die Quelle
- * der Wahrheit, und solange kein Sync läuft, ist sie die einzige Kopie — eine
+ * der Wahrheit, und solange kein Sync läuft, ist sie die einzige Kopie, eine
  * fehlgeschlagene Migration ist damit kein Schönheitsfehler, sondern der
  * Verlust aller Notizen des Nutzers.
  *
  * `runMigrationsAndValidate` prüft zweierlei: dass die Migration ohne Fehler
- * läuft **und** dass das Ergebnis exakt dem exportierten Schema entspricht.
- * Der zweite Teil ist der wertvollere — er fängt genau den Fall ab, dass jemand
+ * läuft und dass das Ergebnis exakt dem exportierten Schema entspricht.
+ * Der zweite Teil ist der wertvollere, er fängt genau den Fall ab, dass jemand
  * eine Spalte in der Entity ergänzt und die Migration dazu vergisst.
  *
- * Benutzt wird der **treiberbasierte** Konstruktor des Helfers. Die ältere
+ * Benutzt wird der treiberbasierte Konstruktor des Helfers. Die ältere
  * Fassung mit `FrameworkSQLiteOpenHelperFactory` reicht dem Treiber einen
- * blossen Dateinamen, während Room ihn zum absoluten Pfad auflöst — das
+ * blossen Dateinamen, während Room ihn zum absoluten Pfad auflöst, das
  * scheitert unter Robolectric mit „This driver is configured to open a database
  * named …". Hier wird die Datei direkt benannt, und die Frage stellt sich nicht.
  */
@@ -64,7 +64,7 @@ class MigrationTest {
     fun `von Schema 1 auf 2 -- backgroundAttachmentId kommt dazu`() {
         helfer.createDatabase(1).use { alt ->
             // Eine Notiz aus der Zeit VOR der Spalte. Genau die muss den
-            // Aufstieg überstehen — eine leere Datenbank zu migrieren beweist
+            // Aufstieg überstehen, eine leere Datenbank zu migrieren beweist
             // nichts.
             alt.execSQL(
                 """
@@ -245,7 +245,7 @@ class MigrationTest {
     }
 
     /**
-     * Phase 14a (SYNC.md 13): die Felder fuer das Archiv im Ordnermodus und
+     * Schema 7 (SYNC.md 13): die Felder fuer das Archiv im Ordnermodus und
      * den Papierkorb. Mit einer befuellten Datenbank, weil genau die den
      * Aufstieg ueberstehen muss: ein Ordner mit Unterordner, eine Notiz darin,
      * eine im Papierkorb.
@@ -350,7 +350,7 @@ class MigrationTest {
     @Test
     fun `alle Migrationen lueckenlos bis zur aktuellen Version`() {
         // Fängt den Fall ab, dass jemand VERSION hochzählt und die Migration
-        // vergisst — dann klafft eine Lücke, und Room wirft am Gerät beim
+        // vergisst, dann klafft eine Lücke, und Room wirft am Gerät beim
         // Öffnen. Hier fällt es beim Bauen auf.
         val stufen = NotizenDatabase.MIGRATIONS
             .sortedBy { it.startVersion }

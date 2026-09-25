@@ -44,13 +44,13 @@ data class Sicherungsinhalt(
 /**
  * Die Sicherungsdatei als solche: ein ZIP-Archiv mit lesbarem JSON darin.
  *
- * **Diese Klasse kennt keine Datenbank.** Sie nimmt entgegen, was hineinsoll,
+ * Diese Klasse kennt keine Datenbank. Sie nimmt entgegen, was hineinsoll,
  * und gibt heraus, was drinstand. Genau deshalb laesst sich das Format auf der
  * JVM pruefen, ohne dass ein Geraet startet oder eine Datenbank existiert, und
  * genau deshalb steht die eigentliche Uebernahme in [Sicherung] daneben statt
  * hier drin.
  *
- * **Warum ZIP und nicht ein einziges grosses JSON.** Ein Foto in einer
+ * Warum ZIP und nicht ein einziges grosses JSON. Ein Foto in einer
  * JSON-Datei muesste als Base64 hineingeschrieben werden. Das macht es ein
  * Drittel groesser, es zwingt jeden Leser, die ganze Datei im Speicher zu
  * halten, und ein Bild, das man sich ansehen will, waere ohne Werkzeug nicht
@@ -62,7 +62,7 @@ class Sicherungspaket {
     /**
      * Schreibt die Sicherung.
      *
-     * **Die Notizen werden einzeln geholt, nicht alle auf einmal.** Bei ein
+     * Die Notizen werden einzeln geholt, nicht alle auf einmal. Bei ein
      * paar hundert Notizen mit Transkripten waeren das schnell einige Dutzend
      * Megabyte, die es gleichzeitig im Speicher gaebe, obwohl immer nur eine
      * gebraucht wird. [notizFuer] laedt deshalb genau die, die als naechste
@@ -135,7 +135,7 @@ class Sicherungspaket {
     /**
      * Liest die Sicherung.
      *
-     * **In einem Durchgang, aber ohne auf die Reihenfolge zu bauen.** Ein
+     * In einem Durchgang, aber ohne auf die Reihenfolge zu bauen. Ein
      * ZIP-Archiv laesst sich aus einem Datenstrom nur von vorn nach hinten
      * lesen, und in welcher Reihenfolge die Eintraege darin stehen, entscheidet,
      * wer die Datei geschrieben hat. Deshalb wird alles eingesammelt und erst

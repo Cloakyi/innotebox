@@ -31,11 +31,11 @@ const val RASTERTAGE = 42
 /**
  * Der Zeitraum, den eine Ansicht braucht, in UTC-Millis.
  *
- * **Über die Zeitzone des Geräts gerechnet, nicht über UTC.** Ein Termin um
+ * Über die Zeitzone des Geräts gerechnet, nicht über UTC. Ein Termin um
  * 0:30 Uhr liegt in UTC noch im Vortag; wer die Grenzen in UTC zieht, verliert
  * ihn am Rand. Dieselbe Falle wie beim Datumswähler der Erinnerungen.
  *
- * **Beim Monat sind es sechs Wochen, nicht ein Monat.** Das Raster zeigt am
+ * Beim Monat sind es sechs Wochen, nicht ein Monat. Das Raster zeigt am
  * Anfang und Ende Tage der Nachbarmonate. Ohne sie im Zeitraum blieben die
  * Punkte dort leer, obwohl an diesen Tagen etwas steht.
  */

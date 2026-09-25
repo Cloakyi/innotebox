@@ -14,8 +14,7 @@ import de.notizen.core.data.model.NoteType
 import de.notizen.core.data.model.Stage
 
 /**
- * Routen der App. Bewusst wenige -- der Drawer bleibt kurz
- * (Spezifikation Abschnitt 14).
+ * Routen der App. Bewusst wenige -- der Drawer bleibt kurz.
  */
 object Routes {
     /**
@@ -25,7 +24,7 @@ object Routes {
     const val STAGE = "stage/{stage}?hervorheben={hervorheben}"
     const val TRASH = "trash"
     const val TAGS = "tags"
-    /** `hervorheben` (seit Phase 15) springt zu einem Abschnitt und hebt ihn kurz hervor. */
+    /** `hervorheben` springt zu einem Abschnitt und hebt ihn kurz hervor. */
     const val SETTINGS = "settings?hervorheben={hervorheben}"
     const val SYNC = "sync"
     const val BACKUP = "backup"
@@ -37,14 +36,14 @@ object Routes {
     /**
      * Ein Ordner. Ohne Parameter der Hauptordner.
      *
-     * **Die Stufe fehlt hier mit Absicht.** `StageViewModel` unterscheidet die
+     * Die Stufe fehlt hier mit Absicht. `StageViewModel` unterscheidet die
      * beiden Ansichten genau daran: Wo kein `stage` steht, steht ein Ordner.
      * Deshalb darf diese Route dieses Argument nie bekommen.
      */
     const val ORDNER = "ordner?ordner={ordner}&hervorheben={hervorheben}"
 
     /**
-     * Das Archiv des Ordnermodus, mit eigenem Ordnerbaum (Phase 14b). Ohne
+     * Das Archiv des Ordnermodus, mit eigenem Ordnerbaum. Ohne
      * Parameter die oberste Ebene des Archivs.
      *
      * Dieselbe Bauart wie [ORDNER], also ebenfalls ohne Stufe. Woran die
@@ -95,7 +94,7 @@ object Routes {
 
 /**
  * Feste, eindeutige Icons pro Notiztyp -- zentral, damit die Karte, der FAB
- * und spaeter der Filter dieselben verwenden (Spezifikation Abschnitt 13).
+ * und spaeter der Filter dieselben verwenden.
  */
 object NoteTypeIcons {
     fun of(type: NoteType): ImageVector = when (type) {
@@ -135,8 +134,8 @@ object StageUi {
  *
  * Es gibt keinen Speichern-Knopf und keine Loeschabfrage. Ohne verlaesslichen
  * Rueckweg waere jede Fehlbedienung endgueltig -- deshalb ist die
- * Undo-Snackbar nach Loeschen, Archivieren und Stufenwechsel Pflicht
- * (Spezifikation Abschnitt 9), nicht Kuer.
+ * Undo-Snackbar nach Loeschen, Archivieren und Stufenwechsel Pflicht,
+ * nicht Kuer.
  */
 data class UndoRequest(
     val message: String,

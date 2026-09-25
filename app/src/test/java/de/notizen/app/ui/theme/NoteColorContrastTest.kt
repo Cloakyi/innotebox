@@ -12,7 +12,7 @@ import kotlin.math.pow
 /**
  * Die Notiz-Palette muss lesbar sein -- in BEIDEN Themes.
  *
- * Spezifikation Abschnitt 5a: Kontrastverhaeltnis mindestens 4,5:1 zwischen
+ * Kontrastverhaeltnis mindestens 4,5:1 zwischen
  * Text und Flaeche, geprueft ueber die gesamte Palette. Genau dafuer ist dieser
  * Test da. Wer die Tonwerte anfasst, bekommt es hier gesagt statt erst am
  * Geraet -- und dort faellt schlechter Kontrast erfahrungsgemaess nur dem auf,

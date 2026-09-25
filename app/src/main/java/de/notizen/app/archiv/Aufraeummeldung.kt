@@ -27,9 +27,9 @@ private const val EXTRA_BATCH = "batchId"
 /**
  * Kanal für die Meldung des nächtlichen Aufräumlaufs.
  *
- * **`IMPORTANCE_LOW`, anders als bei Erinnerungen.** Eine Erinnerung ist ein
+ * `IMPORTANCE_LOW`, anders als bei Erinnerungen. Eine Erinnerung ist ein
  * Termin und darf klingeln; das Aufräumen ist ein Bericht über etwas, das schon
- * passiert ist. Es gehört in die Leiste, nicht auf den Bildschirm — nachts um
+ * passiert ist. Es gehört in die Leiste, nicht auf den Bildschirm, nachts um
  * drei erst recht.
  */
 fun aufraeumKanalAnlegen(context: Context) {
@@ -46,12 +46,12 @@ fun aufraeumKanalAnlegen(context: Context) {
 /**
  * Meldet, was der Lauf getan hat.
  *
- * **Eine Meldung für den ganzen Lauf**, nicht eine je Notiz. Zwölf
+ * Eine Meldung für den ganzen Lauf, nicht eine je Notiz. Zwölf
  * Benachrichtigungen am Morgen liest niemand, und der Undo-Knopf gilt ohnehin
  * für den gesamten Batch.
  *
  * Der Rücknahme-Knopf erscheint nur, wenn wirklich archiviert wurde. Das Leeren
- * des Papierkorbs lässt sich nicht zurücknehmen — ein Knopf, der bei manchen
+ * des Papierkorbs lässt sich nicht zurücknehmen, ein Knopf, der bei manchen
  * Meldungen die Hälfte kann, wäre schlimmer als keiner.
  */
 fun aufraeumMeldung(
@@ -123,7 +123,7 @@ fun aufraeumMeldung(
 /**
  * Nimmt einen kompletten Lauf zurück.
  *
- * Jede Notiz landet in **ihrer** ursprünglichen Stufe — nicht pauschal im
+ * Jede Notiz landet in ihrer ursprünglichen Stufe, nicht pauschal im
  * Eingang. Das weiß `archive_run_items`, und dafür gibt es diese Tabelle.
  *
  * `goAsync()` hält den Prozess am Leben, bis die Datenbank fertig ist. Ohne das

@@ -21,28 +21,28 @@ import kotlin.math.roundToInt
 /**
  * Die mitlaufende Welle während der Aufnahme.
  *
- * **Sie läuft von rechts nach links.** Der neueste Wert steht am rechten Rand,
+ * Sie läuft von rechts nach links. Der neueste Wert steht am rechten Rand,
  * ältere wandern nach links aus dem Bild. Das ist der Unterschied zu einem
  * bloßen Ausschlag: Man sieht nicht nur, dass gerade etwas ankommt, sondern
- * auch, was in den letzten Sekunden war — ob man zu leise wurde, wo eine Pause
+ * auch, was in den letzten Sekunden war, ob man zu leise wurde, wo eine Pause
  * lag.
  *
- * **Stille wird zum Punkt.** Ein Balken der Mindesthöhe sähe aus wie ein sehr
+ * Stille wird zum Punkt. Ein Balken der Mindesthöhe sähe aus wie ein sehr
  * leiser Ton; ein Punkt sagt „hier war nichts". Genau diese Unterscheidung
  * macht die Linie lesbar, wenn man später zurückschaut.
  *
- * **Sie läuft mit der Bildwiederholrate, nicht mit den Schüben** (Phase 18).
+ * Sie läuft mit der Bildwiederholrate, nicht mit den Schüben.
  * Die Werte kommen in Schüben, einer je Aufnahmeblock. Vorher wanderte die
  * Welle bei jedem Schub um einen ganzen Balken weiter, und die Animation, die
  * das glätten sollte, hing am Wachsen der Liste; sobald die Liste ihre feste
  * Länge erreicht hatte, wuchs sie nicht mehr, und die Welle ruckte im Takt
  * der Blöcke. Jetzt zählt der Zustand jeden je gemessenen Wert mit
- * ([gesamt]), und hier läuft ein **Kopf** in Werten je Sekunde über die Zeit
+ * ([gesamt]), und hier läuft ein Kopf in Werten je Sekunde über die Zeit
  * ([WELLE_WERTE_JE_SEKUNDE], ein Wert je fünfzig Millisekunden), Bild für
  * Bild über `withFrameNanos`. Gezeichnet wird, was unter dem Kopf liegt, mit
  * dem Bruchteil als Versatz; die Balken gleiten.
  *
- * **Der Kopf läuft dem Ton knapp hinterher** ([POLSTER] Werte) und regelt sein
+ * Der Kopf läuft dem Ton knapp hinterher ([POLSTER] Werte) und regelt sein
  * Tempo leicht nach, damit er weder vorausläuft (dann fehlte rechts ein
  * Balken) noch abreißt (dann stünde die Welle). Die Nachregelung ist so
  * schwach, dass man sie nicht sieht, und stark genug, dass die Uhren nicht

@@ -20,28 +20,28 @@ data class Archivplan(
 }
 
 /**
- * Die **Politik** der automatischen Archivierung: wer wegkommt und warum.
+ * Die Politik der automatischen Archivierung: wer wegkommt und warum.
  *
  * Getrennt von [ArchiveRepository], das nur die Mechanik kennt (protokollieren
  * und zurücknehmen). Die Trennung ist der Grund, warum sich beides ohne Gerät
- * prüfen lässt — hier steht keine Zeile Android.
+ * prüfen lässt, hier steht keine Zeile Android.
  *
- * **Zwei Auslöser, und sie sind nicht dasselbe:**
+ * Zwei Auslöser, und sie sind nicht dasselbe:
  *
- *  * **Alter** — seit so vielen Tagen nicht mehr geöffnet. Trifft die Notizen,
+ *  * Alter, seit so vielen Tagen nicht mehr geöffnet. Trifft die Notizen,
  *    die man vergessen hat.
- *  * **Menge** — die Stufe hält höchstens so viele. Trifft die Notizen, die man
+ *  * Menge, die Stufe hält höchstens so viele. Trifft die Notizen, die man
  *    zwar sieht, aber unter denen die anderen verschwinden. Ein Eingang mit
  *    zweihundert Einträgen ist auch dann kein Eingang mehr, wenn jeder von
  *    gestern ist.
  *
- * **Nie betroffen** sind Favoriten und Notizen mit einer noch nicht
+ * Nie betroffen sind Favoriten und Notizen mit einer noch nicht
  * ausgelösten Erinnerung. Beides sind ausdrückliche Zeichen, dass man die Notiz
- * noch braucht — sie wegzuräumen wäre, das Gegenteil dessen zu tun, was man
+ * noch braucht, sie wegzuräumen wäre, das Gegenteil dessen zu tun, was man
  * gesagt bekommen hat. Die Ausnahme steckt schon in den Abfragen des
  * [NoteDao], nicht erst hier.
  *
- * **Das Archiv ist nie Quelle.** Dorthin wird archiviert; von dort aus gibt es
+ * Das Archiv ist nie Quelle. Dorthin wird archiviert; von dort aus gibt es
  * keine nächste Stufe.
  */
 @Singleton
@@ -61,7 +61,7 @@ class AutoArchiv @Inject constructor(
      * Sucht die Kandidaten, ohne etwas zu verändern.
      *
      * Eigener Schritt, damit der Aufrufer die Titel noch ergänzen kann, bevor
-     * die Notizen im Archiv landen — dort wird gesucht, und gesucht wird über
+     * die Notizen im Archiv landen, dort wird gesucht, und gesucht wird über
      * Titel.
      */
     suspend fun planen(): Archivplan {
@@ -103,9 +103,9 @@ class AutoArchiv @Inject constructor(
     /**
      * Führt einen geplanten Lauf aus.
      *
-     * Beide Auslöser landen in **einem** Batch. Zwei getrennte Läufe wären zwei
-     * Benachrichtigungen und zwei Undo-Knöpfe für dasselbe nächtliche Aufräumen
-     * — und wer den einen drückt, wundert sich über den anderen.
+     * Beide Auslöser landen in einem Batch. Zwei getrennte Läufe wären zwei
+     * Benachrichtigungen und zwei Undo-Knöpfe für dasselbe nächtliche Aufräumen,
+     * und wer den einen drückt, wundert sich über den anderen.
      */
     suspend fun ausfuehren(plan: Archivplan): String? {
         if (plan.leer) return null

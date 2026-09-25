@@ -17,10 +17,10 @@ import javax.inject.Singleton
 /**
  * Aufnahme und Transkript einer Notiz.
  *
- * **Das Rohtranskript bleibt immer erhalten**, auch nachdem die KI daraus
+ * Das Rohtranskript bleibt immer erhalten, auch nachdem die KI daraus
  * Fließtext gemacht hat (Abschnitt 12): der aufgeräumte Text landet im `body`
  * der Notiz, das Original hier. Wer beides zusammenlegt, verliert genau dann
- * etwas, wenn die Aufbereitung daneben lag — und das merkt man erst später.
+ * etwas, wenn die Aufbereitung daneben lag, und das merkt man erst später.
  */
 @Singleton
 class AudioRepository @Inject constructor(

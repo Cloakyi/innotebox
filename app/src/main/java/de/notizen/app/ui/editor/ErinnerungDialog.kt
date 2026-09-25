@@ -31,7 +31,7 @@ import java.util.Calendar
  * beiden Bausteine mitbringt und ein selbstgebauter Kombidialog hier nichts
  * gewinnen würde.
  *
- * **Zeitzonen sind die Falle.** Der `DatePicker` arbeitet in UTC, der Nutzer
+ * Zeitzonen sind die Falle. Der `DatePicker` arbeitet in UTC, der Nutzer
  * denkt in seiner Ortszeit. Die Umrechnung steht in [Zeitpunkt] und ist dort
  * über mehrere Zeitzonen und über die Sommerzeitumstellung hinweg
  * nachgerechnet -- nicht behauptet.

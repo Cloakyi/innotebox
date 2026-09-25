@@ -36,24 +36,24 @@ sealed interface Transkriptschritt {
 /**
  * Erstellt aus einer fertigen Aufnahme ein Transkript.
  *
- * **Nachträglich statt live, und das löst mehrere Probleme auf einmal:**
+ * Nachträglich statt live, und das löst mehrere Probleme auf einmal:
  *
  *  - Die Aufnahme hängt nicht mehr davon ab, ob ein Sprachmodell bereitsteht.
  *    Aufgenommen wird immer; das Transkript ist ein zweiter, wiederholbarer
  *    Schritt. Geht er schief, ist nichts verloren.
- *  - Das Endpointing der API — sie beendet den Strom bei Sprechpausen von
- *    selbst — ist kein Ärgernis mehr, sondern erwünscht: **jeder Abschnitt ist
- *    ohnehin genau ein Stück zwischen zwei Pausen.**
+ *  - Das Endpointing der API, sie beendet den Strom bei Sprechpausen von
+ *    selbst, ist kein Ärgernis mehr, sondern erwünscht: jeder Abschnitt ist
+ *    ohnehin genau ein Stück zwischen zwei Pausen.
  *  - Die Zeitstempel sind nicht mehr geschätzt. Sie stehen vorher fest, weil
  *    der Schnitt sie bestimmt, und der erkannte Text erbt sie. Vorher wurden
- *    sie an der Uhr abgelesen, wenn ein Ergebnis eintraf — also immer etwas zu
+ *    sie an der Uhr abgelesen, wenn ein Ergebnis eintraf, also immer etwas zu
  *    spät.
  *
  * Stille wird gar nicht erst hingeschickt. Das spart die Wartezeit für Teile,
- * in denen niemand spricht — bei einer Aufnahme, die man nebenher laufen ließ,
+ * in denen niemand spricht, bei einer Aufnahme, die man nebenher laufen ließ,
  * ist das der größte Teil.
  */
-/** Kürzer wird nicht mehr geteilt — dann liegt es nicht an der Länge. */
+/** Kürzer wird nicht mehr geteilt, dann liegt es nicht an der Länge. */
 private const val MINDESTLAENGE_MS = 3_000L
 
 @Singleton
@@ -120,9 +120,9 @@ class Transkriptor @Inject constructor(
     }
 
     /**
-     * Erkennt einen Abschnitt — und halbiert ihn, wenn es schiefgeht.
+     * Erkennt einen Abschnitt, und halbiert ihn, wenn es schiefgeht.
      *
-     * **Selbstkorrektur statt geratener Zahl.** Wie viel Ton die Erkennung am
+     * Selbstkorrektur statt geratener Zahl. Wie viel Ton die Erkennung am
      * Stück verträgt, steht nirgends; am Gerät hat sie mit
      * `AUDIO_BUFFER_OVERFLOW` abgebrochen. Statt eine Höchstlänge zu raten und
      * bei der nächsten Gerätegeneration wieder danebenzuliegen, wird im
@@ -159,13 +159,13 @@ class Transkriptor @Inject constructor(
     /**
      * Schiebt einen Abschnitt durch die Erkennung.
      *
-     * **Über eine Datei, nicht über eine Pipe.** Der erste Anlauf schrieb den
-     * Abschnitt durch eine Pipe, so schnell die sie annahm — also weit
+     * Über eine Datei, nicht über eine Pipe. Der erste Anlauf schrieb den
+     * Abschnitt durch eine Pipe, so schnell die sie annahm, also weit
      * schneller als Echtzeit. Die Erkennung ist ein Streaming-Verfahren und
      * erwartet Ton ungefähr im Sprechtempo; sie quittierte das am Gerät mit
      * `ERROR_TYPE_AUDIO_BUFFER_OVERFLOW` (2026-08-21).
      *
-     * Man könnte stattdessen das Schreiben auf Echtzeit bremsen — dann dauerte
+     * Man könnte stattdessen das Schreiben auf Echtzeit bremsen, dann dauerte
      * das Transkript einer halben Stunde eine halbe Stunde. Über eine Datei
      * bestimmt die Erkennung selbst, wie schnell sie liest: kein Überlauf
      * möglich, und so schnell, wie das Gerät eben kann.

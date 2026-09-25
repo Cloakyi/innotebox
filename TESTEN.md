@@ -36,6 +36,7 @@ Ohne GitHub-Konto geht es auch per Mail an owner@cloaki.de.
 - [Papierkorb](#papierkorb)
 - [Archiv im Ordnermodus](#archiv-im-ordnermodus)
 - [Sprachnotizen](#sprachnotizen)
+- [KI auf dem Gerät](#ki-auf-dem-gerät)
 - [Übersetzen](#übersetzen)
 - [Sichern und Wiederherstellen](#sichern-und-wiederherstellen)
 - [Abgleich über Google Drive](#abgleich-über-google-drive)
@@ -45,7 +46,7 @@ Ohne GitHub-Konto geht es auch per Mail an owner@cloaki.de.
 ## Schnelltest
 
 - [ ] Die APK installieren und öffnen. Die App startet ohne Absturz.
-- [ ] Die Fragen beim ersten Start beantworten. Danach ist der Eingang zu sehen.
+- [ ] Die Frage zur KI mit „Ohne KI“ oder „Einschalten“ beantworten. Danach ist der Eingang zu sehen.
 - [ ] Über das Plus unten rechts eine Textnotiz anlegen, etwas schreiben und zurückgehen. Die Notiz steht im Eingang, ohne dass du speichern musstest.
 - [ ] Die App ganz schließen und wieder öffnen. Die Notiz ist noch da.
 - [ ] Eine Liste anlegen, drei Einträge hinzufügen und einen abhaken. Er wird durchgestrichen.
@@ -59,6 +60,10 @@ Ohne GitHub-Konto geht es auch per Mail an owner@cloaki.de.
 
 - [ ] Beim Start erscheint „Was die App braucht“, solange eine von fünf Berechtigungen fehlt: Benachrichtigungen, Mikrofon, Kalender, Erinnerungen auf die Minute und die Ausnahme vom Energiesparen. „Erlauben“ führt in die Systemeinstellung, danach steht ein Haken daneben.
 - [ ] „Später“ schließt das Fenster. Beim nächsten Start kommt es wieder, solange etwas fehlt. Sind alle fünf erteilt, erscheint es nicht mehr.
+- [ ] Danach fragt die App, ob die KI auf dem Gerät arbeiten darf. „Einschalten“ bleibt grau, bis das Häkchen bei „Ich bin mindestens 18 Jahre alt.“ sitzt.
+- [ ] „Datenschutzerklärung lesen“ öffnet die Seite im Browser.
+- [ ] Neben das Fenster tippen. Es schließt sich und kommt beim nächsten Start wieder.
+- [ ] „Ohne KI“ wählen. Beim nächsten Start fragt die App nicht mehr, und die KI steht in den Einstellungen auf aus.
 
 ## Notizen schreiben
 
@@ -85,7 +90,7 @@ Listen:
 
 - [ ] Eine Notiz mit Titel nach rechts wischen. Sie wandert eine Stufe weiter, unten steht „Verschoben nach …“ mit „Rückgängig“.
 - [ ] Nach links wischen schiebt sie eine Stufe zurück. Unter Einstellungen, „Wischgesten auf Notizen“ legst du fest, welche Richtung was tut.
-- [ ] Eine Notiz ohne Titel in den Workspace wischen. Ein Fenster fragt nach dem Titel, „Verschieben“ geht erst mit Titel, „Abbrechen“ lässt die Notiz, wo sie ist.
+- [ ] Eine Notiz ohne Titel in den Workspace wischen. Ein Fenster fragt nach dem Titel, „Verschieben“ geht erst mit Titel, „Abbrechen“ lässt die Notiz, wo sie ist. Ist die KI an, erscheint unter dem Feld ein Vorschlag zum Antippen.
 - [ ] Zwei Notizen ohne Titel zusammen verschieben. Statt eines Fensters kommt der Hinweis, dass sie erst Titel brauchen.
 - [ ] Eine Notiz lang drücken. Oben erscheint eine Leiste mit höchstens sieben Symbolen und ohne Text. Im Eingang lässt sich die Notiz von dort direkt in den Workspace oder ins Archiv legen.
 - [ ] Unter Einstellungen, „Ordnung“ „Titel beim Verschieben verlangen“ ausschalten. Die App fragt vorher nach, ob du dir sicher bist.
@@ -95,7 +100,7 @@ Listen:
 ## Suchen
 
 - [ ] „Bespr“ eintippen. Notizen mit „Besprechung“ erscheinen schon beim Tippen. Zwei angefangene Wörter wie „bespr proto“ finden Notizen, die beide enthalten.
-- [ ] Gesucht wird in Titeln, Text und Listen. Auch ein unterstrichenes Wort wird gefunden.
+- [ ] Gesucht wird in Titeln, Text, Listen und Transkripten. Auch ein unterstrichenes Wort wird gefunden.
 - [ ] Mehrere Filter gleichzeitig wählen, etwa zwei Tags und eine Farbe. Es bleiben nur Notizen, die zu allen passen.
 - [ ] Den Filter „Papierkorb“ ganz rechts einschalten. Weggeworfene Notizen erscheinen hinter den übrigen, rot markiert mit „Im Papierkorb“.
 - [ ] Im Ordnermodus gibt es den Filter „Ordner“ mit dem ganzen Ordnerbaum. Ein gewählter Ordner schließt seine Unterordner ein.
@@ -136,7 +141,7 @@ Listen:
 - [ ] Eine Notiz lang drücken und oben das Archivsymbol antippen. Sie liegt jetzt im Archiv, „Rückgängig“ bringt sie in ihren Ordner zurück.
 - [ ] Im Editor über die drei Punkte „Archivieren“. Danach heißt der Eintrag „Aus dem Archiv zurückholen“.
 - [ ] Im Archiv eigene Ordner anlegen und archivierte Notizen hineinlegen. Archivordner und normale Ordner lassen sich nicht ineinander schieben.
-- [ ] Eine archivierte Notiz zurückholen. Oben steht der Ordner, aus dem sie kam, darunter ist jeder andere Ordner wählbar.
+- [ ] Eine archivierte Notiz zurückholen. Oben schlägt die App den alten Ordner vor, darunter ist jeder andere Ordner wählbar.
 - [ ] Den alten Ordner vorher löschen und die Notiz dann zurückholen. Die App sagt, dass der Ordner nicht mehr da ist, und bietet an, ihn neu anzulegen, den nächsten vorhandenen Ordner zu nehmen oder einen anderen zu wählen.
 - [ ] Das Plus im Archiv antippen. Die neue Notiz entsteht im Hauptordner, nicht im Archiv.
 
@@ -144,10 +149,25 @@ Listen:
 
 - [ ] Eine Audio-Notiz anlegen und eine halbe Minute sprechen. Die Wellenform läuft gleichmäßig nach links, Stille erscheint als Punkte.
 - [ ] Die Aufnahme abspielen. Hat sie längere Pausen, springt „Pausen überspringen“ darüber und zeigt, wie viel Zeit das spart.
+- [ ] Bei eingeschalteter KI „Transkript erstellen“. Der Text erscheint, darunter steht, mit welcher Erkennung er entstanden ist. Der erkannte Text bleibt neben einer aufbereiteten Fassung erhalten.
+- [ ] Bei ausgeschalteter KI steht „Transkript erstellen“ blass da, darunter „Einstellungen öffnen“. Aufnehmen und Abspielen funktionieren trotzdem.
+
+## KI auf dem Gerät
+
+Die KI schlägt Titel vor, wandelt Aufnahmen in Text um und bereitet Transkripte auf. Sie
+arbeitet auf dem Handy selbst und nur auf Geräten mit Gemini Nano, zum Beispiel aktuellen
+Pixel.
+
+- [ ] Unter Einstellungen, „Sprache und KI“ die KI einschalten. Es kommt dasselbe Fenster wie beim ersten Start, diesmal mit „Abbrechen“.
+- [ ] Nach dem Einschalten steht unter dem Schalter „Zugestimmt am“ mit dem Datum.
+- [ ] Die KI ausschalten. Die Zeile verschwindet. Beim nächsten Einschalten fragt die App wieder und zeigt danach ein neues Datum.
+- [ ] In den Android-Einstellungen bei InNoteBox den Cache leeren. Die KI bleibt an, die App fragt nicht neu.
+- [ ] Unter dem Schalter steht, was das Gerät kann, etwa „Dieses Gerät bietet alle KI-Funktionen dieser App.“ Auf einem Gerät ohne Gemini Nano steht dort, was fehlt, und der Rest der App funktioniert wie immer.
+- [ ] „Verarbeitung im Netz“ einschalten. Ein Fenster erklärt, was geladen wird und was dabei an Google geht. „Ich stimme zu“ erscheint erst, wenn du bis unten gescrollt hast und zehn Sekunden vorbei sind.
 
 ## Übersetzen
 
-- [ ] Unter Einstellungen, „Übersetzung“ wählen, womit übersetzt wird. Was auf dem Gerät nicht geht, steht blass da, mit dem Grund.
+- [ ] Unter Einstellungen, „Übersetzung“ stehen drei Wege: die Übersetzung des Systems, die KI auf dem Gerät und die Sprachpakete von Google (ML Kit). Was auf dem Gerät nicht geht, steht blass da, mit dem Grund.
 - [ ] In einer Textnotiz über die drei Punkte „Übersetzen“ und die Sprachen wählen. Die Übersetzung lässt sich unter den Text hängen oder an seine Stelle setzen; beim Ersetzen holt „Rückgängig“ den alten Text zurück.
 - [ ] Ein Wort markieren. In der schwebenden Leiste steht „Übersetzen“, je nach Platz hinter den drei Punkten. Es übersetzt nur die Auswahl.
 - [ ] Eine Liste übersetzen. Jeder Eintrag wird einzeln übersetzt.

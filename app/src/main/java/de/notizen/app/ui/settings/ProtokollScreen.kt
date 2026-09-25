@@ -30,15 +30,15 @@ import java.util.Locale
 /**
  * Was die Automatik in den letzten Nächten getan hat.
  *
- * **Der eigentliche Zweck dieses Screens ist Nachvollziehbarkeit.** Das
+ * Der eigentliche Zweck dieses Screens ist Nachvollziehbarkeit. Das
  * Archivieren passiert ohne Zutun, nachts, während das Gerät lädt. Stehen
  * morgens zwölf Notizen nicht mehr im Eingang, muss man nachsehen können, was
- * da passiert ist — sonst ist die Automatik eine Blackbox, die Dinge
+ * da passiert ist, sonst ist die Automatik eine Blackbox, die Dinge
  * verschwinden lässt.
  *
- * **Zurücknehmen geht hier auch Wochen später noch**, solange der Lauf in der
+ * Zurücknehmen geht hier auch Wochen später noch, solange der Lauf in der
  * Liste steht. Die Benachrichtigung am Morgen ist der schnelle Weg, nicht der
- * einzige — wer nachts nicht aufs Handy schaut, hätte sonst keinen.
+ * einzige, wer nachts nicht aufs Handy schaut, hätte sonst keinen.
  */
 @Composable
 fun ProtokollScreen(

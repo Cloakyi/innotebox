@@ -14,12 +14,12 @@ import kotlinx.serialization.json.Json
  * Der JSON-Umgang für den Drive-Ordner.
  *
  * `prettyPrint` ist Absicht und keine Spielerei: Der Ordner liegt offen in
- * Drive, und SYNC.md 2 sagt zu, dass der Inhalt **lesbar** ist. Wer im Notfall
+ * Drive, und SYNC.md 2 sagt zu, dass der Inhalt lesbar ist. Wer im Notfall
  * selbst an seine Notizen muss, soll sie lesen können, ohne ein Werkzeug zu
  * suchen.
  *
  * `ignoreUnknownKeys` fängt den Fall ab, dass der Web-Client bereits ein Feld
- * schreibt, das dieser Client noch nicht kennt — ein neueres Schema darf ein
+ * schreibt, das dieser Client noch nicht kennt, ein neueres Schema darf ein
  * älteres nicht zum Absturz bringen.
  *
  * `encodeDefaults` schreibt auch Standardwerte aus. Ein Feld, das beim
@@ -36,7 +36,7 @@ val Sync: Json = Json {
  * Aus der Datenbank ins Drive-Dokument.
  *
  * Was hier NICHT mitgeht, steht in der Klassendokumentation von
- * [Notizdokument] — und dort steht auch, warum.
+ * [Notizdokument], und dort steht auch, warum.
  */
 fun NoteWithRelations.alsDokument(): Notizdokument = Notizdokument(
     id = note.id,
@@ -83,9 +83,9 @@ fun NoteWithRelations.alsDokument(): Notizdokument = Notizdokument(
 /**
  * Vom Drive-Dokument in eine Notiz-Zeile.
  *
- * [lastOpenedAt] kommt von außen, weil es **nicht** im Dokument steht: Jedes
+ * [lastOpenedAt] kommt von außen, weil es nicht im Dokument steht: Jedes
  * Gerät führt seinen eigenen Wert. Beim ersten Eintreffen einer fremden Notiz
- * ist `createdAt` der einzige ehrliche Startwert — sie wurde auf diesem Gerät
+ * ist `createdAt` der einzige ehrliche Startwert, sie wurde auf diesem Gerät
  * noch nie geöffnet, und `jetzt` einzusetzen hieße zu behaupten, sie sei eben
  * angesehen worden. Damit wäre sie vor dem Auto-Archiv geschützt, ohne dass
  * jemand sie je gesehen hat.
@@ -119,8 +119,8 @@ fun Notizdokument.alsEintraege(): List<NoteItemEntity> =
 /**
  * Anhänge als Zeilen.
  *
- * [pfadFuer] muss sagen, wo die Datei auf **diesem** Gerät liegt oder liegen
- * wird — der Pfad steht nicht im Dokument. Solange die Datei noch nicht
+ * [pfadFuer] muss sagen, wo die Datei auf diesem Gerät liegt oder liegen
+ * wird, der Pfad steht nicht im Dokument. Solange die Datei noch nicht
  * heruntergeladen ist, zeigt er ins Leere; die Oberfläche behandelt das schon
  * (ein fehlendes Bild fällt still auf die Notizfarbe zurück).
  */
@@ -155,7 +155,7 @@ fun Notizdokument.alsTranskripte(): List<TranscriptEntity> =
 /**
  * Erinnerungen als Zeilen.
  *
- * [alarmId] vergibt der Aufrufer aus der lokalen Zählung — sie ist gerätelokal
+ * [alarmId] vergibt der Aufrufer aus der lokalen Zählung, sie ist gerätelokal
  * (SYNC.md 14.8). Zwei Erinnerungen mit derselben Kennung bestellen sich
  * gegenseitig ab, und das fände man im Nachhinein nie.
  */
@@ -173,7 +173,7 @@ fun Notizdokument.alsErinnerungen(alarmId: (Int) -> Int): List<ReminderEntity> =
 /**
  * Ein Tag ins Drive-Format.
  *
- * Hier geht **alles** mit, anders als bei der Notiz: Ein Tag hat keine
+ * Hier geht alles mit, anders als bei der Notiz: Ein Tag hat keine
  * gerätelokalen Felder. Er ist auf beiden Geräten dasselbe Ding.
  */
 fun TagEntity.alsDokument(): Tagdokument = Tagdokument(

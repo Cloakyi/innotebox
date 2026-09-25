@@ -7,9 +7,9 @@ import org.junit.Test
 /**
  * Die Pegelanzeige.
  *
- * **Der Fehler, den diese Tests festhalten:** Vorher wurde der Abtastwert
+ * Der Fehler, den diese Tests festhalten: Vorher wurde der Abtastwert
  * linear auf 0..1 abgebildet. Normale Sprache liegt bei etwa −20 dBFS, linear
- * also bei 0,1 — der Ausschlag stand damit bei einem Zehntel, obwohl die
+ * also bei 0,1, der Ausschlag stand damit bei einem Zehntel, obwohl die
  * Aufnahme in Ordnung war. Am Gerät sah das aus, als käme kaum Ton an.
  *
  * Pegelanzeigen sind aus genau diesem Grund logarithmisch: Der Bereich, in dem

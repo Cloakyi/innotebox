@@ -14,11 +14,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Misst, was dieses Geraet an KI kann (Phase 15).
+ * Misst, was dieses Geraet an KI kann.
  *
  * Drei Fragen mit den bekannten `checkStatus`-Aufrufen und der
  * `Uebersetzungspruefung`: Spracherkennung, Textgenerierung (Prompt API),
- * Uebersetzung des Systems. **Messen laedt nichts.** Das Nachladen ist ein
+ * Uebersetzung des Systems. Messen laedt nichts. Das Nachladen ist ein
  * eigener Schritt, den nur der Nutzer ausloest; die App installiert nichts
  * von selbst.
  *

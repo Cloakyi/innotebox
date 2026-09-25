@@ -33,7 +33,7 @@ import de.notizen.core.data.repository.Suchtreffer
  * Ein Suchtreffer.
  *
  * Sieht bewusst anders aus als eine Notizkarte, weil es etwas anderes ist: eine
- * Karte zeigt eine Notiz, ein Treffer zeigt **warum sie gefunden wurde**. Der
+ * Karte zeigt eine Notiz, ein Treffer zeigt warum sie gefunden wurde. Der
  * Ausschnitt kommt deshalb aus `snippet()` und nicht vom Anfang der Notiz -- er
  * springt an die Fundstelle, auch wenn die auf Seite drei eines Transkripts
  * liegt.

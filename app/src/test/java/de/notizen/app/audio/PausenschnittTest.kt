@@ -7,8 +7,8 @@ import org.junit.Test
 /**
  * Das Zerlegen an den Sprechpausen.
  *
- * Prüfbar ohne Mikrofon, ohne Modell und ohne Gerät — genau das ist der Vorteil
- * davon, diese Frage zu **rechnen** statt sie einer KI zu stellen: Die Antwort
+ * Prüfbar ohne Mikrofon, ohne Modell und ohne Gerät, genau das ist der Vorteil
+ * davon, diese Frage zu rechnen statt sie einer KI zu stellen: Die Antwort
  * ist jedes Mal dieselbe, und man kann sie hinschreiben.
  *
  * Die Tests bauen Pegelverläufe von Hand, ein Wert je 20 Millisekunden.

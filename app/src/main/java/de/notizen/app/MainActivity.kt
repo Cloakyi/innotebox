@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
      */
     private val zuLesen = mutableStateOf<Uri?>(null)
 
-    /** Die Sperre der App (Phase 19), ein Singleton, damit eine Drehung sie nicht vergisst. */
+    /** Die Sperre der App, ein Singleton, damit eine Drehung sie nicht vergisst. */
     @Inject lateinit var sperre: Sperre
 
     @Inject lateinit var einstellungen: Einstellungen
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         auftragLesen(intent)
 
-        // AUFNAHMESCHUTZ (Phase 19): `FLAG_SECURE` unterbindet Bildschirmfotos,
+        // AUFNAHMESCHUTZ: `FLAG_SECURE` unterbindet Bildschirmfotos,
         // Bildschirmaufnahmen und das Vorschaubild in der Uebersicht der
         // letzten Apps. Folgt der Einstellung, sobald sie sich aendert.
         lifecycleScope.launch {
@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                 // die Fragen an den Stellen, an denen es gebraucht wurde.
                 val berechtigungenOffen = Berechtigungsdialog()
 
-                // Der Geraetestand (Phase 15): beim ersten Start die volle
+                // Der Geraetestand: beim ersten Start die volle
                 // Pruefung mit Dialog, danach nur die leichte. Wartet, bis der
                 // Berechtigungsdialog zu ist, sonst laegen zwei uebereinander.
                 Geraetestanddialog(aktiv = !berechtigungenOffen)
@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                     onSicherungGelesen = { zuLesen.value = null },
                 )
 
-                // DIE SPERRE (Phase 19): ueber allem, als eigenes Fenster. Die
+                // DIE SPERRE: ueber allem, als eigenes Fenster. Die
                 // App darunter bleibt stehen, damit nach dem Entsperren alles
                 // dort ist, wo es war.
                 val gesperrt by sperre.gesperrt.collectAsStateWithLifecycle()

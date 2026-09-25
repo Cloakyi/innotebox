@@ -11,9 +11,9 @@ import javax.inject.Singleton
 /**
  * Verdichtet den Pegelverlauf auf so viele Balken, wie gezeichnet werden.
  *
- * **Spitzenwert je Balken, nicht Mittelwert.** Über eine Sekunde gemittelt wird
+ * Spitzenwert je Balken, nicht Mittelwert. Über eine Sekunde gemittelt wird
  * alles gleich grau; das Bild soll aber zeigen, wo etwas los war. Der
- * Spitzenwert behält die Struktur, die man in einer Wellenform sucht — hier
+ * Spitzenwert behält die Struktur, die man in einer Wellenform sucht, hier
  * war eine Pause, dort wurde laut gesprochen.
  *
  * Anschließend logarithmisch skaliert, aus demselben Grund wie bei der
@@ -38,8 +38,8 @@ internal fun verdichten(pegel: FloatArray, balken: Int): FloatArray {
 /**
  * Liefert die Wellenform einer Aufnahme und merkt sie sich.
  *
- * Das Berechnen liest die ganze Datei — bei einer Stunde Aufnahme über hundert
- * Megabyte. Das darf **nicht** bei jedem Neuzeichnen passieren, und schon gar
+ * Das Berechnen liest die ganze Datei, bei einer Stunde Aufnahme über hundert
+ * Megabyte. Das darf nicht bei jedem Neuzeichnen passieren, und schon gar
  * nicht auf dem Bildschirm-Thread. Deshalb einmal rechnen, dann merken; der
  * Schlüssel enthält die Dateigröße, damit eine neue Aufnahme nicht die alte
  * Wellenform erbt.

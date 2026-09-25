@@ -8,7 +8,7 @@ import org.junit.Test
 /**
  * Wer einen Termin im Kalender bekommt und wer keinen.
  *
- * **Beide Richtungen sind teuer.** Ein Termin zu viel steht in einem Kalender,
+ * Beide Richtungen sind teuer. Ein Termin zu viel steht in einem Kalender,
  * den womöglich andere sehen; einer zu wenig heißt, dass eine Erinnerung
  * nirgends auftaucht. Und beides fällt erst Wochen später auf, wenn es klingelt
  * oder eben nicht.

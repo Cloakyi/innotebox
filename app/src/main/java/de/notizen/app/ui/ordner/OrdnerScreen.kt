@@ -58,12 +58,12 @@ import de.notizen.core.data.db.entity.FolderEntity
 /**
  * Ein Ordner: seine Unterordner und die Notizen darin.
  *
- * **Alles in einem Scrollbereich.** Die Ordner sind Kopfzeilen des
+ * Alles in einem Scrollbereich. Die Ordner sind Kopfzeilen des
  * Notizrasters, kein eigener Block darueber. Bei drei Ordnern saehe beides
  * gleich aus; bei dreissig waere ein eigener Block eine Wand, hinter der die
  * Notizen verschwinden.
  *
- * **Die Notizen sehen aus wie ueberall sonst**, mit ihren Farben, ihren
+ * Die Notizen sehen aus wie ueberall sonst, mit ihren Farben, ihren
  * Bildern, ihren Wischgesten. Das ist der Grund, warum hier dasselbe
  * StageViewModel arbeitet wie im Fluss: An einer Karte haengt zu viel, um sie
  * ein zweites Mal zu bauen.

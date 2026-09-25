@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
  *
  * WARUM ES DEN GIBT -- bitte nicht wegoptimieren:
  *
- * Die Token-Zuordnung der Spezifikation (Abschnitt 13) will
+ * Die Token-Zuordnung will
  * `surfaceContainerLow` als App-Hintergrund und `surface` als Notiz-Karte.
  * Compose' `Scaffold` nimmt als containerColor aber `background`, und in
  * unserem Fallback-Schema ist `background` identisch mit `surface` (#000C2C),

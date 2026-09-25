@@ -3,7 +3,7 @@ package de.notizen.core.sync
 /**
  * Die Regeln des Abgleichs nach Schema 4 (SYNC.md 6), als reine Funktionen.
  *
- * **Hier steht keine Datenbank und kein Netz.** Was hineingeht, sind zwei
+ * Hier steht keine Datenbank und kein Netz. Was hineingeht, sind zwei
  * kleine Bilder desselben Dings: wie es hier aussieht und wie es drueben
  * aussieht. Was herauskommt, ist genau eine Handlung. Der Abgleich fuehrt sie
  * nur aus. Deshalb laesst sich jede Zeile der Tabelle aus SYNC.md 6 ohne

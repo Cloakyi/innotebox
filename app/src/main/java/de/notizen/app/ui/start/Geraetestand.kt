@@ -59,15 +59,15 @@ sealed interface Geraetefrage {
 }
 
 /**
- * Gerätestand statt Rundumprüfung bei jedem Start (Phase 15).
+ * Gerätestand statt Rundumprüfung bei jedem Start.
  *
- * **Beim ersten Start die volle Pruefung mit ihren Dialogen**, danach bei jedem
+ * Beim ersten Start die volle Pruefung mit ihren Dialogen, danach bei jedem
  * Start nur die leichte: dieselben `checkStatus`-Aufrufe, aber ohne Dialog.
  * Weicht das Ergebnis vom gemerkten Stand ab, sagt die App es und prueft
  * wieder voll. So versucht sie nie, eine Funktion zu laden, die es nicht mehr
  * gibt, und sie fragt nicht bei jedem Start alles durch.
  *
- * **Gemessen wird nur mit Zustimmung** (seit Alpha 9). Die Messung ruft ML Kit
+ * Gemessen wird nur mit Zustimmung (seit Alpha 9). Die Messung ruft ML Kit
  * auf, und ML Kit meldet Kennzahlen an Google. Solange die KI nicht
  * eingeschaltet ist, fragt die App beim Start einmal nach
  * ([Geraetefrage.Zustimmung]) oder, nach einem Nein, gar nichts; gemessen
@@ -183,7 +183,7 @@ class GeraetestandViewModel @Inject constructor(
 }
 
 /**
- * Der Dialog zum Geraetestand beim Start (Phase 15).
+ * Der Dialog zum Geraetestand beim Start.
  *
  * Drei Ausgaenge, siehe [Geraetefrage]. [aktiv] sagt, ob er ueberhaupt gezeigt
  * werden darf: Solange der Berechtigungsdialog offen ist, wartet er, sonst

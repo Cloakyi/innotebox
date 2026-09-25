@@ -75,13 +75,13 @@ class StageViewModel @Inject constructor(
     /**
      * Was jede Karte über ihren Sicherungsstand sagt.
      *
-     * **Drei Quellen, eine Aussage je Karte.** Welche Notizen noch anstehen,
+     * Drei Quellen, eine Aussage je Karte. Welche Notizen noch anstehen,
      * weiß die Datenbank; ob gerade ein Lauf läuft, weiß der Abgleich; und
      * welche Notiz eben verlassen wurde, die Marke. Erst zusammen ergibt sich
      * eine Anzeige, die nicht lügt: Eine kreisende Linie ohne laufenden Abgleich
      * wäre eine Behauptung, dass etwas passiert, während nichts passiert.
      *
-     * **Der Übergang zu „angekommen" wird hier gemerkt, nicht in der Karte.**
+     * Der Übergang zu „angekommen" wird hier gemerkt, nicht in der Karte.
      * Eine Karte im Raster wird beim Scrollen neu gebaut und verliert dabei, was
      * vorher war. Der Vergleich mit dem letzten Stand gehört deshalb hierher.
      */
@@ -138,12 +138,12 @@ class StageViewModel @Inject constructor(
     /**
      * Dasselbe ViewModel dient zwei Ansichten: einer Stufe und einem Ordner.
      *
-     * **Woran es sie unterscheidet:** Die Stufenroute traegt `stage` als festen
+     * Woran es sie unterscheidet: Die Stufenroute traegt `stage` als festen
      * Teil des Pfades, die Ordnerroute nicht. Fehlt das Argument, ist dies eine
      * Ordneransicht. Kein Merkwert, kein Schalter von aussen, nichts, was
      * auseinanderlaufen koennte.
      *
-     * **Warum nicht ein zweites ViewModel:** An einer Notizkarte haengt mehr,
+     * Warum nicht ein zweites ViewModel: An einer Notizkarte haengt mehr,
      * als man ihr ansieht: Auswahl, Wischgesten, Farben, Tags, Papierkorb mit
      * Rueckweg, Wellenformen, Abspielen und die drei Sicherungsanzeigen am
      * Rahmen. Das alles ein zweites Mal zu bauen hiesse, es ein zweites Mal
@@ -166,7 +166,7 @@ class StageViewModel @Inject constructor(
     val imOrdner: Boolean = stufenArgument == null && !imPapierkorb
 
     /**
-     * Die vierte Ansicht: das Archiv des Ordnermodus (Phase 14b).
+     * Die vierte Ansicht: das Archiv des Ordnermodus.
      *
      * Eine Ordneransicht wie jede andere, nur ueber dem Archivbaum. Die
      * Archivroute traegt das feste Argument `bereich = ARCHIV`; [imOrdner]
@@ -178,7 +178,7 @@ class StageViewModel @Inject constructor(
     val ordnerId: String? = savedState["ordner"]
 
     /**
-     * Eine Notiz, zu der die Liste scrollt und die kurz aufblitzt (Phase 14c).
+     * Eine Notiz, zu der die Liste scrollt und die kurz aufblitzt.
      *
      * Kommt als Routenparameter `hervorheben` herein, etwa vom Sprung aus dem
      * Papierkorb. Nach dem Aufblitzen wird sie geloescht, sonst blitzte sie bei
@@ -449,7 +449,7 @@ class StageViewModel @Inject constructor(
 
     /**
      * Faerbt die Auswahl um. Ein Farbwechsel ist eine normale Aenderung:
-     * Autosave, Sync, Undo-Snackbar (Spezifikation Abschnitt 5a).
+     * Autosave, Sync, Undo-Snackbar.
      */
     fun setFarbe(farbe: NoteColor) {
         val ids = _auswahl.value
@@ -652,7 +652,7 @@ class StageViewModel @Inject constructor(
     /**
      * Legt eine Notiz an und gibt ihre ID an [dann] weiter, damit der Aufrufer
      * direkt in den Editor springen kann. Neue Notizen landen immer in INBOX --
-     * auch wenn man sie vom Workspace aus anlegt (Spezifikation Abschnitt 14).
+     * auch wenn man sie vom Workspace aus anlegt.
      */
     fun neueNotiz(type: NoteType, dann: (String) -> Unit) {
         // Im Ordner entsteht sie GLEICH IM OFFENEN ORDNER. Alles andere waere
@@ -692,16 +692,16 @@ class StageViewModel @Inject constructor(
     /**
      * Stufenwechsel, inklusive Titelpflicht.
      *
-     * Ab WORKSPACE braucht eine Notiz einen Titel (Spezifikation Abschnitt 4).
-     * **Seit Phase 15 strenger** (2026-08-21 und 2026-09-14): Ohne
+     * Ab WORKSPACE braucht eine Notiz einen Titel.
+     * Seit 2026-09-14 strenger: Ohne
      * Titel kein Verschieben, Punkt. Kein stilles Auffuellen mehr.
      *
      *  - keine ohne Titel  -> direkt verschieben, auch ueber eine Stufe hinweg
      *  - genau eine        -> Dialog als Angebot, einen Titel zu vergeben; wer
      *                         abbricht, verschiebt nicht
      *  - mehrere           -> abgelehnt, mit einem Satz. N Dialoge hintereinander
-     *                         waeren keine Bedienung, und stille Titel wollte der
-     *                         Nutzer ausdruecklich nicht
+     *                         waeren keine Bedienung, und stille Titel soll es
+     *                         ausdruecklich nicht geben
      *
      * Zurueck nach INBOX verlangt nie einen Titel. Ist die Titelpflicht in den
      * Einstellungen abgeschaltet, wird immer direkt verschoben.

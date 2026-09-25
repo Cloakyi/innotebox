@@ -1,10 +1,4 @@
-# Version Catalog -- Notizen
-#
-# Alles unter [versions] bis einschliesslich hiltNavigationCompose ist gegen
-# einen echten, gruenen `assembleDebug` verifiziert (2026-08-20).
-# Die mit (?) markierten Versionen weiter unten sind es NICHT -- sie werden von
-# keinem Modul referenziert und deshalb von Gradle gar nicht aufgeloest. Sie
-# gelten erst als geprueft, wenn die jeweilige Phase sie tatsaechlich benutzt.
+# Versionen der Abhaengigkeiten fuer alle Module.
 
 [versions]
 agp = "9.4.1"
@@ -23,21 +17,20 @@ hiltNavigationCompose = "1.3.0"
 navigation = "2.9.8"
 datastore = "1.2.1"
 
-# --- ab hier: von keinem Modul referenziert, kommt in spaeteren Phasen ---
-room = "2.8.4"                    # Phase 1
-workManager = "2.10.5"            # Phase 8d
-hiltWork = "1.2.0"                # Phase 8d
-kotlinxSerialization = "1.9.0"    # (?) Phase 1/9
-kotlinxCoroutines = "1.10.2"      # (?)
-okhttp = "5.1.0"                  # Phase 9
-playServicesAuth = "21.4.0"       # Phase 9 -- AuthorizationClient
-retrofit = "3.0.0"                # (?) Phase 9
-mlkitSpeech = "1.0.0-alpha1"      # Phase 0 (AICore-Check) + Phase 7
-mlkitPrompt = "1.0.0-beta2"       # Phase 0 (AICore-Check) + Phase 3/7/8
-mlkitTranslate = "17.0.3"         # Phase 16, Weg 3 (laedt Sprachmodelle selbst nach)
+room = "2.8.4"                    # Datenbank
+workManager = "2.10.5"            # Hintergrundarbeit
+hiltWork = "1.2.0"                # Hintergrundarbeit mit Hilt
+kotlinxSerialization = "1.9.0"    # JSON fuer Abgleich und Sicherung
+kotlinxCoroutines = "1.10.2"
+okhttp = "5.1.0"                  # Zugriff auf Google Drive
+playServicesAuth = "21.4.0"       # AuthorizationClient
+retrofit = "3.0.0"
+mlkitSpeech = "1.0.0-alpha1"      # Spracherkennung auf dem Geraet
+mlkitPrompt = "1.0.0-beta2"       # Titel und Aufbereiten auf dem Geraet
+mlkitTranslate = "17.0.3"         # Uebersetzung, laedt Sprachmodelle selbst nach
 junit = "4.13.2"
-androidxTestJunit = "1.3.0"       # (?)
-androidxTestCore = "1.7.0"        # Phase 8a, Migrationstest
+androidxTestJunit = "1.3.0"
+androidxTestCore = "1.7.0"        # Migrationstest
 robolectric = "4.16.1"
 # ASM muss neu genug sein, um Klassendateien der laufenden JDK zu lesen.
 # Wir bauen mit der JBR 25 aus Android Studio -- deren Klassen haben Major

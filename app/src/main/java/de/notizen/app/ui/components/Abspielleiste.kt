@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
  * Die Abspielsteuerung einer Aufnahme.
  *
  * Aufbau von oben nach unten: Tonspur, Zeiten, Knöpfe. Die Zeiten stehen
- * **links verstrichen, rechts verbleibend** — verbleibend mit Minuszeichen, wie
+ * links verstrichen, rechts verbleibend, verbleibend mit Minuszeichen, wie
  * man es aus jedem Abspieler kennt. Die Gesamtdauer wäre die schlechtere
  * Angabe: Wie lange es noch dauert, ist die Frage, die man beim Hören
  * tatsächlich hat.
@@ -155,7 +155,7 @@ private fun Sprungknopf(
 /**
  * Die Tonspur als flache Leiste.
  *
- * Anders als die mitlaufende Welle beim Aufnehmen ist sie **gestaucht**: Die
+ * Anders als die mitlaufende Welle beim Aufnehmen ist sie gestaucht: Die
  * ganze Aufnahme passt auf einmal ins Bild, weil man beim Abspielen nicht den
  * Moment sucht, sondern die Stelle. Der abgespielte Teil ist voll eingefärbt,
  * der Rest gedämpft, und ein Strich markiert, wo man gerade ist.

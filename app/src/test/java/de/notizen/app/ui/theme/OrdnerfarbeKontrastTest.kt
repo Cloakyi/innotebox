@@ -6,7 +6,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Ordnerfarben als Schrift auf der Seitenspalte, in beiden Themes (Phase 14e).
+ * Ordnerfarben als Schrift auf der Seitenspalte, in beiden Themes.
  *
  * Die Palette ist die der Tags, und die wurde fuer Chips gewaehlt, nicht fuer
  * Schrift: Gelb auf Hellblau ist als Punkt in Ordnung und als Wort nicht zu

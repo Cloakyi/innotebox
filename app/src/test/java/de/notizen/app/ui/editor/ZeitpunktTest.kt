@@ -10,7 +10,7 @@ import java.util.TimeZone
 /**
  * Rechnet nach, dass eine Erinnerung genau zur gewählten Minute weckt.
  *
- * Der Punkt dieser Klasse ist, dass hier **nichts geschätzt** wird. Es gibt
+ * Der Punkt dieser Klasse ist, dass hier nichts geschätzt wird. Es gibt
  * keinen festen Versatz, keine „minus zwei Stunden"-Faustregel und keine
  * Annahme über die Zeitzone des Geräts. Geprüft wird über volle, halbe und
  * viertelstündige Zonenversätze, über die Datumsgrenze und über die

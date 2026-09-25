@@ -46,7 +46,7 @@ android {
         versionName = "Alpha 9"
     }
 
-    // DER RELEASE-SCHLUESSEL (Phase 21) liegt beim Nutzer, nie im Projekt.
+    // DER RELEASE-SCHLUESSEL liegt ausserhalb des Projekts, nie im Repo.
     // `keystore.properties` im Projektstamm (in .gitignore) nennt ihn:
     //   storeFile=C:/Pfad/zum/innotebox-release.jks
     //   storePassword=...
@@ -116,24 +116,23 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Hintergrundarbeit: Auto-Archiv und Papierkorb (Phase 8d).
+    // Hintergrundarbeit: Auto-Archiv und Papierkorb.
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 
-    // Nur fuer den AICore-Verfuegbarkeitscheck aus Phase 0.
-    // Bleiben ab Phase 7 dauerhaft drin.
-    // Google-Anmeldung und Drive-Zugriff (Phase 9).
+    // Zuerst nur fuer den AICore-Verfuegbarkeitscheck, inzwischen dauerhaft drin.
+    // Google-Anmeldung und Drive-Zugriff.
     implementation(libs.play.services.auth)
 
     implementation(libs.mlkit.genai.speech.recognition)
     implementation(libs.mlkit.genai.prompt)
-    // Uebersetzung, Weg 3 (Phase 16): laeuft ohne AICore, laedt seine
+    // Uebersetzung, Weg 3: laeuft ohne AICore, laedt seine
     // Sprachmodelle einmal aus dem Netz, deshalb nur hinter dem Netz-Schalter.
     implementation(libs.mlkit.translate)
 
     testImplementation(libs.junit)
-    // Fuer SperreTest (Phase 19): eine echte Einstellungsdatei statt eines
+    // Fuer SperreTest: eine echte Einstellungsdatei statt eines
     // Fakes, damit der Test dieselbe Klasse liest wie die App.
     testImplementation(libs.androidx.datastore.preferences)
 }

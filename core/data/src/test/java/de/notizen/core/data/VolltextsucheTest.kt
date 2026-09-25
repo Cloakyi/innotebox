@@ -105,7 +105,7 @@ class VolltextsucheTest : DatenbankTestbasis() {
     }
 
     /**
-     * Der Rest aus Phase 8c, am echten SQLite geprueft (14d): Ein
+     * Am echten SQLite geprueft: Ein
      * unterstrichenes Wort steht im Text als `__wort__`, und der Tokenizer
      * `unicode61` muss den Unterstrich als Trenner lesen, sonst hiesse das
      * Wort im Index `__wort__` und waere ueber „wort" nicht zu finden.
@@ -215,7 +215,7 @@ class VolltextsucheTest : DatenbankTestbasis() {
     fun `markDirty erhaelt die Drive-Zuordnung`() = runTest {
         val id = notes.create()
 
-        // So, wie Phase 9 es nach einem erfolgreichen Upload eintragen wird.
+        // So, wie der Abgleich es nach einem erfolgreichen Upload eintraegt.
         db.syncDao().upsertState(
             de.notizen.core.data.db.entity.SyncStateEntity(
                 entityType = EntityType.NOTE,
@@ -234,7 +234,7 @@ class VolltextsucheTest : DatenbankTestbasis() {
         val zustand = db.syncDao().stateOf(EntityType.NOTE, id)!!
         assertEquals(de.notizen.core.data.model.SyncStatus.DIRTY, zustand.syncStatus)
         assertEquals(
-            "sonst laedt Phase 9 die Notiz als neue Datei erneut hoch",
+            "sonst laedt der Abgleich die Notiz als neue Datei erneut hoch",
             "drive-datei-123",
             zustand.remoteId,
         )

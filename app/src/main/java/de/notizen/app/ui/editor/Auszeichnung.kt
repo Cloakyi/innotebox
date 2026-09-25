@@ -16,55 +16,55 @@ import androidx.compose.ui.unit.em
 /**
  * Textauszeichnung im Notiztext.
  *
- * **Gespeichert wird Markdown im `body`, angezeigt wird es ohne die
- * Markierungszeichen.** Das war die entscheidende Wahl, und sie hat drei
+ * Gespeichert wird Markdown im `body`, angezeigt wird es ohne die
+ * Markierungszeichen. Das war die entscheidende Wahl, und sie hat drei
  * Gründe:
  *
- *  1. **Das Feld bleibt ein String.** `notes.body` ändert sich nicht, SYNC.md
+ *  1. Das Feld bleibt ein String. `notes.body` ändert sich nicht, SYNC.md
  *     bleibt einfach, und der Web-Client braucht einen Markdown-Renderer statt
  *     einer nachgebauten Spantabelle, die beide Seiten identisch umsetzen
  *     müssten.
- *  2. **Die Suche merkt nichts davon.** Der Tokenizer `unicode61` behandelt
- *     `*`, `#` und `~` als Trenner — `**Küche**` wird zu `küche` wie ohne
+ *  2. Die Suche merkt nichts davon. Der Tokenizer `unicode61` behandelt
+ *     `*`, `#` und `~` als Trenner, `Küche` wird zu `küche` wie ohne
  *     Auszeichnung. Eine Spantabelle hätte den Index unberührt gelassen, eine
  *     HTML-Fassung hätte ihn vermüllt.
- *  3. **Es überlebt das Teilen.** Wer eine Notiz in eine fremde App schickt,
+ *  3. Es überlebt das Teilen. Wer eine Notiz in eine fremde App schickt,
  *     bekommt lesbaren Text mit erkennbarer Struktur, nicht rohes Markup.
  *
- * **Die Markierungen sind im Editor unsichtbar.** Sichtbar gelassen wäre die
+ * Die Markierungen sind im Editor unsichtbar. Sichtbar gelassen wäre die
  * ehrlichere, aber schlechtere Lösung: Wer „fett" antippt, will fett sehen und
- * keine Sternchen. Der Preis ist eine echte [OffsetMapping] — die Stelle, an
+ * keine Sternchen. Der Preis ist eine echte [OffsetMapping], die Stelle, an
  * der so etwas gern schiefgeht, wenn der Cursor plötzlich woanders steht als
  * er sollte. Deshalb sind beide Richtungen als Tabellen gebaut und nicht
  * gerechnet, und [AuszeichnungTest] prüft sie über jede Position.
  *
- * **Bekannte Grenze:** Kursiv lässt sich nicht in Fett schachteln. Beide
- * benutzen dasselbe Zeichen, und `***x***` sauber aufzulösen bräuchte einen
+ * Bekannte Grenze: Kursiv lässt sich nicht in Fett schachteln. Beide
+ * benutzen dasselbe Zeichen, und `*x*` sauber aufzulösen bräuchte einen
  * echten Parser statt vier unabhängiger Muster. Für Unterstreichen und
- * Durchstreichen gilt die Einschränkung nicht — die haben eigene Zeichen und
+ * Durchstreichen gilt die Einschränkung nicht, die haben eigene Zeichen und
  * lassen sich beliebig mit Fett kombinieren.
  *
- * **Unvollständige Markierungen bleiben stehen.** `**fe` zeigt die Sternchen,
- * `**fett**` nicht. Anders herum verschwänden beim Tippen Zeichen unter dem
+ * Unvollständige Markierungen bleiben stehen. `**fe` zeigt die Sternchen,
+ * `fett` nicht. Anders herum verschwänden beim Tippen Zeichen unter dem
  * Cursor, sobald man das erste Sternchen setzt.
  *
- * **Umgeschaltet wird auf der erkannten Auszeichnung, nicht auf dem Zeichenpaar
- * neben der Auswahl.** Das ist der Unterschied zwischen einer Leiste, die man
+ * Umgeschaltet wird auf der erkannten Auszeichnung, nicht auf dem Zeichenpaar
+ * neben der Auswahl. Das ist der Unterschied zwischen einer Leiste, die man
  * benutzen mag, und einer, die stört: Wer den Cursor in ein fettes Wort setzt
- * und „fett" antippt, will es normal haben — und bekam in der ersten Fassung
+ * und „fett" antippt, will es normal haben, und bekam in der ersten Fassung
  * ein zweites Paar mitten hinein. Ohne Auswahl gilt das Wort unter dem Cursor;
  * leer gewordene Paare räumt [Auszeichnung.aufraeumen] bei der nächsten Eingabe
  * weg.
  *
- * **Ein Leerzeichen trennt Wörter, die Auszeichnung tut es nicht.** Wer ein
+ * Ein Leerzeichen trennt Wörter, die Auszeichnung tut es nicht. Wer ein
  * fettes Wort schreibt, Leertaste drückt und weiterschreibt, hat beide Wörter in
- * derselben Auszeichnung — der Cursor stand ja zwischen den Zeichen. Beim
- * Aufheben zählt deshalb das **Wort**, nicht die ganze Fundstelle: Der Rest
+ * derselben Auszeichnung, der Cursor stand ja zwischen den Zeichen. Beim
+ * Aufheben zählt deshalb das Wort, nicht die ganze Fundstelle: Der Rest
  * links und rechts wird neu eingefasst, und der Leerraum an der Bruchstelle
  * wandert nach draußen.
  *
- * **Nach dem Umschalten bleibt der Cursor, nicht die Auswahl.** Bliebe der Text
- * ausgewählt, ersetzte ihn der nächste Tastendruck — man drückt „fett", tippt
+ * Nach dem Umschalten bleibt der Cursor, nicht die Auswahl. Bliebe der Text
+ * ausgewählt, ersetzte ihn der nächste Tastendruck, man drückt „fett", tippt
  * weiter, und das fette Wort ist weg. Der Cursor landet am Ende des betroffenen
  * Textes und innerhalb der Auszeichnung, so wie in jeder Textverarbeitung.
  */
@@ -92,7 +92,7 @@ object Auszeichnung {
      * Kursiv: ein Sternchen, das weder von einem Sternchen umgeben ist noch
      * eines direkt daneben hat.
      *
-     * Ohne die beiden Umschauungen zerlegte dieser Ausdruck `**fett**` in zwei
+     * Ohne die beiden Umschauungen zerlegte dieser Ausdruck `fett` in zwei
      * kursive Stücke und machte aus der Fettschrift Unsinn.
      */
     private val KURSIV = Regex("""(?<!\*)\*(?!\*)([^*\n]+?)\*(?!\*)""")
@@ -102,8 +102,8 @@ object Auszeichnung {
     /**
      * Die Auszeichnungen, die die Leiste anbietet.
      *
-     * `__` für unterstrichen ist **kein** Standard-Markdown — dort gibt es
-     * dafür nichts, und `__x__` bedeutet dasselbe wie `**x**`. Wir vergeben es
+     * `__` für unterstrichen ist kein Standard-Markdown, dort gibt es
+     * dafür nichts, und `__x__` bedeutet dasselbe wie `x`. Wir vergeben es
      * neu, weil beide Clients dieses Projekts denselben Vertrag lesen (SYNC.md)
      * und Fettschrift bereits `**` hat. Ein importierter fremder Markdown-Text
      * würde an dieser einen Stelle anders aussehen als gedacht; das ist der
@@ -145,11 +145,11 @@ object Auszeichnung {
     /**
      * Löst Markdown in gestalteten Text plus Zuordnung auf.
      *
-     * Die Muster werden **unabhängig voneinander** angewandt, nicht
+     * Die Muster werden unabhängig voneinander angewandt, nicht
      * geschachtelt geparst. Dadurch überlagern sich Auszeichnungen von selbst
-     * (`**__x__**` ist fett und unterstrichen), ohne dass es dafür eine
+     * (`__x__` ist fett und unterstrichen), ohne dass es dafür eine
      * Grammatik bräuchte. Wer die Zeichen wild durcheinanderwirft, bekommt ein
-     * merkwürdiges, aber harmloses Ergebnis — und keinen Absturz.
+     * merkwürdiges, aber harmloses Ergebnis, und keinen Absturz.
      */
     fun aufloesen(quelle: String): Aufgeloest {
         val versteckt = BooleanArray(quelle.length)
@@ -230,7 +230,7 @@ object Auszeichnung {
      * Schaltet eine Auszeichnung für die Auswahl an oder aus.
      *
      * Ohne Auswahl werden beide Zeichen gesetzt und der Cursor dazwischen
-     * gestellt — dann tippt man einfach weiter und schreibt fett. Das ist
+     * gestellt, dann tippt man einfach weiter und schreibt fett. Das ist
      * dasselbe Verhalten wie in jeder Textverarbeitung.
      */
     fun umschalten(wert: TextFieldValue, art: Art): TextFieldValue {
@@ -243,7 +243,7 @@ object Auszeichnung {
         // Gesucht wird die tatsächliche Auszeichnung, nicht ein Zeichenpaar
         // direkt neben der Auswahl. Das war der Fehler der ersten Fassung: Wer
         // ein fettes Wort markiert, bekommt vom Textfeld eine Auswahl, die die
-        // versteckten Zeichen mit einschließt — sie lag also nie exakt
+        // versteckten Zeichen mit einschließt, sie lag also nie exakt
         // zwischen ihnen, und statt zu entfernen wurde ein zweites Paar
         // hineingeschrieben.
         spanneAn(text, art, von, bis)?.let { treffer ->
@@ -252,7 +252,7 @@ object Auszeichnung {
 
         // 2. Ohne Auswahl gilt das Wort unter dem Cursor.
         //
-        // Sonst müsste man erst markieren, um ein einzelnes Wort auszuzeichnen —
+        // Sonst müsste man erst markieren, um ein einzelnes Wort auszuzeichnen,
         // und genau dieser Umweg macht das Schreiben zäh.
         if (von == bis) {
             wortRund(text, von)?.let { (a, b) ->
@@ -284,19 +284,19 @@ object Auszeichnung {
     }
 
     /**
-     * Nimmt die Auszeichnung von dem Teil, den man gemeint hat — und **nur** von
+     * Nimmt die Auszeichnung von dem Teil, den man gemeint hat, und nur von
      * dem.
      *
-     * **Ein Leerzeichen trennt Wörter, die Auszeichnung tut es nicht.** Schreibt
+     * Ein Leerzeichen trennt Wörter, die Auszeichnung tut es nicht. Schreibt
      * man ein fettes Wort, drückt Leertaste und schreibt weiter, steht das
-     * zweite Wort in derselben Auszeichnung wie das erste — der Cursor blieb ja
+     * zweite Wort in derselben Auszeichnung wie das erste, der Cursor blieb ja
      * zwischen den Zeichen. Wer dann „fett" antippt, meint das zweite Wort und
      * nicht beide. Die erste Fassung entfernte die Zeichen der ganzen
      * Fundstelle und machte damit auch das erste Wort wieder dünn.
      *
      * Der Rest links und rechts wird deshalb neu eingefasst. Der Leerraum an der
-     * Bruchstelle wandert dabei nach **draußen**: `**Hallo** Welt` und nicht
-     * `**Hallo ** Welt` — ein ausgezeichnetes Leerzeichen sieht man nicht, aber
+     * Bruchstelle wandert dabei nach draußen: `Hallo Welt` und nicht
+     * `**Hallo ** Welt`, ein ausgezeichnetes Leerzeichen sieht man nicht, aber
      * es steht im gespeicherten Text und wandert in den Sync.
      */
     private fun befreien(
@@ -344,8 +344,8 @@ object Auszeichnung {
     }
 
     /**
-     * Fasst ein Reststueck wieder ein — mit dem Leerraum an den Raendern
-     * **ausserhalb** der Zeichen.
+     * Fasst ein Reststueck wieder ein, mit dem Leerraum an den Raendern
+     * ausserhalb der Zeichen.
      *
      * Besteht das Stueck nur aus Leerraum, bleibt es unangetastet: `** **`
      * waere eine Auszeichnung ohne Inhalt, die kein Mensch sieht und die beim
@@ -362,9 +362,9 @@ object Auszeichnung {
     /**
      * Entfernt leer gewordene Zeichenpaare.
      *
-     * Läuft bei **jeder Eingabe** des Nutzers, nicht beim Auszeichnen selbst.
+     * Läuft bei jeder Eingabe des Nutzers, nicht beim Auszeichnen selbst.
      * Wer den Text eines fetten Wortes wieder wegnimmt, bleibt sonst auf einem
-     * `****` sitzen, das er einzeln löschen müsste — und das ist genau der
+     * `****` sitzen, das er einzeln löschen müsste, und das ist genau der
      * Punkt, an dem eine solche Leiste lästig wird.
      *
      * Kursiv fehlt hier bewusst: Sein leeres Paar wäre `**`, und das ist nicht
@@ -408,7 +408,7 @@ object Auszeichnung {
     }
 
     /**
-     * Die Auszeichnung dieser Art, die die Auswahl berührt — oder `null`.
+     * Die Auszeichnung dieser Art, die die Auswahl berührt, oder `null`.
      *
      * Gesucht wird über dasselbe Muster, das auch die Anzeige benutzt. Damit
      * kann der Knopf nichts anderes melden, als man sieht: Was fett dargestellt
@@ -437,7 +437,7 @@ object Auszeichnung {
     }
 
     /**
-     * Das Wort um diese Stelle, als halboffener Bereich — oder `null`.
+     * Das Wort um diese Stelle, als halboffener Bereich, oder `null`.
      *
      * Buchstaben und Ziffern zählen, sonst nichts. Ein Satzzeichen mit fett zu
      * setzen sieht in jeder Schrift falsch aus.
@@ -466,7 +466,7 @@ object Auszeichnung {
      * Setzt die Größe der Zeile, in der der Cursor steht.
      *
      * Zeilenweise und nicht auswahlweise, weil eine Überschrift eine Aussage
-     * über eine ganze Zeile ist — eine halb überschriftliche Zeile gibt es
+     * über eine ganze Zeile ist, eine halb überschriftliche Zeile gibt es
      * nicht.
      */
     fun setzeStufe(wert: TextFieldValue, stufe: Stufe): TextFieldValue {
@@ -507,7 +507,7 @@ object Auszeichnung {
      * Welche Auszeichnungen für die Auswahl gerade gelten.
      *
      * Nur exakte Umschließung zählt. Eine Auswahl, die mitten in einem fetten
-     * Stück liegt, gilt als nicht ausgezeichnet — der Knopf würde sonst
+     * Stück liegt, gilt als nicht ausgezeichnet, der Knopf würde sonst
      * gedrückt aussehen, aber beim Antippen etwas anderes tun, als er anzeigt.
      */
     fun aktiv(wert: TextFieldValue): Set<Art> {
@@ -523,7 +523,7 @@ object Auszeichnung {
  *
  * Ein `object` wäre hier falsch: [VisualTransformation] wird von Compose bei
  * jeder Änderung neu befragt, und das Ergebnis hängt allein vom übergebenen
- * Text ab — Zustand darf es keinen geben.
+ * Text ab, Zustand darf es keinen geben.
  */
 class Auszeichnungsanzeige : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {

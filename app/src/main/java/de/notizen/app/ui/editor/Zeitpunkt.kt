@@ -7,18 +7,18 @@ import java.util.TimeZone
 /**
  * Die Umrechnung zwischen dem Datumswähler und der lokalen Zeit.
  *
- * **Hier wird nichts geschätzt und nichts pauschal verschoben.** Kein
+ * Hier wird nichts geschätzt und nichts pauschal verschoben. Kein
  * „minus zwei Stunden", kein fester Versatz. Der Material-`DatePicker` sagt in
  * seiner eigenen Dokumentation zu, dass `selectedDateMillis` den
- * *„start of the day in UTC milliseconds"* liefert — also Mitternacht UTC des
+ * *„start of the day in UTC milliseconds"* liefert, also Mitternacht UTC des
  * angetippten Tages. Genau dieser zugesagte Wert wird verwendet: Jahr, Monat
- * und Tag werden **in UTC ausgelesen**, weil sie so hineingeschrieben wurden,
- * und **in der lokalen Zeitzone wieder gesetzt**, weil der Nutzer sie so
+ * und Tag werden in UTC ausgelesen, weil sie so hineingeschrieben wurden,
+ * und in der lokalen Zeitzone wieder gesetzt, weil der Nutzer sie so
  * gemeint hat.
  *
  * Dass das über Zeitzonen mit halben Stunden Versatz und über die
  * Sommerzeitumstellung hinweg stimmt, ist nicht behauptet, sondern in
- * `ZeitpunktTest` nachgerechnet — dort wird die Zeitzone der JVM umgestellt und
+ * `ZeitpunktTest` nachgerechnet, dort wird die Zeitzone der JVM umgestellt und
  * das Ergebnis zurückgelesen.
  */
 internal object Zeitpunkt {
@@ -46,8 +46,8 @@ internal object Zeitpunkt {
      * Die Gegenrichtung: aus einem lokalen Zeitstempel den Tag machen, den der
      * Wähler vorausgewählt zeigen soll.
      *
-     * Ohne diese Umrechnung stünde der Wähler zeitweise auf dem **falschen
-     * Tag**. Ein lokaler Zeitpunkt am frühen Morgen liegt in UTC noch im
+     * Ohne diese Umrechnung stünde der Wähler zeitweise auf dem falschen
+     * Tag. Ein lokaler Zeitpunkt am frühen Morgen liegt in UTC noch im
      * Vortag; direkt übergeben zeigte der Kalender dann gestern statt heute.
      * Genau der Sorte Ungenauigkeit, die man erst bemerkt, wenn man nachts
      * etwas einträgt.

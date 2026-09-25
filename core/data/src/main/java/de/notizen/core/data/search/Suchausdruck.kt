@@ -4,22 +4,22 @@ package de.notizen.core.data.search
  * Baut aus dem, was der Nutzer tippt, einen gültigen FTS4-MATCH-Ausdruck.
  *
  * Das ist keine Formsache, sondern die Stelle, an der eine Volltextsuche
- * üblicherweise zerbricht: **die Eingabe des Nutzers ist keine Abfragesprache.**
+ * üblicherweise zerbricht: die Eingabe des Nutzers ist keine Abfragesprache.
  * FTS4 liest `-` als Ausschluss, `"` als Beginn einer Phrase, `*` als Präfix,
  * `OR` und `NEAR` als Operatoren. Wer den Rohtext durchreicht, bekommt bei
  * „Meier-Schmidt" das falsche Ergebnis und bei einem einzelnen
  * Anführungszeichen einen SQL-Fehler mitten im Tippen.
  *
- * Deshalb wird nicht maskiert, sondern **zerlegt**: gesucht wird nach den
+ * Deshalb wird nicht maskiert, sondern zerlegt: gesucht wird nach den
  * zusammenhängenden Folgen aus Buchstaben und Ziffern, alles andere trennt.
  * Jedes Wort kommt in Anführungszeichen, damit auch `OR` als Wort und nicht
  * als Operator gilt, und bekommt ein `*`, damit schon während des Tippens
  * gefunden wird.
  *
- * Die Wörter werden durch **Leerzeichen** verbunden, nicht durch `AND`. In der
+ * Die Wörter werden durch Leerzeichen verbunden, nicht durch `AND`. In der
  * Standard-Abfragesyntax von FTS3/4 ist das Leerzeichen bereits ein Und; das
  * Wort `AND` wäre dort ein Suchbegriff wie jeder andere. Nachgeprüft wird das
- * am echten SQLite, nicht in der Dokumentation — siehe
+ * am echten SQLite, nicht in der Dokumentation, siehe
  * `VolltextsucheTest.beide Woerter muessen vorkommen`.
  */
 object Suchausdruck {
@@ -28,7 +28,7 @@ object Suchausdruck {
      * Der fertige MATCH-Ausdruck, oder `null`, wenn nichts Suchbares übrig
      * bleibt.
      *
-     * `null` heißt ausdrücklich **nicht** „nichts gefunden", sondern „gar nicht
+     * `null` heißt ausdrücklich nicht „nichts gefunden", sondern „gar nicht
      * gesucht". Der Unterschied entscheidet, ob die Oberfläche alle Notizen
      * zeigt oder einen leeren Ergebnisbereich.
      */

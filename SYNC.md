@@ -219,7 +219,7 @@ Gegenseite sie beim nächsten Lauf als neuer erkennt.
 
 ### 6.2 Der Fall Geisterdatei, durchgespielt
 
-Notiz X wird auf dem Handy in den Papierkorb gelegt und endgültig gelöscht → lokal Grabstein
+Notiz X wird auf dem Handy in den Papierkorb gelegt und endgültig gelöscht -> lokal Grabstein
 mit `rev 18`. In Drive liegt `rev 17`, `ACTIVE`. Der Abgleich vergleicht 18 gegen 17, erkennt
 „lokal neuer", lädt die Hülle mit `state: DELETED` und leerem `payload` hoch. Nichts wird
 heruntergeladen. Die Notiz kann nicht zurückkommen, weil der Löschvorgang eine gewöhnliche,
@@ -349,15 +349,15 @@ bewusster Schnitt.
 Das System gilt als fertig, wenn diese Szenarien als Tests mit zwei simulierten Clients
 laufen:
 
-1. Notiz auf A löschen, B war offline → nach dem Abgleich ist sie auf B weg und kommt nicht
+1. Notiz auf A löschen, B war offline -> nach dem Abgleich ist sie auf B weg und kommt nicht
    zurück.
-2. Notiz auf A bearbeiten, gleichzeitig auf B in den Papierkorb → im Papierkorb, Bearbeitung
+2. Notiz auf A bearbeiten, gleichzeitig auf B in den Papierkorb -> im Papierkorb, Bearbeitung
    erhalten.
-3. Papierkorb auf A leeren, B meldet sich 30 Tage später → nichts kommt zurück.
-4. App während des Uploads beenden → der Eintrag steht noch an und geht beim nächsten Lauf.
-5. Eine Notizdatei in Drive kaputtmachen → Prüfbericht meldet es, kein Snapshot.
-6. Assistent legt über Drive eine Notiz an → erscheint mit Hinweis auf externe Herkunft.
-7. Snapshot auf leerem Gerät wiederherstellen → identischer Bestand, Spiegel wird
+3. Papierkorb auf A leeren, B meldet sich 30 Tage später -> nichts kommt zurück.
+4. App während des Uploads beenden -> der Eintrag steht noch an und geht beim nächsten Lauf.
+5. Eine Notizdatei in Drive kaputtmachen -> Prüfbericht meldet es, kein Snapshot.
+6. Assistent legt über Drive eine Notiz an -> erscheint mit Hinweis auf externe Herkunft.
+7. Snapshot auf leerem Gerät wiederherstellen -> identischer Bestand, Spiegel wird
    überschrieben statt überstimmt.
 
 ---
@@ -387,7 +387,7 @@ Im `payload` eines **Ordners**:
 `sortIndex` an Ordnern ist die vom Nutzer gezogene Reihenfolge und wird abgeglichen wie
 jedes andere Feld.
 
-**Lokal** (Room 6 → 7): dieselben fünf Spalten, `bereich` mit Default `'ORDNER'`, die
+**Lokal** (Room 6 -> 7): dieselben fünf Spalten, `bereich` mit Default `'ORDNER'`, die
 anderen `NULL`. Keine Umschreibung der Buchführung; ein Client, der aufsteigt, gleicht
 weiter mit seinem `baseRev` ab und schreibt beim nächsten eigenen Schreiben Schema 5.
 
@@ -422,7 +422,7 @@ verwenden. Die Tonwerte sind Sache des Clients und stehen nicht in diesem Dokume
 
 | Feld | Typ | Pflicht | Default | Sync | Bedeutung |
 |---|---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja | Primärschlüssel |
+| `id` | String (UUID) | ja | - | ja | Primärschlüssel |
 | `stage` | `Stage` | ja | `INBOX` | ja | Station im Fluss. Kein Ordner |
 | `type` | `NoteType` | ja | `TEXT` | ja | Notizart |
 | `title` | String | ja | `""` | ja | Leer erlaubt in `INBOX`, Pflicht ab `WORKSPACE` |
@@ -433,8 +433,8 @@ verwenden. Die Tonwerte sind Sache des Clients und stehen nicht in diesem Dokume
 | `folderId` | String? | nein | `null` | ja | Der Ordner, `null` ist der Hauptordner |
 | `sortIndex` | Int | ja | `0` | ja | Für benutzerdefinierte Sortierung |
 | `backgroundAttachmentId` | String? | nein | `null` | ja | Verweist auf einen eigenen Anhang der Notiz (14.6). Gesetzt = Bild als Fläche statt `colorId` |
-| `createdAt` | Long | ja | — | ja | UTC-Millis |
-| `updatedAt` | Long | ja | — | ja | **Nur bei echter Inhaltsänderung.** Gleichstandsentscheider der Konfliktauflösung |
+| `createdAt` | Long | ja | - | ja | UTC-Millis |
+| `updatedAt` | Long | ja | - | ja | **Nur bei echter Inhaltsänderung.** Gleichstandsentscheider der Konfliktauflösung |
 | `lastOpenedAt` | Long | ja | `createdAt` | **nein** | Nur Ansehen. Steuert Auto-Archiv, pro Client verschieden |
 | `stageChangedAt` | Long | ja | `createdAt` | ja | Letzter Stufenwechsel |
 | `autoArchivedBatchId` | String? | nein | `null` | nein | Verweist auf `archive_runs.batchId` |
@@ -477,12 +477,12 @@ vom Typ `CALENDAR` mit der Terminkennung, damit der Termin aus dem Kalender vers
 
 | Feld | Typ | Pflicht | Default | Sync | Bedeutung |
 |---|---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja | |
-| `name` | String | ja | — | ja | Eindeutig ohne Beachtung der Groß- und Kleinschreibung |
-| `colorArgb` | Int | ja | — | ja | Färbt nur Chip und Punkt, nie die Karte |
+| `id` | String (UUID) | ja | - | ja | |
+| `name` | String | ja | - | ja | Eindeutig ohne Beachtung der Groß- und Kleinschreibung |
+| `colorArgb` | Int | ja | - | ja | Färbt nur Chip und Punkt, nie die Karte |
 | `iconOrEmoji` | String? | nein | `null` | ja | |
 | `sortIndex` | Int | ja | `0` | ja | |
-| `createdAt` / `updatedAt` | Long | ja | — | ja | |
+| `createdAt` / `updatedAt` | Long | ja | - | ja | |
 | `deletedAt` | Long? | nein | `null` | ja | |
 
 Anders als bei Notizen ist `colorArgb` hier ein echter Farbwert: Eine Tagfarbe wählt der
@@ -503,11 +503,11 @@ Notizdatei. Die Zuordnung gehört zur Notiz, nicht zum Tag.
 
 | Feld | Typ | Pflicht | Default | Sync |
 |---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja |
-| `noteId` | String | ja | — | ja |
+| `id` | String (UUID) | ja | - | ja |
+| `noteId` | String | ja | - | ja |
 | `text` | String | ja | `""` | ja |
 | `isChecked` | Bool | ja | `false` | ja |
-| `position` | Int | ja | — | ja |
+| `position` | Int | ja | - | ja |
 
 Liegt eingebettet in der Notizdatei. Konflikte werden auf Notizebene gelöst, nicht je
 Eintrag.
@@ -516,12 +516,12 @@ Eintrag.
 
 | Feld | Typ | Pflicht | Default | Sync | Bedeutung |
 |---|---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja | |
-| `noteId` | String | ja | — | ja | |
-| `localPath` | String | ja | — | **nein** | Gerätepfad, für den anderen Client bedeutungslos |
-| `mimeType` | String | ja | — | ja | |
-| `sizeBytes` | Long | ja | — | ja | |
-| `hash` | String | ja | — | ja | Inhaltshash, erspart erneutes Hochladen |
+| `id` | String (UUID) | ja | - | ja | |
+| `noteId` | String | ja | - | ja | |
+| `localPath` | String | ja | - | **nein** | Gerätepfad, für den anderen Client bedeutungslos |
+| `mimeType` | String | ja | - | ja | |
+| `sizeBytes` | Long | ja | - | ja | |
+| `hash` | String | ja | - | ja | Inhaltshash, erspart erneutes Hochladen |
 | `remoteId` | String? | nein | `null` | ja | Drive-Kennung der Datei; darf fehlen |
 | `role` | `Anhangsrolle` | ja | `INHALT` | ja | `INHALT` = im Bildraster der Notiz sichtbar. `HINTERGRUND` = ausschließlich Fläche, nicht im Raster |
 
@@ -548,10 +548,10 @@ Dublettenerkennung.
 
 | Feld | Typ | Pflicht | Default | Sync | Bedeutung |
 |---|---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja | |
-| `noteId` | String | ja | — | ja | |
-| `startMs` / `endMs` | Long | ja | — | ja | Versatz innerhalb der Aufnahme |
-| `text` | String | ja | — | ja | Rohtranskript, bleibt immer erhalten |
+| `id` | String (UUID) | ja | - | ja | |
+| `noteId` | String | ja | - | ja | |
+| `startMs` / `endMs` | Long | ja | - | ja | Versatz innerhalb der Aufnahme |
+| `text` | String | ja | - | ja | Rohtranskript, bleibt immer erhalten |
 | `speakerLabel` | String? | nein | `null` | ja | bleibt leer |
 | `soundLabel` | String? | nein | `null` | ja | bleibt leer |
 | `isFinal` | Bool | ja | `false` | ja | `false` = Zwischenergebnis |
@@ -564,10 +564,10 @@ Rohtranskript wird nie überschrieben; die bearbeitete Fassung steht in `body`.
 
 | Feld | Typ | Pflicht | Default | Sync | Bedeutung |
 |---|---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja | |
-| `noteId` | String | ja | — | ja | |
-| `triggerAt` | Long | ja | — | ja | UTC-Millis |
-| `alarmId` | Int | ja | — | **nein** | Weckerkennung des Systems, rein lokal |
+| `id` | String (UUID) | ja | - | ja | |
+| `noteId` | String | ja | - | ja | |
+| `triggerAt` | Long | ja | - | ja | UTC-Millis |
+| `alarmId` | Int | ja | - | **nein** | Weckerkennung des Systems, rein lokal |
 | `isFired` | Bool | ja | `false` | **nein** | Jedes Gerät weckt für sich |
 
 Eine noch nicht ausgelöste Erinnerung schützt die Notiz vor Auto-Archivierung. Erinnerungen
@@ -577,10 +577,10 @@ mit vergangenem Termin werden beim Empfang nicht gestellt.
 
 | Feld | Typ | Pflicht | Default |
 |---|---|---|---|
-| `batchId` | String (UUID) | ja | — |
-| `runAt` | Long | ja | — |
-| `noteCount` | Int | ja | — |
-| `trigger` | `ArchiveTrigger` | ja | — |
+| `batchId` | String (UUID) | ja | - |
+| `runAt` | Long | ja | - |
+| `noteCount` | Int | ja | - |
+| `trigger` | `ArchiveTrigger` | ja | - |
 | `undoneAt` | Long? | nein | `null` |
 
 Was der Lauf bewirkt hat (die neue `stage`), synchronisiert über `notes`.
@@ -601,13 +601,13 @@ wohin sie zurückgehört.
 
 | Feld | Typ | Pflicht | Default | Sync |
 |---|---|---|---|---|
-| `id` | String (UUID) | ja | — | ja |
+| `id` | String (UUID) | ja | - | ja |
 | `parentId` | String? | nein | `null` | ja |
-| `name` | String | ja | — | ja |
+| `name` | String | ja | - | ja |
 | `iconOrEmoji` | String? | nein | `null` | ja |
 | `colorArgb` | Int? | nein | `null` | ja |
 | `sortIndex` | Int | ja | `0` | ja |
-| `createdAt` / `updatedAt` | Long | ja | — | ja |
+| `createdAt` / `updatedAt` | Long | ja | - | ja |
 | `deletedAt` | Long? | nein | `null` | ja |
 | `bereich` | `Bereich` | ja | `ORDNER` | ja (Abschnitt 13) |
 | `ehemaligerElternId` | String? | nein | `null` | ja (Abschnitt 13) |
@@ -622,8 +622,8 @@ tragen.
 
 | Feld | Typ | Pflicht | Default | Bedeutung |
 |---|---|---|---|---|
-| `entityType` | `EntityType` | ja | — | Teil des Primärschlüssels |
-| `entityId` | String | ja | — | Teil des Primärschlüssels |
+| `entityType` | `EntityType` | ja | - | Teil des Primärschlüssels |
+| `entityId` | String | ja | - | Teil des Primärschlüssels |
 | `remoteId` | String? | nein | `null` | Drive-Kennung, nur zum Schreiben (Abschnitt 3) |
 | `remoteRevision` | String? | nein | `null` | Drive-Revision beim letzten Abgleich |
 | `baseRev` | Long | ja | `0` | Zählerstand beim letzten erfolgreichen Abgleich (Abschnitt 4) |

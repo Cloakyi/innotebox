@@ -10,9 +10,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Ob die App gerade gesperrt ist (Phase 19).
+ * Ob die App gerade gesperrt ist.
  *
- * **Eine Funktion der App, nicht des Systems** (seit 2026-09-19): wie bei
+ * Eine Funktion der App, nicht des Systems (seit 2026-09-19): wie bei
  * Banking-Apps und dem Tagebuch auf dem Pixel, nicht über Androids
  * vertrauliches Profil. Gesperrt wird beim Start des Prozesses und nach der
  * eingestellten Zeit im Hintergrund; entsperrt wird über den Systemdialog
@@ -23,7 +23,7 @@ import javax.inject.Singleton
  * jeder Drehung neu fragte. Eine Drehung ist kein Hintergrund
  * (`beimStopp(konfigurationswechsel = true)`).
  *
- * **Was hier NICHT ist:** eine Verschlüsselung. Die Datenbank liegt weiter
+ * Was hier NICHT ist: eine Verschlüsselung. Die Datenbank liegt weiter
  * unverschlüsselt in der Sandbox der App; die Sperre ist eine Sperre der
  * Oberfläche. Die Verschlüsselung ist der eigene Posten in docs/ENTSCHEIDUNGEN.md, Abschnitt 12,
  * und wird vor dem Bau einzeln geplant.

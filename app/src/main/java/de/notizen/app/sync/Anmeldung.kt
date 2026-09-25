@@ -16,7 +16,7 @@ import de.notizen.app.util.warten
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Der Drive-Scope. Nicht-sensibel — deckt nur Dateien ab, die diese App angelegt hat. */
+/** Der Drive-Scope. Nicht-sensibel, deckt nur Dateien ab, die diese App angelegt hat. */
 const val DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file"
 
 /** Was beim Beschaffen eines Zugriffstokens herauskam. */
@@ -26,10 +26,10 @@ sealed interface Zugang {
     data class Erteilt(val token: String) : Zugang
 
     /**
-     * Der Nutzer muss selbst tätig werden — beim ersten Verbinden, nach einem
+     * Der Nutzer muss selbst tätig werden, beim ersten Verbinden, nach einem
      * Widerruf, oder wenn das Token abgelaufen ist.
      *
-     * Die [absicht] öffnet Googles eigenen Dialog. Sie **muss** aus einer
+     * Die [absicht] öffnet Googles eigenen Dialog. Sie muss aus einer
      * Activity heraus gestartet werden; ein Hintergrundlauf kann das nicht und
      * darf es auch nicht versuchen.
      */
@@ -52,21 +52,21 @@ sealed interface Zugang {
 /**
  * Beschafft Zugriffstokens für Google Drive.
  *
- * **Warum `AuthorizationClient` und nicht Credential Manager:** Die beiden
- * beantworten verschiedene Fragen. Credential Manager klärt, **wer** der Nutzer
- * ist — das brauchen wir gar nicht. `AuthorizationClient` klärt, ob die App auf
- * Drive **zugreifen darf**, und genau darum geht es hier. Das alte
+ * Warum `AuthorizationClient` und nicht Credential Manager: Die beiden
+ * beantworten verschiedene Fragen. Credential Manager klärt, wer der Nutzer
+ * ist, das brauchen wir gar nicht. `AuthorizationClient` klärt, ob die App auf
+ * Drive zugreifen darf, und genau darum geht es hier. Das alte
  * `GoogleSignIn` ist abgelöst und kommt nicht in Frage.
  *
- * **Es gibt kein Refresh-Token, und das ist Absicht.** Google gibt einer
+ * Es gibt kein Refresh-Token, und das ist Absicht. Google gibt einer
  * Android-App nur kurzlebige Zugriffstokens. Der Ersatz für „erneuern" ist,
  * [zugang] einfach wieder aufzurufen: Ist der Zugriff schon erteilt, kommt
  * lautlos ein frisches Token zurück, ohne dass jemand etwas sieht. Erst wenn
  * die Erlaubnis fehlt oder widerrufen wurde, meldet sich
  * [Zugang.AnmeldungNoetig].
  *
- * **Ein abgelaufener Zugang ist ein sichtbarer Zustand, kein stiller
- * Fehlschlag** (SYNC.md 3). Der Hintergrundlauf kann keinen Dialog zeigen — er
+ * Ein abgelaufener Zugang ist ein sichtbarer Zustand, kein stiller
+ * Fehlschlag (SYNC.md 3). Der Hintergrundlauf kann keinen Dialog zeigen, er
  * setzt stattdessen den Sync-Status und hört auf. Alles andere wäre ein Sync,
  * der wochenlang nichts tut und nichts sagt.
  */
@@ -86,7 +86,7 @@ class Anmeldung @Inject constructor(
     /**
      * Ein Zugriffstoken, wenn möglich ohne Zutun des Nutzers.
      *
-     * Der Aufruf ist billig genug, um ihn vor jedem Abgleich zu machen — das
+     * Der Aufruf ist billig genug, um ihn vor jedem Abgleich zu machen, das
      * ist der vorgesehene Weg, ein Token zu erneuern.
      */
     suspend fun zugang(): Zugang = try {
@@ -126,8 +126,8 @@ class Anmeldung @Inject constructor(
      * Deutet ein [AuthorizationResult].
      *
      * Ausgelagert und ohne Google-Aufruf, damit die Fallunterscheidung prüfbar
-     * ist: `hasResolution` schlägt alles, denn ein Ergebnis kann beides tragen
-     * — eine Absicht UND ein altes Token. Wer zuerst aufs Token schaut, arbeitet
+     * ist: `hasResolution` schlägt alles, denn ein Ergebnis kann beides tragen,
+     * eine Absicht UND ein altes Token. Wer zuerst aufs Token schaut, arbeitet
      * mit einem, das gerade widerrufen wurde.
      */
     private fun deuten(ergebnis: AuthorizationResult): Zugang = when {
@@ -151,14 +151,14 @@ class Anmeldung @Inject constructor(
     /**
      * Nimmt der App den Zugriff.
      *
-     * **Zwei Schritte, und beide sind nötig.** `clearToken` wirft das
+     * Zwei Schritte, und beide sind nötig. `clearToken` wirft das
      * zwischengespeicherte Token weg, `revokeAccess` nimmt die Erlaubnis
      * zurück. Ohne den zweiten Schritt besorgt der nächste `authorize`-Aufruf
      * lautlos ein frisches Token, und „Trennen" hätte nichts getrennt.
      *
-     * **`clearToken` braucht das Token, das es wegwerfen soll.** Der frühere
+     * `clearToken` braucht das Token, das es wegwerfen soll. Der frühere
      * Aufruf ohne `setToken` baute eine Anfrage über nichts. Er schlug still
-     * fehl, und die App sagte trotzdem „Verbindung gelöst" — der Screen zeigte
+     * fehl, und die App sagte trotzdem „Verbindung gelöst", der Screen zeigte
      * beim nächsten Öffnen wieder „verbunden", weil er nachfragt statt zu raten.
      * Nachgesehen im AAR von play-services-auth 21.4.0 am 2026-08-23.
      */

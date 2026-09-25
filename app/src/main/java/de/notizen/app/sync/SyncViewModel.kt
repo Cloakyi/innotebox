@@ -44,8 +44,8 @@ data class Synczustand(
 /**
  * Verbindung zu Google Drive: prüfen, herstellen, lösen.
  *
- * **Der Verbindungszustand wird nicht gespeichert, sondern erfragt.** Ein
- * gemerktes „ist verbunden" wäre eine zweite Wahrheit neben Googles eigener —
+ * Der Verbindungszustand wird nicht gespeichert, sondern erfragt. Ein
+ * gemerktes „ist verbunden" wäre eine zweite Wahrheit neben Googles eigener,
  * und die beiden laufen auseinander, sobald der Zugriff woanders widerrufen
  * wird (im Google-Konto, auf einem anderen Gerät, oder weil im Testmodus die
  * sieben Tage um sind). Ein stiller Aufruf kostet nichts und sagt die Wahrheit.
@@ -163,8 +163,8 @@ class SyncViewModel @Inject constructor(
     /**
      * Stellt die Verbindung her.
      *
-     * Gibt eine [PendingIntent] zurück, wenn Google seinen Dialog zeigen will —
-     * die **muss** die Oberfläche starten. Ein ViewModel kann das nicht, und
+     * Gibt eine [PendingIntent] zurück, wenn Google seinen Dialog zeigen will,
+     * die muss die Oberfläche starten. Ein ViewModel kann das nicht, und
      * es soll es auch nicht können.
      */
     fun verbinden(dann: (PendingIntent?) -> Unit) {
@@ -224,8 +224,8 @@ class SyncViewModel @Inject constructor(
     /**
      * Legt den Ordner `/Notizen-App/` an oder findet ihn.
      *
-     * **Das ist der erste echte Drive-Aufruf und damit der eigentliche Test der
-     * ganzen Kette:** Anmeldung, Token, Netz, Drive-API, Berechtigung. Geht er
+     * Das ist der erste echte Drive-Aufruf und damit der eigentliche Test der
+     * ganzen Kette: Anmeldung, Token, Netz, Drive-API, Berechtigung. Geht er
      * durch, steht die Grundlage; geht er schief, sagt die Meldung wo.
      */
     fun ordnerPruefen() {
@@ -353,7 +353,7 @@ class SyncViewModel @Inject constructor(
     /**
      * Löst die Verbindung.
      *
-     * Der Zustand wird **nicht** auf Anfang gesetzt: Takt und Zeitpunkt des
+     * Der Zustand wird nicht auf Anfang gesetzt: Takt und Zeitpunkt des
      * letzten Abgleichs kommen aus den Einstellungen und gelten weiter. Wer sie
      * hier zurücksetzte, zeigte im Auswahlfeld eine Zahl an, die nirgends
      * gespeichert ist.

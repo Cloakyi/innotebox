@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 /**
  * Formatierungsleiste über der unteren Aktionsleiste.
  *
- * **Sie nimmt dem Textfeld ausdrücklich nicht den Fokus** (`canFocus = false`).
- * Täte sie es, verschwände sie beim ersten Antippen mitsamt der Tastatur — und
+ * Sie nimmt dem Textfeld ausdrücklich nicht den Fokus (`canFocus = false`).
+ * Täte sie es, verschwände sie beim ersten Antippen mitsamt der Tastatur, und
  * die Auswahl, auf die sie wirken soll, gleich mit. Das ist der Fehler, den
  * solche Leisten typischerweise haben.
  *
@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
  * wäre sie in einer Notizen-App Beiwerk, das ständig Platz kostet und selten
  * gebraucht wird.
  *
- * Alle Farben kommen aus der Notiz, nicht aus dem Theme — die Leiste sitzt auf
+ * Alle Farben kommen aus der Notiz, nicht aus dem Theme, die Leiste sitzt auf
  * dem Blatt (siehe docs/ENTSCHEIDUNGEN.md, Farbregeln).
  */
 @Composable

@@ -34,6 +34,6 @@ enum class Stage {
         ARCHIVE -> WORKSPACE
     }
 
-    /** Ab WORKSPACE ist ein Titel Pflicht (Spezifikation Abschnitt 4). */
+    /** Ab WORKSPACE ist ein Titel Pflicht. */
     fun requiresTitle(): Boolean = this != INBOX
 }

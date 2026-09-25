@@ -10,7 +10,7 @@ import kotlin.math.abs
  *
  * Beide Rechnungen sind bewusst aus dem Android-Teil herausgelöst: Ein
  * Seitenverhältnis, das sich beim Verkleinern verschiebt, sieht man einem
- * einzelnen Bild nicht an — man merkt es erst, wenn alle Fotos leicht gestaucht
+ * einzelnen Bild nicht an, man merkt es erst, wenn alle Fotos leicht gestaucht
  * wirken und niemand mehr weiß, woher das kommt.
  */
 class BildmasseTest {
@@ -57,7 +57,7 @@ class BildmasseTest {
             val vorher = breite.toDouble() / hoehe
             val nachher = b.toDouble() / h
             assertTrue(
-                "%dx%d wurde zu %dx%d — Verhältnis %.4f statt %.4f"
+                "%dx%d wurde zu %dx%d, Verhältnis %.4f statt %.4f"
                     .format(breite, hoehe, b, h, nachher, vorher),
                 abs(vorher - nachher) < 0.01,
             )
@@ -67,7 +67,7 @@ class BildmasseTest {
     @Test
     fun `eine extrem schmale Kante wird nie null`() {
         // Ein Panorama von 8000x50 ergäbe bei naiver Rechnung eine Höhe von 12,
-        // bei 8000x8 eine von 2 — und irgendwo darunter null. Ein Bitmap mit
+        // bei 8000x8 eine von 2, und irgendwo darunter null. Ein Bitmap mit
         // Höhe null ist kein kleines Bild, sondern ein Absturz.
         val (b, h) = Bildspeicher.zielgroesse(20000, 5, maxKante = 2048)
         assertTrue("Breite wurde $b", b >= 1)

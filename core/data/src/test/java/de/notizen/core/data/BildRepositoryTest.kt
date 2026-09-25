@@ -22,8 +22,8 @@ import java.util.UUID
 /**
  * Bildanhänge.
  *
- * Der Schwerpunkt liegt nicht auf dem Anlegen — das ist eine Zeile —, sondern
- * auf dem **Aufräumen**: Es gibt bewusst keinen Fremdschlüssel von `notes` auf
+ * Der Schwerpunkt liegt nicht auf dem Anlegen, das ist eine Zeile, sondern
+ * auf dem Aufräumen: Es gibt bewusst keinen Fremdschlüssel von `notes` auf
  * `attachments`, die Datenbank fängt hier also nichts ab. Jede Zusage, die das
  * Repository stattdessen gibt, steht deshalb unten als eigener Test.
  */
@@ -94,7 +94,7 @@ class BildRepositoryTest : DatenbankTestbasis() {
     @Test
     fun `ein fremder Anhang wird nicht zum Hintergrund`() = runTest {
         // Ohne diese Prüfung entstünde ein Verweis über Notizgrenzen hinweg.
-        // Wird die andere Notiz gelöscht, stünde hier ein toter Zeiger — und
+        // Wird die andere Notiz gelöscht, stünde hier ein toter Zeiger, und
         // kein Fremdschlüssel schlägt an, den gibt es in diese Richtung nicht.
         val meine = bildnotiz()
         val fremde = bildnotiz()

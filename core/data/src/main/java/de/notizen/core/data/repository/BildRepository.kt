@@ -22,7 +22,7 @@ import javax.inject.Singleton
  * Bild hat kein Transkript, keine Wellenform und keinen Aufnahmezustand. Die
  * gemeinsame Tabelle macht daraus noch keine gemeinsame Aufgabe.
  *
- * **Die Datei gehoert dem Datensatz.** Dieses Repository legt die Zeile an und
+ * Die Datei gehoert dem Datensatz. Dieses Repository legt die Zeile an und
  * raeumt beim Loeschen die Datei mit weg. Das ist bewusst hier und nicht in der
  * Oberflaeche: Wer die Zeile loescht, ohne die Datei zu loeschen, hinterlaesst
  * Muell, den niemand mehr zuordnen kann -- und das faellt erst auf, wenn der

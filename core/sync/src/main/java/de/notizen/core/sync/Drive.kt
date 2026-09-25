@@ -52,9 +52,9 @@ private data class Dateiliste(
 /**
  * Ein Fehler, den der Aufrufer unterscheiden können muss.
  *
- * Drei Ausgänge, drei verschiedene Reaktionen — deshalb keine gemeinsame
- * Ausnahme: **Nicht erlaubt** heißt neu anmelden, **kein Netz** heißt später
- * nochmal, **abgelehnt** heißt hinsehen. Wer das zusammenwirft, baut einen
+ * Drei Ausgänge, drei verschiedene Reaktionen, deshalb keine gemeinsame
+ * Ausnahme: Nicht erlaubt heißt neu anmelden, kein Netz heißt später
+ * nochmal, abgelehnt heißt hinsehen. Wer das zusammenwirft, baut einen
  * Sync, der bei fehlendem WLAN zur Neuanmeldung auffordert.
  */
 sealed class Drivefehler(nachricht: String) : IOException(nachricht) {
@@ -66,17 +66,17 @@ sealed class Drivefehler(nachricht: String) : IOException(nachricht) {
 /**
  * Drive REST v3, nur die Handvoll Aufrufe, die dieses Projekt braucht.
  *
- * **Kein `google-api-services-drive`.** Die offizielle Java-Bibliothek zieht
+ * Kein `google-api-services-drive`. Die offizielle Java-Bibliothek zieht
  * einen ganzen Stapel Abhängigkeiten mit, ist auf Server zugeschnitten und
  * verlangt eine eigene HTTP-Schicht. Wir brauchen sechs Endpunkte; das ist mit
  * OkHttp weniger Code als die Konfiguration der Bibliothek.
  *
- * **Das Token kommt von außen**, bei jedem Aufruf. Dieses Modul kennt weder
- * Google Play Services noch Android — deshalb lässt es sich auf der JVM testen.
+ * Das Token kommt von außen, bei jedem Aufruf. Dieses Modul kennt weder
+ * Google Play Services noch Android, deshalb lässt es sich auf der JVM testen.
  * Wer es sich merkte, hätte irgendwann ein abgelaufenes.
  *
- * **`drive.file` sieht nur, was diese App angelegt hat.** Eine Suche nach dem
- * Ordner findet ihn also auch dann nicht, wenn er sichtbar in Drive liegt —
+ * `drive.file` sieht nur, was diese App angelegt hat. Eine Suche nach dem
+ * Ordner findet ihn also auch dann nicht, wenn er sichtbar in Drive liegt,
  * sofern ihn ein anderer Client erzeugt hat. Das ist der Kern der offenen
  * Frage aus SYNC.md 3 und der Grund für den Spike.
  */
@@ -114,7 +114,7 @@ class Drive @Inject constructor(
     /**
      * Findet den Notizen-Ordner oder legt ihn an.
      *
-     * Gesucht wird **nicht im Papierkorb** — sonst liefert die Suche einen
+     * Gesucht wird nicht im Papierkorb, sonst liefert die Suche einen
      * Ordner, in den nichts mehr geschrieben werden kann, und jeder Upload
      * scheitert mit einer Meldung über die Datei statt über den Ordner.
      */
@@ -164,7 +164,7 @@ class Drive @Inject constructor(
      *
      * Kein `If-Match`: Drive kennt für Dateiinhalte kein Bedingungsschreiben.
      * Wer sicher sein will, dass zwischendurch niemand geschrieben hat, muss
-     * die `headRevisionId` **vorher** lesen und danach vergleichen — genau das
+     * die `headRevisionId` vorher lesen und danach vergleichen, genau das
      * macht die Konfliktauflösung.
      */
     override suspend fun ersetzen(token: String, dateiId: String, inhalt: String): Drivedatei {
@@ -183,8 +183,8 @@ class Drive @Inject constructor(
     /**
      * Legt eine Binärdatei an: Bild oder Aufnahme.
      *
-     * **Getrennt von [anlegen], weil der Körper nicht in eine Zeichenkette
-     * passt.** Eine zehnminütige WAV-Aufnahme sind rund zwanzig Megabyte; sie
+     * Getrennt von [anlegen], weil der Körper nicht in eine Zeichenkette
+     * passt. Eine zehnminütige WAV-Aufnahme sind rund zwanzig Megabyte; sie
      * erst in einen String und dann in ein ByteArray zu heben, hieße dreimal
      * dasselbe im Speicher zu halten. [DateiKoerper] schreibt stattdessen
      * direkt aus der Datei in die Verbindung.
@@ -211,8 +211,8 @@ class Drive @Inject constructor(
     /**
      * Lädt eine Datei herunter.
      *
-     * **Erst daneben, dann umbenennen.** Bricht die Übertragung mittendrin ab,
-     * läge sonst eine halbe Datei am richtigen Platz — und die sieht für jeden
+     * Erst daneben, dann umbenennen. Bricht die Übertragung mittendrin ab,
+     * läge sonst eine halbe Datei am richtigen Platz, und die sieht für jeden
      * späteren Lauf aus wie eine fertige. Ein halbes Bild wäre dann für immer
      * ein halbes Bild.
      */
@@ -248,7 +248,7 @@ class Drive @Inject constructor(
      * Löscht endgültig, nicht in den Papierkorb.
      *
      * Eine Notiz, die hier verschwindet, hat den Papierkorb der App schon
-     * durchlaufen — sie ein zweites Mal in einen Papierkorb zu legen, wäre
+     * durchlaufen, sie ein zweites Mal in einen Papierkorb zu legen, wäre
      * eine Rücknahmemöglichkeit, die niemand erwartet und die den Ordner
      * zumüllt.
      */
@@ -306,7 +306,7 @@ class Drive @Inject constructor(
     /**
      * Was ein Fehlercode bedeutet.
      *
-     * 401 heißt immer: Token abgelaufen oder widerrufen. 403 kann **beides**
+     * 401 heißt immer: Token abgelaufen oder widerrufen. 403 kann beides
      * heißen. Früher galt es pauschal als fehlende Erlaubnis, dann forderte eine
      * überschrittene Quote zur Neuanmeldung auf, und die hätte nichts geholfen.
      * Der Grund steht in der Antwort, also wird er gelesen.
@@ -357,7 +357,7 @@ class Drive @Inject constructor(
  *
  * Von Hand, aus zwei Gründen. Erstens nimmt Drive nur `multipart/related` mit
  * genau zwei Teilen in dieser Reihenfolge, und OkHttps `MultipartBody` erzeugt
- * `multipart/form-data`. Zweitens wird die Datei **gestreamt**: `writeTo` bekommt
+ * `multipart/form-data`. Zweitens wird die Datei gestreamt: `writeTo` bekommt
  * die Verbindung als Senke und schiebt die Bytes durch, ohne sie vorher in den
  * Speicher zu holen.
  *

@@ -40,20 +40,20 @@ data class TagEntity(
 )
 
 /**
- * Ein Ordner. Seit Phase 13 in Gebrauch, siehe SYNC.md 14.11.
+ * Ein Ordner, siehe SYNC.md 14.11.
  *
- * Die Tabelle steht seit Phase 1 im Schema, ohne dass jemand hineingeschrieben
+ * Die Tabelle stand von Anfang an im Schema, ohne dass jemand hineingeschrieben
  * haette -- deshalb kostet der Ordnermodus KEINE Migration. Dasselbe gilt fuer
  * `notes.folderId`.
  *
- * **Kein Fremdschluessel auf sich selbst.** Ein Ordner verweist ueber
+ * Kein Fremdschluessel auf sich selbst. Ein Ordner verweist ueber
  * [parentId] auf einen anderen, aber die Datenbank erzwingt das nicht: Beim
  * Abgleich kann ein Kind vor seinem Elternteil ankommen, und ein
  * Fremdschluessel liesse dann den ganzen Schreibvorgang scheitern. Ordner ohne
  * auffindbare Eltern haengen stattdessen sichtbar an der Wurzel, siehe
  * `Ordnerregeln.kinder`.
  *
- * **Geloescht wird weich.** [deletedAt] bleibt stehen, die Zeile nicht. Nur so
+ * Geloescht wird weich. [deletedAt] bleibt stehen, die Zeile nicht. Nur so
  * erfaehrt das andere Geraet ueberhaupt von der Loeschung -- Grabsteine gibt es
  * in Drive ausschliesslich fuer Notizen.
  */
@@ -74,7 +74,7 @@ data class FolderEntity(
     val colorArgb: Int? = null,
 
     /**
-     * Die eigene Reihenfolge unter Geschwistern (Phase 14e). Andere
+     * Die eigene Reihenfolge unter Geschwistern. Andere
      * Sortierungen der Ansicht schreiben hier nie hinein.
      */
     val sortIndex: Int = 0,
@@ -83,7 +83,7 @@ data class FolderEntity(
     val deletedAt: Long? = null,
 
     /**
-     * Welchem Baum der Ordner gehoert (SYNC.md 13, Schema 5, Phase 14a). Das
+     * Welchem Baum der Ordner gehoert (SYNC.md 13, Schema 5). Das
      * Archiv des Ordnermodus hat einen eigenen Baum; ein Ordner wechselt den
      * Bereich nie, und [parentId] zeigt immer auf einen Ordner desselben
      * Bereichs (`Ordnerregeln.darfHinein`).
@@ -92,7 +92,7 @@ data class FolderEntity(
 
     /**
      * Der geloeschte Ordner, aus dem dieser beim Loeschen „nur der Ordner"
-     * herausgerueckt ist (Phase 14c, ausgegraut im Papierkorb). Wird beim
+     * herausgerueckt ist (ausgegraut im Papierkorb). Wird beim
      * naechsten Verschieben von Hand geleert.
      */
     val ehemaligerElternId: String? = null,

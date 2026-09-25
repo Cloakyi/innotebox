@@ -80,19 +80,19 @@ data class EditorState(
     /**
      * Bilder der Notiz, in Anlagereihenfolge.
      *
-     * Nur solche mit der Rolle `INHALT` — ein eigens gewähltes Hintergrundbild
-     * steht hier ausdrücklich **nicht** drin, sonst wäre es doch wieder ein
+     * Nur solche mit der Rolle `INHALT`, ein eigens gewähltes Hintergrundbild
+     * steht hier ausdrücklich nicht drin, sonst wäre es doch wieder ein
      * Bild der Notiz. Audioanhänge fehlen ebenfalls.
      */
     val bilder: List<AttachmentEntity> = emptyList(),
     val hintergrundId: String? = null,
     /**
-     * Das Bild, das als Fläche dient — oder `null`.
+     * Das Bild, das als Fläche dient, oder `null`.
      *
      * Eigenes Feld und nicht aus [bilder] abgeleitet: Die Fläche kann ein Bild
-     * der Notiz sein **oder** ein eigens gewähltes, das im Raster gar nicht
+     * der Notiz sein oder ein eigens gewähltes, das im Raster gar nicht
      * auftaucht. Zeigt der Verweis auf einen Anhang, den es nicht mehr gibt,
-     * bleibt das Feld `null` und die Notiz fällt still auf ihre Farbe zurück —
+     * bleibt das Feld `null` und die Notiz fällt still auf ihre Farbe zurück,
      * genau so steht es in SYNC.md 14.15.
      */
     val hintergrund: AttachmentEntity? = null,
@@ -114,7 +114,7 @@ data class EditorState(
      */
     val ordnerId: String? = null,
 
-    /** Ob die Notiz im Archiv des Ordnermodus liegt (Phase 14b). Steuert das Menue. */
+    /** Ob die Notiz im Archiv des Ordnermodus liegt. Steuert das Menue. */
     val imOrdnerArchiv: Boolean = false,
 ) {
     /**
@@ -134,7 +134,7 @@ data class EditorState(
 }
 
 /**
- * Editor ohne Speichern-Knopf (Spezifikation Abschnitt 9).
+ * Editor ohne Speichern-Knopf.
  *
  * DREI REGELN, die zusammengehoeren:
  *
@@ -251,7 +251,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Der Schalter aus den Einstellungen, ohne das Geraet zu fragen.
      *
-     * **Er deckt seit dem 2026-08-25 auch die Umwandlung in Text ab.** Vorher
+     * Er deckt seit dem 2026-08-25 auch die Umwandlung in Text ab. Vorher
      * galt: Spracherkennung ist keine Textgenerierung, also laeuft sie weiter,
      * wenn jemand die KI abschaltet. Der bessere Grund spricht dagegen: Wer
      * die KI ausschaltet, will nichts von ihr, und dass die Erkennung
@@ -319,7 +319,7 @@ class EditorViewModel @Inject constructor(
     val hatAufnahme: StateFlow<Boolean> = _hatAufnahme.asStateFlow()
 
     /**
-     * Die Dauer der Aufnahme — aus der Datei, nicht vom Abspieler.
+     * Die Dauer der Aufnahme, aus der Datei, nicht vom Abspieler.
      *
      * Der Abspieler kennt sie erst, wenn er läuft. Alles, was auf der Dauer
      * aufbaut (welche Stelle in eine Pause fällt, wie viel das Überspringen
@@ -390,7 +390,7 @@ class EditorViewModel @Inject constructor(
     private val _rohtranskript = MutableStateFlow("")
     val rohtranskript: StateFlow<String> = _rohtranskript.asStateFlow()
 
-    /** Die Sprechabschnitte der Aufnahme — für das Überspringen der Stille. */
+    /** Die Sprechabschnitte der Aufnahme, für das Überspringen der Stille. */
     private val _sprechabschnitte = MutableStateFlow<List<Sprechabschnitt>>(emptyList())
     val sprechabschnitte: StateFlow<List<Sprechabschnitt>> = _sprechabschnitte.asStateFlow()
 
@@ -406,7 +406,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Verwirft die Bearbeitung und stellt das Rohtranskript wieder her.
      *
-     * Ohne diesen Rückweg wäre jede Aufbereitung endgültig — und dann traut
+     * Ohne diesen Rückweg wäre jede Aufbereitung endgültig, und dann traut
      * man sich nicht, sie überhaupt auszuprobieren.
      */
     fun aufOriginalZuruecksetzen() {
@@ -428,7 +428,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Lässt die KI über das Rohtranskript gehen.
      *
-     * Das Ergebnis ersetzt den Fließtext, **nicht** das Transkript: das Original
+     * Das Ergebnis ersetzt den Fließtext, nicht das Transkript: das Original
      * bleibt in `transcripts` stehen. Misslingt es, bleibt alles, wie es war,
      * und die Oberfläche sagt es.
      */
@@ -530,7 +530,7 @@ class EditorViewModel @Inject constructor(
     }
 
     /**
-     * Haengt einen Eintrag mit Text an (Phase 18).
+     * Haengt einen Eintrag mit Text an.
      *
      * Der Text kommt aus dem Feld „Eintrag hinzufuegen" unter der Liste, das in
      * beiden Zustaenden der Liste da ist. Leeres wird nicht angehaengt: Ein
@@ -576,7 +576,7 @@ class EditorViewModel @Inject constructor(
     }
 
     /**
-     * Verschiebt einen Eintrag im Bearbeitungszustand der Liste (Phase 18).
+     * Verschiebt einen Eintrag im Bearbeitungszustand der Liste.
      *
      * Die Stelle in der Liste ist die Reihenfolge; `position` wird beim
      * Speichern aus ihr neu vergeben (`NoteRepository.updateContent`).
@@ -605,8 +605,8 @@ class EditorViewModel @Inject constructor(
     /**
      * Der Editor ist weg.
      *
-     * **An `onCleared` und nicht am Zurück-Knopf.** Aus einem Bildschirm führen
-     * mehr Wege heraus als der eine, an den man denkt — und bliebe die Sperre
+     * An `onCleared` und nicht am Zurück-Knopf. Aus einem Bildschirm führen
+     * mehr Wege heraus als der eine, an den man denkt, und bliebe die Sperre
      * hängen, ginge nie wieder etwas nach Drive.
      */
     override fun onCleared() {
@@ -665,7 +665,7 @@ class EditorViewModel @Inject constructor(
     }
 
     /**
-     * Titelpflicht ab WORKSPACE (Spezifikation Abschnitt 4), durchgesetzt beim
+     * Titelpflicht ab WORKSPACE, durchgesetzt beim
      * Verlassen -- nicht beim Tippen.
      *
      * Ein Editor, der den Rueckweg blockiert, bis ein Feld gefuellt ist, waere
@@ -680,7 +680,7 @@ class EditorViewModel @Inject constructor(
     private fun erzwingeTitel() {
         val s = _state.value
         if (!s.titelFehlt) return
-        // Klartext, nicht Rohtext: Ein abgeleiteter Titel "**Einkauf**" waere
+        // Klartext, nicht Rohtext: Ein abgeleiteter Titel "Einkauf" waere
         // in jeder Liste und jeder Benachrichtigung falsch -- dort gibt es
         // keine Auszeichnung, die die Zeichen wieder verschwinden liesse.
         val abgeleitet = fallbackTitel(
@@ -707,7 +707,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Hängt einen Tag an die Notiz oder nimmt ihn weg.
      *
-     * Das Blatt bleibt dabei offen — man vergibt selten genau einen Tag. Dieselbe
+     * Das Blatt bleibt dabei offen, man vergibt selten genau einen Tag. Dieselbe
      * Entscheidung wie bei der Mehrfachauswahl in der Übersicht.
      */
     fun tagUmschalten(tagId: String) {
@@ -735,13 +735,13 @@ class EditorViewModel @Inject constructor(
      * Datenbank, und eine Kopie ohne die letzten Sätze wäre eine Kopie von
      * gestern.
      *
-     * Die Notiz bleibt geöffnet. Man ist gerade beim Schreiben — in die Kopie
+     * Die Notiz bleibt geöffnet. Man ist gerade beim Schreiben, in die Kopie
      * geschoben zu werden wäre ein Ortswechsel, den niemand verlangt hat.
      */
     /**
      * Nimmt die Notiz vom Abgleich aus oder wieder hinein.
      *
-     * Das Wegräumen in Drive passiert **nicht** hier: Es braucht Netz, und Netz
+     * Das Wegräumen in Drive passiert nicht hier: Es braucht Netz, und Netz
      * gehört nicht hinter eine Schaltfläche. Der nächste Abgleich erledigt es.
      */
     /**
@@ -841,10 +841,10 @@ class EditorViewModel @Inject constructor(
      * Sichert diese Notiz sofort, statt auf den Takt zu warten.
      *
      * Erst hart speichern, dann anmelden, dann den Lauf ohne Verzögerung
-     * anstoßen. Ohne das Speichern fehlte das zuletzt Getippte — der Autosave
+     * anstoßen. Ohne das Speichern fehlte das zuletzt Getippte, der Autosave
      * wartet ja noch.
      *
-     * Der Lauf selbst gleicht **alles** ab, nicht nur diese Notiz. Ein zweiter
+     * Der Lauf selbst gleicht alles ab, nicht nur diese Notiz. Ein zweiter
      * Abgleichweg nur für eine einzelne Notiz wäre eine zweite Fassung derselben
      * Logik, und die beiden liefen irgendwann auseinander.
      */
@@ -893,7 +893,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Wohin die Kamera-App ihr Foto legen soll, oder `null`, wenn keine da ist.
      *
-     * Der Pfad wird gemerkt, weil `TakePicture` nur `true`/`false` zurückgibt —
+     * Der Pfad wird gemerkt, weil `TakePicture` nur `true`/`false` zurückgibt,
      * die Datei kennt danach sonst niemand mehr.
      */
     fun kameraZiel(): android.net.Uri? {
@@ -944,7 +944,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Legt ein Bild ab und trägt es als Anhang ein.
      *
-     * Die Kennung entsteht VOR dem Ablegen und ist zugleich der Dateiname —
+     * Die Kennung entsteht VOR dem Ablegen und ist zugleich der Dateiname,
      * damit gehören Datei und Datensatz von Anfang an zusammen und können nicht
      * auseinanderlaufen.
      */
@@ -967,7 +967,7 @@ class EditorViewModel @Inject constructor(
     }
 
     /**
-     * Wählt ein Bild aus der Galerie **nur** als Fläche.
+     * Wählt ein Bild aus der Galerie nur als Fläche.
      *
      * Es zählt nicht zu den Bildern der Notiz und erscheint nicht im Raster;
      * genau dafür gibt es diesen Weg. Ein vorher eigens gewähltes
@@ -997,7 +997,7 @@ class EditorViewModel @Inject constructor(
     /**
      * Liest Anhänge und Hintergrundverweis neu.
      *
-     * Der Editor beobachtet die Notiz bewusst NICHT — er führt einen eigenen
+     * Der Editor beobachtet die Notiz bewusst NICHT, er führt einen eigenen
      * Entwurf, sonst überschriebe jeder Autosave-Rücklauf den Text unter dem
      * Cursor. Bilder ändern sich aber nicht durchs Tippen, sondern nur durch
      * genau die drei Funktionen hier; deshalb wird an dieser Stelle gezielt
@@ -1075,7 +1075,7 @@ class EditorViewModel @Inject constructor(
     // ------------------------------------------------------- Uebersetzung
 
     /**
-     * Ob es „Uebersetzen" ueberhaupt gibt (Phase 16): erst fragen, dann
+     * Ob es „Uebersetzen" ueberhaupt gibt: erst fragen, dann
      * anbieten. Gemessen beim Oeffnen, wie das Sprachmodell.
      */
     private val _uebersetzungVerfuegbar = MutableStateFlow(false)
@@ -1222,7 +1222,7 @@ class EditorViewModel @Inject constructor(
     fun sprachpaketEinstellung() = uebersetzung.systemeinstellung()
 
     companion object {
-        /** Spezifikation Abschnitt 9. */
+        /** Wartezeit nach der letzten Eingabe, bevor gespeichert wird. */
         const val AUTOSAVE_DEBOUNCE = 800L
     }
 }

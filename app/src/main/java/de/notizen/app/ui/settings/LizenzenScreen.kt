@@ -36,7 +36,7 @@ import org.json.JSONObject
 /**
  * Die Lizenzen der App und alles, was in ihr steckt.
  *
- * **Pflicht, nicht Zierde.** Die Apache-Lizenz verlangt, dass jeder, der die
+ * Pflicht, nicht Zierde. Die Apache-Lizenz verlangt, dass jeder, der die
  * App bekommt, auch den Lizenztext bekommt; die Pakete von ML Kit und den
  * Play-Diensten bringen dazu eine eigene Liste mit Drittsoftware mit, deren
  * Hinweise ebenfalls weitergegeben werden muessen. Beim Packen der APK fallen

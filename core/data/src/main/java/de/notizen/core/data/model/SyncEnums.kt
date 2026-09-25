@@ -1,6 +1,6 @@
 package de.notizen.core.data.model
 
-/** Was einen Auto-Archiv-Lauf ausgeloest hat (Spezifikation Abschnitt 8). */
+/** Was einen Auto-Archiv-Lauf ausgeloest hat. */
 enum class ArchiveTrigger {
     /** Notiz seit X Tagen nicht mehr GEOEFFNET (lastOpenedAt, nicht updatedAt). */
     AGE,
@@ -11,7 +11,7 @@ enum class ArchiveTrigger {
     /**
      * Beide Ausloeser im selben Lauf.
      *
-     * Ergaenzt am 2026-08-23 (Phase 8d). Unkritisch, weil `archive_runs` rein
+     * Ergaenzt am 2026-08-23. Unkritisch, weil `archive_runs` rein
      * lokal ist (SYNC.md 14.9) -- kein anderer Client liest diesen Wert je, und
      * bestehende Zeilen tragen weiter AGE oder COUNT.
      *
@@ -51,8 +51,8 @@ enum class EntityType {
     /**
      * Ein Termin im Kalender des Geraets, der noch weg muss.
      *
-     * **Kein Vertrag mit dem anderen Geraet, sondern ein Merkzettel fuer
-     * dieses** -- genau wie bei ATTACHMENT. Er entsteht, wenn eine Notiz
+     * Kein Vertrag mit dem anderen Geraet, sondern ein Merkzettel fuer
+     * dieses -- genau wie bei ATTACHMENT. Er entsteht, wenn eine Notiz
      * endgueltig geloescht wird, ohne vorher im Papierkorb gelegen zu haben:
      * Dann ist ihre Zeile weg, und mit ihr der einzige Hinweis darauf, welcher
      * Termin zu ihr gehoerte. Der Grabstein faellt weg, sobald der Termin

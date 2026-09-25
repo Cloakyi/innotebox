@@ -36,7 +36,7 @@ sind UUID-Strings, Zeitstempel UTC-Millis.
 läuft ausschließlich in das eigene Google Drive des Nutzers, in einen Ordner, den die App
 anlegt und der der einzige ist, den sie sieht (`drive.file`).
 
-## 3. Vier Abweichungen von der ersten Spezifikation
+## 3. Vier Abweichungen vom ersten Entwurf
 
 Diese Abweichungen sind bewusst und bleiben.
 
@@ -255,24 +255,3 @@ hat ihre eigenen Wege, die der Mensch in der Hand hat: die Sicherungsdatei und d
 über das eigene Drive. Eine stille Kopie der ganzen Datenbank in der Gerätesicherung bei
 Google nähme auch Notizen mit, die ausdrücklich auf dem Gerät bleiben sollen. Der Umzug von
 Gerät zu Gerät beim Einrichten bleibt erlaubt.
-
-## 15. Die Phasen
-
-Die Kommentare im Code nennen Phasen. Das ist die Reihenfolge, in der die App entstanden ist:
-
-| Phase | Inhalt |
-|---|---|
-| 0 bis 2 | Grundgerüst, Datenschicht, Editor mit Autosave |
-| 3 | Die drei Stufen mit Wischgesten und Titelpflicht |
-| 4 bis 6 | Tags und Farben, Suche und Filter, Favoriten und Erinnerungen |
-| 7 | Audio: Aufnahme, Erkennung, Transkript |
-| 8 | Bilder, Textauszeichnung, Auto-Archiv und Papierkorb |
-| 9 bis 10 | Abgleich mit Drive, Sichern und Wiederherstellen |
-| 12 | Kalender des Geräts |
-| 13 bis 14 | Ordnermodus mit Archiv, Papierkorb, Farben, Reihenfolge |
-| 15 | KI vollständig abschaltbar, Gerätestand, Titeldialog |
-| 16 | Übersetzung |
-| 18 | Editor: Tastatur, Formatierleiste, Wellenform, Listen mit Bearbeitungszustand |
-| 19 | Sperre und Aufnahmeschutz |
-| 20 | Abgleich neu nach Schema 4, tägliche Snapshots |
-| 21 | Version, Signatur, Verteilung |

@@ -8,10 +8,10 @@ import android.hardware.biometrics.BiometricPrompt
 import android.os.CancellationSignal
 
 /**
- * Der Systemdialog zum Entsperren (Phase 19).
+ * Der Systemdialog zum Entsperren.
  *
- * **`android.hardware.biometrics.BiometricPrompt` aus dem System, nicht
- * `androidx.biometric`.** Die Bibliothek ist ein Rückwärtsmantel um genau
+ * `android.hardware.biometrics.BiometricPrompt` aus dem System, nicht
+ * `androidx.biometric`. Die Bibliothek ist ein Rückwärtsmantel um genau
  * diesen Dialog für Geräte vor Android 9 und verlangt eine `FragmentActivity`;
  * unser minSdk ist 31, und die Activity ist eine `ComponentActivity`. Die
  * Signaturen sind am 2026-09-19 gegen das `android.jar` der API 37 geprüft:
@@ -20,7 +20,7 @@ import android.os.CancellationSignal
  * `authenticate(CancellationSignal, Executor, AuthenticationCallback)`,
  * `BiometricManager.canAuthenticate(int)`.
  *
- * **Biometrie oder das Passwort des Geräts**, wie bei Banking-Apps:
+ * Biometrie oder das Passwort des Geräts, wie bei Banking-Apps:
  * `BIOMETRIC_WEAK or DEVICE_CREDENTIAL`. WEAK schließt STRONG ein und lässt
  * auch die Gesichtserkennung zu, die auf manchen Geräten nur als WEAK gilt;
  * hier wird nichts entschlüsselt, also braucht es keine STRONG-Bindung. Mit

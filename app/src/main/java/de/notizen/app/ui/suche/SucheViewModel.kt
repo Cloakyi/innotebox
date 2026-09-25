@@ -94,7 +94,7 @@ class SucheViewModel @Inject constructor(
      * Voreinstellung beim Öffnen.
      *
      * Wer aus dem Archiv heraus sucht, meint meistens zuerst das Archiv -- aber
-     * eben nur meistens. Deshalb wird die Stufe als **abwählbarer Chip**
+     * eben nur meistens. Deshalb wird die Stufe als abwählbarer Chip
      * gesetzt und nicht fest verdrahtet: die Suche geht über alles, sie fängt
      * nur woanders an. Dasselbe gilt fuer den Ordner, aus dem heraus gesucht
      * wird (14d).

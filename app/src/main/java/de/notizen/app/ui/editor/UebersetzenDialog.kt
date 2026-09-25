@@ -42,7 +42,7 @@ import de.notizen.app.uebersetzung.sprachname
 import de.notizen.core.data.model.Uebersetzungsweg
 
 /**
- * Der Dialog zum Übersetzen (Phase 16).
+ * Der Dialog zum Übersetzen.
  *
  * Drei Schritte in einem Dialog: Sprachen wählen und starten, warten, dann
  * das Ergebnis mit „Ersetzen" oder „Darunter anhängen". Der Nutzer wählt;

@@ -31,14 +31,14 @@ import kotlin.math.roundToInt
 /**
  * Die Tonspur einer Aufnahme: Abspielknopf, Wellenform, Dauer.
  *
- * **Eine Audionotiz zeigt ihre Aufnahme, nicht ihren Text.** Auf der Karte in
- * der Übersicht ist die Wellenform das, was die Notiz ausmacht — ein
+ * Eine Audionotiz zeigt ihre Aufnahme, nicht ihren Text. Auf der Karte in
+ * der Übersicht ist die Wellenform das, was die Notiz ausmacht, ein
  * abgeschnittener Transkriptanfang sagt weniger darüber aus, wie lang die
  * Aufnahme ist und wo darin etwas passiert.
  *
- * Der Fortschritt läuft **durch** die Wellenform: der abgespielte Teil ist voll
- * eingefärbt, der Rest gedämpft. Zwei getrennte Elemente — Wellenform hier,
- * Fortschrittsbalken dort — wären zwei Anzeigen für dieselbe Sache.
+ * Der Fortschritt läuft durch die Wellenform: der abgespielte Teil ist voll
+ * eingefärbt, der Rest gedämpft. Zwei getrennte Elemente, Wellenform hier,
+ * Fortschrittsbalken dort, wären zwei Anzeigen für dieselbe Sache.
  */
 @Composable
 fun Tonspur(
@@ -114,7 +114,7 @@ private fun Abspielknopf(
 /**
  * Die Wellenform.
  *
- * Antippen und Ziehen springen an die entsprechende Stelle — dafür ist die
+ * Antippen und Ziehen springen an die entsprechende Stelle, dafür ist die
  * Wellenform da: Man sieht, wo etwas gesprochen wurde, also will man auch
  * dorthin. Ohne `onSpringen` ist sie nur ein Bild; so wird sie auf der Karte
  * benutzt, wo ein Tippen die Notiz öffnen soll.

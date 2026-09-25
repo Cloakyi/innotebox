@@ -10,7 +10,7 @@ import kotlin.math.pow
  * Weisse Schrift auf einem Hintergrundbild muss lesbar bleiben.
  *
  * Fuer die Palette garantiert das `NoteColorContrastTest` -- dort sind beide
- * Farben bekannt. Bei einem Hintergrundbild ist die untere Farbe **beliebig**,
+ * Farben bekannt. Bei einem Hintergrundbild ist die untere Farbe beliebig,
  * also kann man nur den schlechtesten Fall absichern: ein vollstaendig weisses
  * Bild. Haelt der Abdunkler dort die 4,5:1, haelt er sie ueberall.
  *

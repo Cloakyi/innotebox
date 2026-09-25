@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
  *
  * Die Notizpalette ist einmal durchgerechnet und getestet (`NoteColorPalette`,
  * `NoteColorContrastTest`); dort steht jede Kombination fest. Ordnerfarben
- * (Phase 14e) kommen aus der Tagpalette und landen als SCHRIFT auf der
+ *  kommen aus der Tagpalette und landen als SCHRIFT auf der
  * Seitenspalte, und ob Gelb auf Hellblau lesbar ist, weiss man erst, wenn man
  * es ausrechnet. Deshalb hier zur Laufzeit, mit derselben Formel wie im Test.
  */
@@ -77,7 +77,7 @@ fun lesbareFarbe(farbe: Int, hintergrund: Int, mindestens: Double = MINDESTKONTR
 
 /**
  * Wie deckend die Ordnerfarbe hinter einer gewaehlten Zeile in der Seitenspalte
- * liegt (Phase 14e). Niedrig genug, dass die Schrift in derselben Farbe darauf
+ * liegt. Niedrig genug, dass die Schrift in derselben Farbe darauf
  * lesbar bleibt; hoch genug, dass man die Farbe als Blase erkennt.
  */
 const val BLASEN_DECKUNG = 0.22f

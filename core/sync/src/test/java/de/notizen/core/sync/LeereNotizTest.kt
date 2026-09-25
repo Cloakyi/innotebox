@@ -12,10 +12,10 @@ import org.junit.Test
 /**
  * Wann eine Notiz als leer gilt.
  *
- * **Zwei Stellen hängen daran, und sie müssen dasselbe meinen.** Der Editor
+ * Zwei Stellen hängen daran, und sie müssen dasselbe meinen. Der Editor
  * verwirft eine leere Notiz beim Verlassen, der Abgleich lädt sie gar nicht
  * erst hoch. Liefen die beiden Regeln auseinander, läge in Drive eine Datei,
- * die es auf dem Gerät nicht mehr gibt — und der nächste Abgleich holte sie
+ * die es auf dem Gerät nicht mehr gibt, und der nächste Abgleich holte sie
  * zurück.
  */
 class LeereNotizTest {

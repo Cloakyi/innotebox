@@ -11,25 +11,25 @@ import javax.inject.Singleton
 /**
  * Gibt Notizen einen Titel und einen Tag, bevor sie ins Archiv wandern.
  *
- * **Warum überhaupt:** Im Archiv wird gesucht, und gesucht wird über Titel. Eine
- * Notiz, die unbetitelt automatisch wegwandert, ist praktisch verloren — sie
+ * Warum überhaupt: Im Archiv wird gesucht, und gesucht wird über Titel. Eine
+ * Notiz, die unbetitelt automatisch wegwandert, ist praktisch verloren, sie
  * steht dann in einer Liste aus lauter „(ohne Titel)".
  *
  * ABWEICHUNG VOM URSPRÜNGLICHEN PLAN, bewusst und begründet: Dort stand
  * „Structured Output mit KSP-Setup". Stattdessen läuft das über dieselbe
- * Prompt-API-Anbindung, die seit Phase 3 auf dem Gerät funktioniert
- * ([TitelKi]), plus **strenge Nachprüfung** der Antwort. Gründe:
+ * Prompt-API-Anbindung, die schon für die Titel auf dem Gerät funktioniert
+ * ([TitelKi]), plus strenge Nachprüfung der Antwort. Gründe:
  *
- *  1. Der Tag muss ohnehin gegen die Liste der vorhandenen Tags geprüft werden
- *     — ein erfundener Tag ist auch dann falsch, wenn er in einem sauberen
+ *  1. Der Tag muss ohnehin gegen die Liste der vorhandenen Tags geprüft werden:
+ *     Ein erfundener Tag ist auch dann falsch, wenn er in einem sauberen
  *     JSON-Feld steht. Die Prüfung ist die eigentliche Sicherung, nicht das
  *     Format.
- *  2. Structured Output ist im Projekt **nirgends erprobt**. Eine zweite,
+ *  2. Structured Output ist im Projekt nirgends erprobt. Eine zweite,
  *     ungeprüfte KI-Anbindung für einen Aufruf einzuführen, der nachts im
  *     Hintergrund läuft und dessen Fehler niemand sieht, wäre die schlechteste
  *     Stelle dafür.
  *
- * **Nie erfundene Tags.** Die KI darf nur aus den bereits vorhandenen wählen;
+ * Nie erfundene Tags. Die KI darf nur aus den bereits vorhandenen wählen;
  * alles andere wird verworfen. Ein Tagsystem, in das eine Automatik nachts neue
  * Einträge schreibt, gehört nach kurzer Zeit niemandem mehr.
  */
@@ -43,8 +43,8 @@ class Beschriftung @Inject constructor(
      *
      * Der Rückfall ohne KI ist kein Notnagel, sondern der Normalfall: Er
      * greift, wenn die KI abgeschaltet ist, das Modell fehlt, der Aufruf
-     * scheitert **oder** die Antwort unbrauchbar ist. Er leitet den Titel aus
-     * dem Inhalt ab — dieselbe Funktion, die auch der Editor beim Verlassen
+     * scheitert oder die Antwort unbrauchbar ist. Er leitet den Titel aus
+     * dem Inhalt ab, dieselbe Funktion, die auch der Editor beim Verlassen
      * benutzt.
      */
     suspend fun titelFuer(notiz: NoteWithRelations, kiErlaubt: Boolean): String? {
@@ -64,7 +64,7 @@ class Beschriftung @Inject constructor(
     }
 
     /**
-     * Ein passender Tag aus den **vorhandenen**, oder `null`.
+     * Ein passender Tag aus den vorhandenen, oder `null`.
      *
      * Gibt es keine Tags, wird gar nicht erst gefragt: Die KI hätte nichts zur
      * Auswahl und würde etwas erfinden.
@@ -94,7 +94,7 @@ class Beschriftung @Inject constructor(
 
         // DIE eigentliche Sicherung: Nur ein Name, der wirklich existiert, gilt.
         // Ohne Beachtung der Groß-/Kleinschreibung, weil Modelle gern
-        // umschreiben — aber ohne jede Ähnlichkeitssuche, denn „fast wie Reise"
+        // umschreiben, aber ohne jede Ähnlichkeitssuche, denn „fast wie Reise"
         // ist nicht „Reise".
         return vorhandene.firstOrNull { it.name.equals(antwort, ignoreCase = true) }
     }

@@ -12,7 +12,7 @@ import de.notizen.core.data.model.Ordnersortierung
  * Eltern, und Zaehlungen, die die Unterordner vergessen. Reine Funktionen,
  * damit jede dieser Regeln einzeln pruefbar ist.
  *
- * **Der Baum ist nie zu trauen.** Die Zeilen kommen zum Teil vom anderen
+ * Der Baum ist nie zu trauen. Die Zeilen kommen zum Teil vom anderen
  * Geraet, und dort kann jemand einen Ordner verschoben haben, waehrend hier
  * sein Elternteil geloescht wurde. Jede Funktion hier muss mit einem Kreis und
  * mit fehlenden Eltern fertigwerden, statt sich aufzuhaengen.
@@ -25,7 +25,7 @@ data class Ordnerzeile(
 )
 
 /**
- * Die Reihenfolge unter Geschwistern, nach [sortierung] (Phase 14e).
+ * Die Reihenfolge unter Geschwistern, nach [sortierung].
  *
  * Bei der eigenen Reihenfolge erst `sortIndex`, dann der Name. Ohne den Namen
  * als zweites Merkmal springen gleich sortierte Ordner bei jedem Neuladen
@@ -47,7 +47,7 @@ fun ordnerReihenfolge(
 /**
  * Die Kinder eines Ordners, oder die oberste Ebene fuer `null`.
  *
- * **Waisen haengen an der Wurzel.** Ein Ordner, dessen Elternteil es nicht
+ * Waisen haengen an der Wurzel. Ein Ordner, dessen Elternteil es nicht
  * mehr gibt, waere sonst unsichtbar und mit ihm alles, was darin liegt. Er ist
  * dann zwar nicht dort, wo er einmal war, aber er ist da.
  */
@@ -142,7 +142,7 @@ fun baum(
  * Fuer den aufklappbaren Baum in der Seitenspalte. Sichtbar ist eine Zeile
  * genau dann, wenn jeder ihrer Vorfahren aufgeklappt ist.
  *
- * **Baut darauf, dass [baum] in Tiefensuche liefert**, also jeder Ast
+ * Baut darauf, dass [baum] in Tiefensuche liefert, also jeder Ast
  * unmittelbar unter seinem Elternteil steht. Dann genuegt ein Durchgang: Trifft
  * man auf einen zugeklappten Ordner, faellt alles weg, was tiefer liegt, bis
  * wieder eine Zeile auf seiner Ebene oder darueber kommt. Eine Suche nach den
@@ -198,7 +198,7 @@ fun imBereich(alle: List<FolderEntity>, bereich: Bereich): List<FolderEntity> =
     alle.filter { it.bereich == bereich }
 
 /**
- * Wohin eine Notiz aus dem Archiv des Ordnermodus zurueckkann (Phase 14b).
+ * Wohin eine Notiz aus dem Archiv des Ordnermodus zurueckkann.
  *
  * Der Vorschlag ist immer nur ein Vorschlag; die freie Wahl steht daneben.
  */

@@ -14,7 +14,7 @@ private const val KOPF = 44
  * Eine Stunde Aufnahme sind rund 115 MB. Die am Stück zu laden, um darin nach
  * Pausen zu suchen, wäre der sichere Weg in einen Absturz auf einem Gerät, das
  * nebenbei noch etwas anderes tut. Gelesen wird deshalb strömend, und übrig
- * bleibt je 20 Millisekunden **eine** Zahl — für eine Stunde sind das 180.000
+ * bleibt je 20 Millisekunden eine Zahl, für eine Stunde sind das 180.000
  * Werte, also weniger als ein Megabyte.
  */
 fun pcmPegel(datei: File): FloatArray {
@@ -88,8 +88,8 @@ private fun kopiere(von: InputStream, nach: OutputStream, bytes: Long) {
  * Die Dauer einer Aufnahme, aus der Dateigröße gerechnet.
  *
  * Ohne die Datei zu öffnen und ohne einen laufenden Abspieler: Bei einem festen
- * Format ist die Dauer schlicht eine Division. Das ist wichtiger, als es klingt
- * — wer sie erst vom Abspieler erfragt, hat sie vor dem ersten Abspielen nicht,
+ * Format ist die Dauer schlicht eine Division. Das ist wichtiger, als es klingt,
+ * wer sie erst vom Abspieler erfragt, hat sie vor dem ersten Abspielen nicht,
  * und alles, was auf ihr aufbaut, rechnet mit null.
  */
 fun dauerVon(datei: File): Long {

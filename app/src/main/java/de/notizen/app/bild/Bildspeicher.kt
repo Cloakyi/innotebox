@@ -24,18 +24,18 @@ data class Bildablage(val datei: File, val breite: Int, val hoehe: Int, val hash
 /**
  * Legt Bilder ab und normalisiert sie dabei.
  *
- * **Es wird nie die Originaldatei gespeichert.** Jedes Bild wird einmal
+ * Es wird nie die Originaldatei gespeichert. Jedes Bild wird einmal
  * dekodiert, auf hoechstens [MAX_KANTE] Pixel lange Kante verkleinert und als
  * JPEG neu geschrieben. Das ist in SYNC.md 14.6 als Vertrag festgehalten und hat
  * zwei Gruende:
  *
- *  1. **Die EXIF-Drehung ist danach erledigt.** `ImageDecoder` wendet sie beim
+ *  1. Die EXIF-Drehung ist danach erledigt. `ImageDecoder` wendet sie beim
  *     Dekodieren an (fuer JPEG und HEIC -- fuer RAW nicht, siehe unten), und
  *     das neu geschriebene JPEG steht aufrecht ohne Orientierungs-Tag. Ab da
  *     darf jede Anzeigestelle die Datei einfach zeichnen. Wer stattdessen das
  *     Original behaelt, muss die Drehung an JEDER Anzeigestelle erneut
  *     beruecksichtigen -- und vergisst sie an einer.
- *  2. **Groesse.** Ein Handyfoto sind 4000x3000 Pixel und mehrere Megabyte. In
+ *  2. Groesse. Ein Handyfoto sind 4000x3000 Pixel und mehrere Megabyte. In
  *     einer Notiz, die als Karte in einem Raster steht, ist das Verschwendung
  *     auf Platte, im Speicher und spaeter in der Drive-Uebertragung.
  *

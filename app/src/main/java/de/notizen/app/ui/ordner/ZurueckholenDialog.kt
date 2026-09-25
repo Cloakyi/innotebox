@@ -42,7 +42,7 @@ import de.notizen.core.data.repository.FolderRepository
 import de.notizen.core.data.repository.NoteRepository
 
 /**
- * Die Frage beim Zurueckholen aus dem Archiv des Ordnermodus (Phase 14b).
+ * Die Frage beim Zurueckholen aus dem Archiv des Ordnermodus.
  *
  * [vorschlag] ist die Rueckkehr zum Herkunftsordner, wenn alle gewaehlten
  * Notizen denselben haben; sonst `null`, dann bleibt nur die freie Wahl.
@@ -92,7 +92,7 @@ fun ZurueckholenHost(stage: StageViewModel) {
 }
 
 /**
- * **Immer eine Wahl, nie ein Automatismus.** Oben steht der Vorschlag „Zurueck
+ * Immer eine Wahl, nie ein Automatismus. Oben steht der Vorschlag „Zurueck
  * nach …" mit dem Pfad, darunter die freie Ordnerwahl. Nichts wandert von
  * allein dorthin, wo es vorher lag; der Vorschlag ist nur der kuerzeste Weg.
  *

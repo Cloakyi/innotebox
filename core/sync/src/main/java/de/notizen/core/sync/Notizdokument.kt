@@ -12,29 +12,29 @@ import kotlinx.serialization.Serializable
  * Die Schema-Version, die dieser Client schreibt. Muss zu SYNC.md passen.
  *
  * Wer sie hier hochzählt, ohne SYNC.md zu ändern, bricht den Vertrag mit dem
- * Web-Client — und zwar still.
+ * Web-Client, und zwar still.
  */
 const val SCHEMA_VERSION = SCHEMA_VERSION_5
 
 /**
  * Eine Notiz als Drive-Dokument, genau nach SYNC.md 14.15.
  *
- * **Diese Klasse IST der Vertrag.** Jedes Feld hier steht dort in einer Tabelle
+ * Diese Klasse IST der Vertrag. Jedes Feld hier steht dort in einer Tabelle
  * mit „Sync = ja"; jedes Feld, das dort „nein" trägt, fehlt hier absichtlich:
  *
- *  * `lastOpenedAt` — jeder Client führt seinen eigenen Wert. Er steuert das
+ *  * `lastOpenedAt`, jeder Client führt seinen eigenen Wert. Er steuert das
  *    Auto-Archiv, und wann *dieses* Gerät die Notiz zuletzt geöffnet hat, geht
  *    das andere nichts an.
- *  * `autoArchivedBatchId` — verweist auf einen Lauf, den nur dieses Gerät
+ *  * `autoArchivedBatchId`, verweist auf einen Lauf, den nur dieses Gerät
  *    kennt.
- *  * `localPath` — ein Gerätepfad ist für die Gegenstelle bedeutungslos.
- *  * `alarmId`, `isFired` — **jedes Gerät weckt für sich.**
+ *  * `localPath`, ein Gerätepfad ist für die Gegenstelle bedeutungslos.
+ *  * `alarmId`, `isFired`, jedes Gerät weckt für sich.
  *
  * `noteId` fehlt in den eingebetteten Listen, weil der Dateiname es schon sagt.
  *
  * `encodeDefaults` ist beim Schreiben eingeschaltet (siehe [Sync]): Ein Feld,
  * das beim Standardwert einfach fehlt, zwingt die Gegenstelle, denselben
- * Standard zu kennen — und das ist eine zweite Stelle, an der die Wahrheit
+ * Standard zu kennen, und das ist eine zweite Stelle, an der die Wahrheit
  * steht.
  */
 @Serializable
@@ -62,7 +62,7 @@ data class Notizdokument(
     val reminders: List<Erinnerungsdokument> = emptyList(),
 
     /**
-     * Schema 5 (SYNC.md 13, Phase 14a): das Archiv des Ordnermodus und der
+     * Schema 5 (SYNC.md 13): das Archiv des Ordnermodus und der
      * fruehere Ordner. Mit Standardwerten, damit ein Dokument aus Schema 4
      * sich unveraendert liest. Der Abgleich deutet keines der drei.
      */
@@ -116,7 +116,7 @@ data class Erinnerungsdokument(
 /**
  * Ein Tag, wie er in `tags.json` steht (SYNC.md 2 und 6.3).
  *
- * **Vervollständigt am 2026-08-23.** `iconOrEmoji`, `sortIndex` und `deletedAt`
+ * Vervollständigt am 2026-08-23. `iconOrEmoji`, `sortIndex` und `deletedAt`
  * fehlten, obwohl 6.3 sie als synchronisiert führt. Ohne `deletedAt` wäre ein
  * gelöschter Tag beim nächsten Abgleich vom anderen Gerät zurückgekommen. Das
  * ist keine Vertragsänderung, sondern das Nachziehen der Umsetzung: Die Datei
@@ -137,7 +137,7 @@ data class Tagdokument(
 /**
  * Ein Ordner, wie er in `folders.json` steht (SYNC.md 2 und 6.11).
  *
- * **`deletedAt` ist hier kein Beiwerk, sondern der einzige Weg.** Fuer Ordner
+ * `deletedAt` ist hier kein Beiwerk, sondern der einzige Weg. Fuer Ordner
  * gibt es in Drive keine Grabsteine: Die Grabsteinliste traegt ausschliesslich
  * Notizen. Ein geloeschter Ordner ist deshalb eine Zeile mit Zeitstempel, und
  * ohne sie kaeme er beim naechsten Abgleich vom anderen Geraet zurueck.

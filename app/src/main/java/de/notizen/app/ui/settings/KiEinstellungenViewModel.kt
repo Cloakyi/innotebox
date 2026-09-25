@@ -45,29 +45,29 @@ data class KiEinstellung(
     /** Was das Geraet an Uebersetzung mitbringt. `null` = noch nicht gefragt. */
     val uebersetzung: Uebersetzungslage? = null,
 
-    /** Der gemerkte Geraetestand (Phase 15). `null` = noch nie gemessen. */
+    /** Der gemerkte Geraetestand. `null` = noch nie gemessen. */
     val geraetestand: Geraetestand? = null,
 
     /** Wann der gültigen, versiegelten Zustimmung zugestimmt wurde; `null` ohne. */
     val zustimmungAm: Long? = null,
 
-    /** Ob beim Verschieben ein Titel verlangt wird (Phase 15). */
+    /** Ob beim Verschieben ein Titel verlangt wird. */
     val titelpflicht: Boolean = true,
 
-    /** Der gewaehlte Weg zum Uebersetzen und was jeder Weg hier kann (Phase 16). */
+    /** Der gewaehlte Weg zum Uebersetzen und was jeder Weg hier kann. */
     val uebersetzungsweg: Uebersetzungsweg = Uebersetzungsweg.STANDARD,
     val wege: Map<Uebersetzungsweg, Wegstand> = emptyMap(),
 
-    /** Ob die App ins Netz darf (Phase 15, Opt-in). */
+    /** Ob die App ins Netz darf (Opt-in). */
     val netzErlaubt: Boolean = false,
 )
 
 /**
  * Sprache der Erkennung und der Schalter für die KI-Aufbereitung.
  *
- * Beide stehen beieinander, hängen aber ausdrücklich **nicht** am selben
+ * Beide stehen beieinander, hängen aber ausdrücklich nicht am selben
  * Schalter: Die Spracherkennung ist keine Textgenerierung. Wer die
- * KI-Aufbereitung abschaltet, will keine erfundenen Titel — ein Transkript will
+ * KI-Aufbereitung abschaltet, will keine erfundenen Titel, ein Transkript will
  * er trotzdem.
  */
 @HiltViewModel
@@ -130,7 +130,7 @@ class KiEinstellungenViewModel @Inject constructor(
     /**
      * Fragt das Geraet, was es kann.
      *
-     * **Nicht beim Erzeugen, sondern beim Aufgehen des Bildschirms.** Beide
+     * Nicht beim Erzeugen, sondern beim Aufgehen des Bildschirms. Beide
      * Pruefungen sprechen mit einem Systemdienst; das gehoert nicht in den
      * Konstruktor eines ViewModels. Und die Antwort kann sich aendern: Ein
      * Modell, das gestern noch fehlte, kann heute da sein.
@@ -160,7 +160,7 @@ class KiEinstellungenViewModel @Inject constructor(
                 // Systems mitbringt, laesst sich von aussen nicht sagen -- es
                 // haengt am Hersteller und an dem, was er mitliefert. Also
                 // fragt die App und schreibt die Antwort hin. Dasselbe
-                // Vorgehen wie beim AICore-Check aus Phase 0.
+                // Vorgehen wie beim AICore-Check.
                 uebersetzung = uebersetzungspruefung.lage(),
                 wege = geraet.value.wege,
             )

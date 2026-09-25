@@ -7,7 +7,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Der Geraetestand (Phase 15): woran die App entscheidet, ob sie beim Start
+ * Der Geraetestand: woran die App entscheidet, ob sie beim Start
  * etwas sagt. Die drei Ausgaenge haengen an drei Fragen, und die muessen
  * unabhaengig von Zeit und Version sein, sonst meldete jeder Neustart nach
  * einem Update „etwas hat sich veraendert".

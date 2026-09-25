@@ -24,7 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.notizen.core.data.model.Stage
 
 /**
- * Das Archiv wird DURCHSUCHT, nicht durchblättert (Spezifikation Abschnitt 4).
+ * Das Archiv wird DURCHSUCHT, nicht durchblättert.
  *
  * Deshalb sitzt oben ein Sucheinstieg statt einer Sortierleiste. Er ist
  * bewusst ein Knopf und kein Textfeld: getippt wird auf dem Such-Screen, und

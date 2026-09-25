@@ -43,13 +43,13 @@ data class Sicherungszustand(
 /**
  * Der Sicherungsstand für die Kopfzeile der Übersicht.
  *
- * **Eigenes ViewModel und nicht [SyncViewModel].** Jenes fragt beim Erzeugen
- * bei Google nach, ob der Zugriff steht — richtig für den Sync-Bildschirm, den
+ * Eigenes ViewModel und nicht [SyncViewModel]. Jenes fragt beim Erzeugen
+ * bei Google nach, ob der Zugriff steht, richtig für den Sync-Bildschirm, den
  * man selten öffnet, und falsch für die Übersicht, die man ständig sieht. Hier
  * wird nur die Datenbank gelesen; das kostet nichts und sagt genau das, worum
  * es geht: ob noch etwas ansteht.
  *
- * **„Getrennt" und „Takt aus" sind derselbe Zustand für die Anzeige.** In beiden
+ * „Getrennt" und „Takt aus" sind derselbe Zustand für die Anzeige. In beiden
  * Fällen geht nichts von selbst nach oben, und das Symbol darf dann nicht
  * behaupten, alles sei gesichert.
  */

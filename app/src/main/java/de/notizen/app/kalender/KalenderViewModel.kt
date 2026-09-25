@@ -22,7 +22,7 @@ data class Kalenderlage(
 /**
  * Die Einstellungen für den Kalender.
  *
- * Die Liste der Kalender wird **auf Zuruf geholt, nicht beobachtet.** Der
+ * Die Liste der Kalender wird auf Zuruf geholt, nicht beobachtet. Der
  * Anbieter kennt keinen Fluss, der sich meldet, wenn ein Konto dazukommt, und
  * ihn regelmäßig abzufragen wäre Arbeit für eine Liste, die sich im Jahr
  * vielleicht einmal ändert. Sie wird geladen, wenn der Bildschirm aufgeht und

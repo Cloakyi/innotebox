@@ -45,7 +45,7 @@ import de.notizen.core.data.model.Anhangsrolle
 import de.notizen.core.data.db.relation.NoteWithRelations
 import java.io.File
 
-/** Maximal sichtbarer Text auf einer Karte (Spezifikation Abschnitt 14). */
+/** Maximal sichtbarer Text auf einer Karte. */
 private const val MAX_ZEILEN = 7
 
 /**
@@ -100,7 +100,7 @@ fun NoteCard(
     sicherung: Kartensicherung = Kartensicherung.RUHIG,
     onGesichertGezeigt: () -> Unit = {},
     /**
-     * Das Aufblitzen nach einem Sprung (Phase 14c): 0 = nichts, 1 = voller
+     * Das Aufblitzen nach einem Sprung: 0 = nichts, 1 = voller
      * Rahmen in `primary`. Der Wert kommt animiert von aussen, damit die Karte
      * beim Neubauen im Raster nicht ihren eigenen Stand verliert.
      */
@@ -336,7 +336,7 @@ fun NoteCard(
 
 /**
  * Tag-Pille. Ihre Farbe ist UNABHAENGIG von der Kartenfarbe -- das sind zwei
- * getrennte Systeme (Spezifikation Abschnitt 5).
+ * getrennte Systeme.
  */
 @Composable
 private fun TagChip(name: String, farbe: Color, textfarbe: Color) {

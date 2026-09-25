@@ -26,9 +26,9 @@ import java.util.UUID
 /**
  * Eine Notiz kopieren.
  *
- * Der interessante Teil ist nicht, **dass** kopiert wird, sondern **was nicht**:
+ * Der interessante Teil ist nicht, dass kopiert wird, sondern was nicht:
  * Favorit und Erinnerung sind Aussagen über *diese* Notiz, nicht über ihren
- * Inhalt. Eine mitkopierte Erinnerung würde zweimal klingeln — und das merkt
+ * Inhalt. Eine mitkopierte Erinnerung würde zweimal klingeln, und das merkt
  * man erst nachts.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -107,7 +107,7 @@ class DuplizierenTest : DatenbankTestbasis() {
 
     @Test
     fun `die Kopie ist sofort auffindbar`() = runTest {
-        // Ohne `reindex` stünde die Kopie in keiner Suche — und der FTS-Index
+        // Ohne `reindex` stünde die Kopie in keiner Suche, und der FTS-Index
         // wird von Hand gepflegt.
         val id = notes.create()
         notes.updateContent(id, NoteContent("Rhabarberkuchen", "mit Streuseln"))
@@ -176,7 +176,7 @@ class DuplizierenTest : DatenbankTestbasis() {
         assertNotEquals(quelldatei.absolutePath, anhang.localPath)
         assertTrue("Die kopierte Datei fehlt", File(anhang.localPath).exists())
         assertEquals("bilddaten", File(anhang.localPath).readText())
-        // Das Original bleibt unangetastet — eine Kopie darf nichts verschieben.
+        // Das Original bleibt unangetastet, eine Kopie darf nichts verschieben.
         assertTrue(quelldatei.exists())
     }
 

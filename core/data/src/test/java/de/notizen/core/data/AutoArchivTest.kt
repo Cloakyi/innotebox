@@ -27,11 +27,11 @@ import org.robolectric.annotation.Config
 /**
  * Die Politik der automatischen Archivierung.
  *
- * Hier steht die Frage, wer wegkommt — die Mechanik des Verschiebens und
+ * Hier steht die Frage, wer wegkommt, die Mechanik des Verschiebens und
  * Zurücknehmens prüft `ArchiveRepositoryTest`. Die Trennung ist der Grund,
  * warum beides ohne Gerät prüfbar ist.
  *
- * **Der wichtigste Test ist der, dass NICHTS passiert:** Die Automatik ist
+ * Der wichtigste Test ist der, dass NICHTS passiert: Die Automatik ist
  * standardmäßig aus, und eine Notizen-App, die beim ersten Start ungefragt
  * aufräumt, hat einen Fehler, den niemand mehr rückgängig macht.
  */
@@ -279,7 +279,7 @@ class AutoArchivTest : DatenbankTestbasis() {
     private suspend fun weggeworfen(titel: String, vorTagen: Int): String {
         val id = notiz(titel)
         notes.trash(listOf(id))
-        // `deletedAt` zurückdatieren — die Uhr steht still, also von Hand.
+        // `deletedAt` zurückdatieren, die Uhr steht still, also von Hand.
         db.noteDao().softDelete(listOf(id), clock.now() - vorTagen * EIN_TAG)
         return id
     }
@@ -330,7 +330,7 @@ class AutoArchivTest : DatenbankTestbasis() {
     @Test
     fun `das Leeren hinterlaesst Grabsteine`() = runTest {
         // Ohne sie käme die Notiz beim nächsten Abgleich vom anderen Gerät
-        // zurück — als wäre nie etwas gelöscht worden.
+        // zurück, als wäre nie etwas gelöscht worden.
         val id = weggeworfen("weg", vorTagen = 99)
 
         notes.papierkorbAufraeumen(30)

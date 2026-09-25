@@ -21,20 +21,20 @@ import java.util.concurrent.TimeUnit
 /**
  * Der nächtliche Aufräumlauf: Auto-Archiv und Papierkorb.
  *
- * **Ein Job für beides**, obwohl es zwei Aufgaben sind. Sie teilen sich
+ * Ein Job für beides, obwohl es zwei Aufgaben sind. Sie teilen sich
  * Auslöser, Bedingungen und Benachrichtigung; zwei getrennte Jobs wären zwei
  * Weckrufe für dieselbe Nacht und zwei Meldungen am Morgen. Jede der beiden
- * Aufgaben prüft **selbst**, ob sie eingeschaltet ist — der Job läuft also
+ * Aufgaben prüft selbst, ob sie eingeschaltet ist, der Job läuft also
  * immer und tut meistens nichts, und das ist billiger als ein Zeitplan, der
  * mit den Einstellungen synchron gehalten werden muss.
  *
- * **Bedingungen: nur beim Laden und im Leerlauf.** Beides ist Absicht. Das
+ * Bedingungen: nur beim Laden und im Leerlauf. Beides ist Absicht. Das
  * Archivieren ist nichts, worauf jemand wartet, und es kann eine Weile dauern,
  * wenn die KI Titel vergibt. Am Gerät zu rechnen, während jemand es benutzt,
  * wäre die falsche Reihenfolge.
  *
- * **Titel VOR dem Verschieben.** Im Archiv wird gesucht, und gesucht wird über
- * Titel — eine unbetitelt weggewanderte Notiz ist praktisch verloren. Deshalb
+ * Titel VOR dem Verschieben. Im Archiv wird gesucht, und gesucht wird über
+ * Titel, eine unbetitelt weggewanderte Notiz ist praktisch verloren. Deshalb
  * ist das Planen ein eigener Schritt: Zwischen „wer kommt weg" und „weg damit"
  * passt die Beschriftung.
  */
@@ -117,12 +117,12 @@ class AufraeumArbeit @AssistedInject constructor(
          *
          * `UPDATE` und nicht `KEEP`: Ändert sich hier etwas an den Bedingungen,
          * soll das beim nächsten Start greifen. `KEEP` würde den einmal
-         * angemeldeten Lauf für immer festschreiben — samt der Bedingungen von
+         * angemeldeten Lauf für immer festschreiben, samt der Bedingungen von
          * damals.
          *
          * Einmal am Tag ist die Obergrenze, nicht der Takt: WorkManager legt
          * den Lauf in dieses Fenster, wenn Laden und Leerlauf zusammenkommen.
-         * Trifft das nie zu, läuft er nie — und das ist richtig so.
+         * Trifft das nie zu, läuft er nie, und das ist richtig so.
          */
         fun anmelden(context: Context) {
             val bedingungen = Constraints.Builder()

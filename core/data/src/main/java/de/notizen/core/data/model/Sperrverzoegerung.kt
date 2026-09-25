@@ -1,7 +1,7 @@
 package de.notizen.core.data.model
 
 /**
- * Wie lange die App im Hintergrund sein darf, bevor sie sich sperrt (Phase 19).
+ * Wie lange die App im Hintergrund sein darf, bevor sie sich sperrt.
  *
  * „Sofort" heißt: beim nächsten Öffnen aus dem Hintergrund. Eine Drehung des
  * Geräts ist kein Hintergrund.

@@ -7,10 +7,10 @@ import org.junit.Test
 /**
  * Die Dateiendung heruntergeladener Anhänge.
  *
- * **Warum das geprüft wird, obwohl es nach Kosmetik aussieht:** Die Endung
+ * Warum das geprüft wird, obwohl es nach Kosmetik aussieht: Die Endung
  * entscheidet, ob ein Bildbetrachter oder ein Musikprogramm die Datei anfassen
  * kann, wenn der Nutzer sie aus der App heraus teilt. Und eine geratene Endung
- * ist schlimmer als gar keine — eine Datei, die `jpg` heißt und keines ist,
+ * ist schlimmer als gar keine, eine Datei, die `jpg` heißt und keines ist,
  * führt jedes Programm in die Irre.
  */
 class DateiablageTest {

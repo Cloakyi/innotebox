@@ -28,14 +28,14 @@ sealed interface Modellzustand {
 /**
  * Die Spracherkennung.
  *
- * **`checkStatus()` läuft, bevor der Transkript-Knopf erscheint.** Ein Knopf,
+ * `checkStatus()` läuft, bevor der Transkript-Knopf erscheint. Ein Knopf,
  * der erst nach dem Drücken zugibt, dass das Modell fehlt, ist schlechter als
  * einer, der von vornherein sagt, was zu tun ist. Die AUFNAHME hängt davon
  * ausdrücklich nicht ab -- sie läuft auch ohne Modell.
  *
- * **Rückfall Advanced → Basic:** Advanced ist derzeit Pixel-10-exklusiv, Basic
- * läuft breit. Fällt die App zurück, wird das **gezeigt** und nicht still
- * gemacht — die Erkennungsqualität unterscheidet sich hörbar, und wer das nicht
+ * Rückfall Advanced -> Basic: Advanced ist derzeit Pixel-10-exklusiv, Basic
+ * läuft breit. Fällt die App zurück, wird das gezeigt und nicht still
+ * gemacht, die Erkennungsqualität unterscheidet sich hörbar, und wer das nicht
  * weiß, hält das Ergebnis für einen Fehler der App.
  *
  * Das eigentliche Erkennen steht in [Transkriptor]; hier liegt nur, was VOR dem
@@ -91,8 +91,8 @@ class Transkription @Inject constructor(
     /**
      * Lädt das Modell.
      *
-     * `DownloadProgress` liefert **nur** `totalBytesDownloaded`, keine
-     * Gesamtgröße — ein Prozentbalken ist mit dieser API nicht baubar. Die
+     * `DownloadProgress` liefert nur `totalBytesDownloaded`, keine
+     * Gesamtgröße, ein Prozentbalken ist mit dieser API nicht baubar. Die
      * Oberfläche zeigt deshalb einen unbestimmten Fortschritt mit mitlaufender
      * Byte-Zahl. Nicht versuchen, das anders hinzubiegen.
      */

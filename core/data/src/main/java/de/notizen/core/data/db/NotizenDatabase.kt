@@ -96,7 +96,7 @@ abstract class NotizenDatabase : RoomDatabase() {
         const val NAME = "notizen.db"
 
         /**
-         * Schema 1 -> 2: `notes.backgroundAttachmentId` (Phase 8a, Bildnotizen).
+         * Schema 1 -> 2: `notes.backgroundAttachmentId` (Bildnotizen).
          *
          * Rein additiv, nullbar, ohne Default -- eine bestehende Datenbank
          * bekommt in jeder Zeile NULL, und das ist genau der richtige Wert:
@@ -167,7 +167,7 @@ abstract class NotizenDatabase : RoomDatabase() {
         }
 
         /**
-         * Schema 5 -> 6: der Abgleich nach Schema 4 (SYNC.md, Phase 20).
+         * Schema 5 -> 6: der Abgleich nach Schema 4 (SYNC.md).
          *
          * Drei neue Spalten und ein Neuanfang der Buchfuehrung:
          *  - `notes.origin`: ob die letzte Fassung von aussen kam. Alles
@@ -175,7 +175,7 @@ abstract class NotizenDatabase : RoomDatabase() {
          *  - `sync_state.baseRev`: der Zaehlerstand des letzten Abgleichs.
          *  - `tombstones.rev`: der Zaehlerstand der DELETED-Fassung.
          *
-         * **Der Neuanfang (SYNC.md 11):** Der lokale Stand ist die Wahrheit.
+         * Der Neuanfang (SYNC.md 11): Der lokale Stand ist die Wahrheit.
          * Jeder Eintrag wird DIRTY, verliert seine Drive-Kennung und faengt bei
          * `baseRev` 0 an; jede Anhangsdatei gilt als noch nicht oben. Damit geht
          * beim naechsten Lauf alles als Schema 4 in den neuen Ordner
@@ -203,7 +203,7 @@ abstract class NotizenDatabase : RoomDatabase() {
 
         /**
          * Schema 6 -> 7: die Felder fuer das Archiv im Ordnermodus und den
-         * Papierkorb (Phase 14a, SYNC.md 13, Dokument-Schema 5).
+         * Papierkorb (SYNC.md 13, Dokument-Schema 5).
          *
          * Eine Migration, nicht fuenf: Alles, was 14b bis 14e brauchen,
          * kommt hier auf einmal. Alle Spalten additiv:

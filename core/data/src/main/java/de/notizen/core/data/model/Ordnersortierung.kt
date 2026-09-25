@@ -1,7 +1,7 @@
 package de.notizen.core.data.model
 
 /**
- * Wonach Ordner unter Geschwistern geordnet werden (Phase 14e).
+ * Wonach Ordner unter Geschwistern geordnet werden.
  *
  * Eine Einstellung fuer die ganze App, nicht je Ordner: Ordner sind eine
  * Sammlung wie die naechste, und eine Reihenfolge, die man dreissigmal

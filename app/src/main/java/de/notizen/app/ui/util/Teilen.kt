@@ -10,12 +10,12 @@ import java.io.File
 /**
  * Notizen über das System-Teilen-Blatt weitergeben.
  *
- * Die App wählt bewusst **kein** Ziel aus: Sie übergibt alles an Android, und
+ * Die App wählt bewusst kein Ziel aus: Sie übergibt alles an Android, und
  * der Nutzer entscheidet im Systemdialog, wohin es geht. Alles andere wäre eine
  * Datenweitergabe hinter seinem Rücken.
  *
- * **Anhänge gehen mit.** Eine Audionotiz zu teilen und nur ihr Transkript zu
- * verschicken wäre die halbe Sache — die Aufnahme ist der eigentliche Inhalt.
+ * Anhänge gehen mit. Eine Audionotiz zu teilen und nur ihr Transkript zu
+ * verschicken wäre die halbe Sache, die Aufnahme ist der eigentliche Inhalt.
  * Wo sowohl Datei als auch Text vorhanden sind, bekommt die Gegenstelle beides:
  * die Datei zum Anhören, den Text zum Lesen.
  */
@@ -93,7 +93,7 @@ private fun typVon(notizen: List<NoteWithRelations>): String {
 /**
  * Klartext einer Notiz.
  *
- * Checklisten behalten ihre Haken als Zeichen — das überlebt jede App, in die
+ * Checklisten behalten ihre Haken als Zeichen, das überlebt jede App, in die
  * man den Text einfügt, während echte Kontrollkästchen unterwegs verloren
  * gingen.
  */

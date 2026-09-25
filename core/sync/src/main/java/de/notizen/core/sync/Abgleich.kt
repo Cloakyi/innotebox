@@ -112,21 +112,21 @@ sealed interface Abgleichergebnis {
 /**
  * Der Abgleich mit Google Drive nach Schema 4 (SYNC.md).
  *
- * **Eine Datei je Entitaet, eine Huelle fuer alle, ein Zaehler statt Zeit.**
+ * Eine Datei je Entitaet, eine Huelle fuer alle, ein Zaehler statt Zeit.
  * Fuer jede Notiz, jeden Ordner und jeden Tag, den dieses Geraet oder Drive
  * kennt, wird genau eine Handlung bestimmt ([Abgleichregeln]) und ausgefuehrt.
  * Was hier steht, ist nur das Ausfuehren; die Regeln sind ohne Netz pruefbar.
  *
- * **Regel 1 gilt im ganzen Code: Aus einer fehlenden Datei wird nie geloescht.**
+ * Regel 1 gilt im ganzen Code: Aus einer fehlenden Datei wird nie geloescht.
  * Fehlt drueben etwas, das hier oben war, ist das ein Befund im Pruefbericht,
  * und die Datei geht neu hoch.
  *
- * **Der Dateiname ist der Schluessel**, nie die Drive-Kennung. Die gemerkte
+ * Der Dateiname ist der Schluessel, nie die Drive-Kennung. Die gemerkte
  * Kennung dient nur dazu, beim Schreiben einen Suchlauf zu sparen, und gilt
  * nur, solange die Dateiliste sie noch fuehrt: Ein Assistent, der eine Datei
  * neu anlegt, gibt ihr eine neue Kennung (SYNC.md 3 und 8).
  *
- * **Das Token kommt von aussen.** Dieses Modul kennt weder Google Play Services
+ * Das Token kommt von aussen. Dieses Modul kennt weder Google Play Services
  * noch Android; deshalb laesst sich der ganze Abgleich mit zwei simulierten
  * Clients auf der JVM pruefen (`ZweiClientsTest`).
  */
@@ -174,7 +174,7 @@ class Abgleich @Inject constructor(
     private var grabsteineDrueben: List<Grabsteinsicht>? = null
 
     /**
-     * **Immer nur ein Lauf gleichzeitig.** Mehrere Ausloeser, ein Singleton:
+     * Immer nur ein Lauf gleichzeitig. Mehrere Ausloeser, ein Singleton:
      * Zwei gleichzeitige Laeufe wuerden dieselbe Notiz zweimal hochladen und
      * sich gegenseitig Konfliktkopien anlegen.
      */

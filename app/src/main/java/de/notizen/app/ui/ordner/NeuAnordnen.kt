@@ -37,10 +37,10 @@ import de.notizen.app.ui.components.ziehgriff
 import de.notizen.core.data.db.entity.FolderEntity
 
 /**
- * Die Geschwisterreihe zum Neuordnen per Ziehen (Phase 14e).
+ * Die Geschwisterreihe zum Neuordnen per Ziehen.
  *
  * Die Geste selbst steht in `ui/components/Ziehen.kt` und ist dieselbe wie bei
- * den Eintraegen einer Liste im Editor (Phase 18). Hier kommt nur dazu, was
+ * den Eintraegen einer Liste im Editor. Hier kommt nur dazu, was
  * eine `LazyColumn` beitraegt: die Lagen der Zeilen aus `layoutInfo`, und
  * `animateItem` fuer die Nachbarn, die an ihren neuen Platz gleiten. Die
  * gezogene Zeile selbst bekommt kein `animateItem`, sonst kaempfte die

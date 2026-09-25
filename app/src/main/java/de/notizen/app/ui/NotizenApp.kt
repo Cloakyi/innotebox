@@ -218,7 +218,7 @@ class AppShellViewModel @Inject constructor(
     /**
      * Der ganze Ordnerbaum fuer die Seitenspalte, samt Zahlen.
      *
-     * **Hier oben und nicht im OrdnerViewModel.** Die Seitenspalte steht ueber
+     * Hier oben und nicht im OrdnerViewModel. Die Seitenspalte steht ueber
      * allen Bildschirmen; sie darf nicht davon abhaengen, dass gerade ein
      * Ordner offen ist. Auf dem Einstellungsbildschirm gibt es keinen.
      */
@@ -239,7 +239,7 @@ class AppShellViewModel @Inject constructor(
 
     /**
      * Der Archivbaum des Ordnermodus, fuer den Eintrag „Archiv" unter dem
-     * Ordnerbaum (Phase 14b). Ein eigener Baum, dieselbe Bauart.
+     * Ordnerbaum. Ein eigener Baum, dieselbe Bauart.
      */
     val archivbaum: StateFlow<List<Ordnerzeile>> = combine(ordner.observeAll(Bereich.ARCHIV), sortierung) { alle, sort ->
         baum(alle, sort)
@@ -327,7 +327,7 @@ fun NotizenApp(
     /**
      * Wo die App anfaengt.
      *
-     * **Einmal gemerkt und danach nicht mehr angefasst.** Der Graph des
+     * Einmal gemerkt und danach nicht mehr angefasst. Der Graph des
      * NavHost wird neu gebaut, sobald sich sein Startziel aendert, und dabei
      * fiele der ganze Stapel weg. Ein Wechsel des Modus fuehrt deshalb ueber
      * eine gewoehnliche Navigation weiter unten, nicht ueber einen neuen Graph.
@@ -351,7 +351,7 @@ fun NotizenApp(
     /**
      * Zentrale Undo-Snackbar. Ohne Speichern-Knopf und ohne Loeschabfrage ist
      * sie der einzige Rueckweg -- deshalb liegt sie hier oben und nicht in den
-     * einzelnen Screens (Spezifikation Abschnitt 9).
+     * einzelnen Screens.
      */
     val zeigeUndo: (UndoRequest) -> Unit = { anfrage ->
         scope.launch {
@@ -523,7 +523,7 @@ fun NotizenApp(
             }
         }
 
-        // DAS ARCHIV DES ORDNERMODUS (Phase 14b). Dieselbe Ansicht wie ein
+        // DAS ARCHIV DES ORDNERMODUS. Dieselbe Ansicht wie ein
         // Ordner, nur ueber dem Archivbaum. Das feste Argument `bereich` sagt
         // beiden ViewModels, welcher Baum gemeint ist; sonst wuesste es nur
         // das Routenmuster, und das liest niemand zur Laufzeit.
@@ -664,7 +664,7 @@ fun NotizenApp(
                 // Kein Suchfeld in der Kopfzeile: Dieser Bildschirm hat keine
                 // Suche, und ein Feld, das beim Antippen nichts tut, kostet
                 // genau das Vertrauen, das eine Oberflaeche braucht. Gesucht
-                // wird ab Phase 14d ueber die Suche mit dem Filter "Papierkorb".
+                // wird ueber die Suche mit dem Filter "Papierkorb".
                 zeigeSuchleiste = false,
             ) { padding ->
                 TrashScreen(
@@ -879,7 +879,7 @@ fun NotizenApp(
                 viewModel = viewModel,
                 onClose = { navController.popBackStack() },
                 onUndoRequest = zeigeUndo,
-                // Vom ausgegrauten Transkript direkt zum KI-Schalter (Phase 15).
+                // Vom ausgegrauten Transkript direkt zum KI-Schalter.
                 onEinstellungen = { navController.navigate(Routes.settings(HERVORHEBEN_KI)) },
             )
         }
@@ -1400,14 +1400,14 @@ private fun AnsichtsKnoepfe(
  * die Nachbarstufen der aktuellen; am Anfang und am Ende des Flusses faellt die
  * jeweilige Richtung weg, statt als toter Knopf dazustehen.
  *
- * **KEIN Text in dieser Leiste, nur Zeichen.** Material gibt dem Titel den
+ * KEIN Text in dieser Leiste, nur Zeichen. Material gibt dem Titel den
  * Platz, der nach den Zeichen uebrig bleibt -- und der war hier keiner mehr:
  * „3 ausgewaehlt" stand am Geraet mit einem Buchstaben je Zeile untereinander.
  * Seit dem 2026-08-25 so. Wie viele Karten gewaehlt sind, sieht
  * man ohnehin an ihren Rahmen; fuer die Sprachausgabe steht die Zahl an der
  * Beschreibung des Schliessen-Knopfes.
  *
- * **Jedes Zeichen hier kostet Breite.** Auf einem gewoehnlichen Telefon ist
+ * Jedes Zeichen hier kostet Breite. Auf einem gewoehnlichen Telefon ist
  * nach sieben Schaltflaechen Schluss. Deshalb erscheint das Ordnerzeichen nur
  * im Ordnermodus -- im Fluss waere es das achte und zugleich eines, das dort
  * gar nichts zu suchen hat.
@@ -1450,8 +1450,8 @@ private fun AuswahlLeiste(
             }
         },
         actions = {
-            // ALLE anderen Stufen, nicht nur die Nachbarn (Phase 15): Mit
-            // Titel darf direkt gesprungen werden, auch Eingang → Archiv. Es
+            // ALLE anderen Stufen, nicht nur die Nachbarn: Mit
+            // Titel darf direkt gesprungen werden, auch Eingang -> Archiv. Es
             // sind immer zwei Zeichen, die Leiste bleibt bei sieben.
             val andereStufen = if (stufe == null) emptyList() else Stage.entries.filter { it != stufe }
             andereStufen.forEach { ziel ->
@@ -1502,8 +1502,7 @@ private fun AuswahlLeiste(
                     )
                 }
             }
-            // Palettensymbol direkt neben dem Tag-Symbol
-            // (Spezifikation Abschnitt 5a).
+            // Palettensymbol direkt neben dem Tag-Symbol.
             IconButton(onClick = onFarbe) {
                 Icon(Icons.Outlined.Palette, contentDescription = "Einfärben")
             }
@@ -1583,7 +1582,7 @@ private fun KleinerFab(beschriftung: String, icon: ImageVector, onClick: () -> U
     }
 }
 
-/** Bewusst kurz gehalten -- kein "Alle Notizen" (Spezifikation Abschnitt 14). */
+/** Bewusst kurz gehalten -- kein "Alle Notizen". */
 @Composable
 private fun NotizenDrawer(
     aktuelleRoute: String,
@@ -1595,7 +1594,7 @@ private fun NotizenDrawer(
     ordnerMitKindern: Set<String>,
     ordnerzahlen: Map<String, Int>,
     ordnerGesamt: Int,
-    /** Der Archivbaum des Ordnermodus, ebenfalls schon gefiltert (Phase 14b). */
+    /** Der Archivbaum des Ordnermodus, ebenfalls schon gefiltert. */
     archivbaum: List<Ordnerzeile>,
     archivMitKindern: Set<String>,
     archivzahlen: Map<String, Int>,
@@ -1622,8 +1621,8 @@ private fun NotizenDrawer(
     //
     // Bis zum 2026-09-14 war sie ein starrer Stapel. Ab etwa zwoelf Ordnern im
     // Baum schoben die Ordner "Papierkorb" und "Einstellungen" unter den
-    // Bildschirmrand, und ohne Ordner zu loeschen kam man nicht mehr hin. Vom
-    // Nutzer beim Anlegen vieler Ordner gefunden.
+    // Bildschirmrand, und ohne Ordner zu loeschen kam man nicht mehr hin.
+    // Aufgefallen beim Anlegen vieler Ordner.
     //
     // LazyColumn und nicht `verticalScroll`: Der Baum kann lang werden, und die
     // Konvention fuer Listen gilt auch hier. Die festen Eintraege sind einzelne
@@ -1684,7 +1683,7 @@ private fun NotizenDrawer(
                 }
 
                 // DAS ARCHIV DES ORDNERMODUS steht unter dem Ordnerbaum, mit
-                // eigenem Baum darunter (Phase 14b). Ein eigener Bereich, nicht
+                // eigenem Baum darunter. Ein eigener Bereich, nicht
                 // ein Ordner unter den Ordnern: Was hier liegt, ist aus der
                 // Arbeit heraus und soll die Arbeitsordner nicht verstopfen.
                 item(key = "archiv") {
@@ -1859,7 +1858,7 @@ private fun NotizenDrawer(
 /**
  * Der Eintrag "Papierkorb" in der Seitenspalte, mit langem Druecken.
  *
- * **Selbst gebaut, weil `NavigationDrawerItem` kein langes Druecken kennt.**
+ * Selbst gebaut, weil `NavigationDrawerItem` kein langes Druecken kennt.
  * Es sieht aus wie die anderen Eintraege, denn Form, Hoehe und Farben kommen
  * aus `NavigationDrawerItemDefaults`; nur die Geste ist dazu. Langes Druecken
  * oeffnet ein kleines Menue mit "Papierkorb leeren", und das leert nach einer
@@ -1920,7 +1919,7 @@ private fun Papierkorbeintrag(
 /**
  * Ein Ordner im Baum der Seitenspalte.
  *
- * **Zwei Trefferflaechen, und das ist der ganze Sinn.** Der Pfeil klappt auf
+ * Zwei Trefferflaechen, und das ist der ganze Sinn. Der Pfeil klappt auf
  * und zu, der Rest der Zeile oeffnet den Ordner. Waere es nur eine, muesste man
  * sich zwischen Durchsehen und Hingehen entscheiden, bevor man tippt.
  *
@@ -2023,12 +2022,12 @@ private const val ORDNER_TIEFE_MAX = 4
 /**
  * Sagt in der Kopfzeile, ob alles gesichert ist.
  *
- * **Ein Symbol, kein Text.** Die Kopfzeile trägt Titel und Suchfeld; eine
+ * Ein Symbol, kein Text. Die Kopfzeile trägt Titel und Suchfeld; eine
  * Zeile „alle Notizen gesichert" wäre dort ständig im Weg für eine Auskunft,
  * die meistens „ja" lautet. Antippen sagt es in Worten und führt weiter.
  *
- * **Der graue Haken ist Absicht.** Grün wäre eine Belohnung für den
- * Normalzustand — und dann fiele der Ausnahmezustand weniger auf, nicht mehr.
+ * Der graue Haken ist Absicht. Grün wäre eine Belohnung für den
+ * Normalzustand, und dann fiele der Ausnahmezustand weniger auf, nicht mehr.
  * Auffällig ist hier nur, was ansteht.
  */
 @Composable

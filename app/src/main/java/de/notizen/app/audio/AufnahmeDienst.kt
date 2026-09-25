@@ -52,18 +52,18 @@ fun aufnahmeDatei(context: Context, notizId: String): File =
     File(File(context.filesDir, "audio").apply { mkdirs() }, "$notizId.wav")
 
 /**
- * Nimmt auf und transkribiert — beides im Vordergrunddienst, beides einzeln.
+ * Nimmt auf und transkribiert, beides im Vordergrunddienst, beides einzeln.
  *
- * **Ein Vordergrunddienst ist hier Pflicht, nicht Vorsicht.** Ohne ihn nimmt
- * Android der App das Mikrofon, sobald der Bildschirm ausgeht — mitten im Satz,
+ * Ein Vordergrunddienst ist hier Pflicht, nicht Vorsicht. Ohne ihn nimmt
+ * Android der App das Mikrofon, sobald der Bildschirm ausgeht, mitten im Satz,
  * ohne Meldung. Beim Transkribieren gilt dasselbe für die Rechenzeit: eine
  * halbe Stunde Aufnahme braucht seine Zeit, und wer die App dabei weglegt,
  * soll nicht von vorn anfangen müssen.
  *
- * Die beiden Aufgaben teilen sich den Dienst, aber **nicht den Typ**: Beim
+ * Die beiden Aufgaben teilen sich den Dienst, aber nicht den Typ: Beim
  * Aufnehmen läuft er als `microphone`, beim Transkribieren als `dataSync`. Den
- * Mikrofon-Typ für eine reine Rechenaufgabe zu benutzen wäre falsch angemeldet
- * — und es zeigte dem Nutzer ein Mikrofonsymbol, obwohl nichts mithört.
+ * Mikrofon-Typ für eine reine Rechenaufgabe zu benutzen wäre falsch angemeldet,
+ * und es zeigte dem Nutzer ein Mikrofonsymbol, obwohl nichts mithört.
  */
 @AndroidEntryPoint
 class AufnahmeDienst : Service() {

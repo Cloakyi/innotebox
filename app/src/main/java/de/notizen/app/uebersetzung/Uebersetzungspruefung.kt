@@ -11,8 +11,8 @@ import javax.inject.Singleton
 /**
  * Was das Geraet an Uebersetzung mitbringt.
  *
- * **Drei Zustaende, und der Unterschied zwischen den ersten beiden ist der
- * wichtige.** „Nicht erreichbar" heisst, dass es auf diesem Geraet gar keinen
+ * Drei Zustaende, und der Unterschied zwischen den ersten beiden ist der
+ * wichtige. „Nicht erreichbar" heisst, dass es auf diesem Geraet gar keinen
  * Uebersetzungsdienst gibt. „Keine Sprachen" heisst, dass es einen gibt, er
  * aber nichts geladen hat -- dann fuehrt ein Weg in die Systemeinstellung und
  * es kann danach gehen. Wer beides zusammenwirft, sagt einem halben Gerät
@@ -42,11 +42,11 @@ data class Sprachpaar(val von: String, val nach: String)
 /**
  * Fragt die Uebersetzung des Systems, was sie kann.
  *
- * **`android.view.translation.TranslationManager`, seit API 31** und damit seit
+ * `android.view.translation.TranslationManager`, seit API 31 und damit seit
  * unserem minSdk. Kein Netz, keine Bibliothek, kein Text, der das Geraet
  * verlaesst. Die geprueften Signaturen stehen in docs/ENTSCHEIDUNGEN.md unter „Uebersetzung".
  *
- * **Diese Klasse misst nur, sie uebersetzt nicht.** Sie beantwortet die eine
+ * Diese Klasse misst nur, sie uebersetzt nicht. Sie beantwortet die eine
  * Frage, die vor dem Bauen der Uebersetzung geklaert sein muss: Traegt dieses
  * Geraet ueberhaupt einen Uebersetzungsdienst? Auf einem Pixel ja, auf einem
  * Geraet ohne die Systemdienste von Google womoeglich nicht, und dazwischen

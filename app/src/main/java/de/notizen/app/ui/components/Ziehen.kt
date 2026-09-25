@@ -25,21 +25,21 @@ data class Zeilenlage(val kennung: String, val oben: Float, val hoehe: Float)
 
 /**
  * Das Ziehen einer Zeile am Griff, einmal gebaut und zweimal benutzt: fuer die
- * Ordner in „Neu anordnen" (Phase 14e) und fuer die Eintraege einer Liste im
- * Bearbeitungszustand (Phase 18).
+ * Ordner in „Neu anordnen" und fuer die Eintraege einer Liste im
+ * Bearbeitungszustand.
  *
- * **Selbst gebaut, weil Compose das Umordnen nicht mitbringt**, so wie die
+ * Selbst gebaut, weil Compose das Umordnen nicht mitbringt, so wie die
  * Wischgeste. Die Mechanik ist klein: Der Griff nimmt die Zeile auf, der
  * Versatz folgt dem Finger, und sobald die Mitte der gezogenen Zeile in eine
  * Nachbarzeile faellt, tauschen beide in der Liste. Die anderen Zeilen gleiten
  * an ihren neuen Platz; die gezogene selbst bewegt sich nur ueber den Versatz,
  * sonst kaempfte die Platzanimation gegen den Finger.
  *
- * **Nach dem Tausch wird der Versatz um den Sprung berichtigt.** Die Zeile
+ * Nach dem Tausch wird der Versatz um den Sprung berichtigt. Die Zeile
  * liegt nach dem Tausch an der Stelle der Nachbarzeile; ohne Berichtigung
  * spraenge sie unter dem Finger um eine ganze Zeilenhoehe weg.
  *
- * **Beim Loslassen federt die Zeile an ihren Platz** (`EINRASTEN`, dieselbe
+ * Beim Loslassen federt die Zeile an ihren Platz (`EINRASTEN`, dieselbe
  * Feder wie bei der Wischgeste), statt dorthin zu springen. Solange sie
  * federt, gilt sie noch als gezogen und liegt ueber den anderen.
  *

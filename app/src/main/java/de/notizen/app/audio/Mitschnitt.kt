@@ -14,8 +14,8 @@ import kotlin.math.log10
  * Das Aufnahmeformat.
  *
  * 16 kHz, Mono, 16 Bit Little Endian. Es ist zugleich das Format, das später
- * beim Transkribieren durch den Deskriptor geschickt wird, und **seit dem
- * 2026-09-19 ist belegt, dass die Erkennung genau das erwartet**: Die
+ * beim Transkribieren durch den Deskriptor geschickt wird, und seit dem
+ * 2026-09-19 ist belegt, dass die Erkennung genau das erwartet: Die
  * Dokumentation der Speech-API (Stand 2026-09-17) verlangt für
  * `AudioSource.fromPfd()` rohes 16-Bit-PCM ohne Kopf, ein Kanal, 16 kHz.
  * Lange war das eine Annahme, weil `SpeechRecognizerOptions` kein Feld dafür
@@ -24,7 +24,7 @@ import kotlin.math.log10
 const val ABTASTRATE = 16_000
 
 /**
- * Ein Wert der mitlaufenden Welle je fünfzig Millisekunden Ton (Phase 18).
+ * Ein Wert der mitlaufenden Welle je fünfzig Millisekunden Ton.
  *
  * Fest, unabhängig von der Blockgröße des Mikrofons: Die Welle läuft mit
  * dieser Rate über die Zeit, und die muss sie kennen, ohne die Blöcke zu
@@ -41,7 +41,7 @@ private const val BITS_PRO_ABTASTUNG = 16
  * Wie stark gerichtet aufgenommen wird: −1 rundum, 1 stark gebündelt.
  *
  * Bewusst in der Mitte. Ganz gebündelt klänge ein Diktat gut, würde aber bei
- * einer Besprechung alles außer dem Nächstsitzenden wegdrücken — und Notizen
+ * einer Besprechung alles außer dem Nächstsitzenden wegdrücken, und Notizen
  * entstehen in beiden Lagen.
  */
 private const val RICHTWIRKUNG = 0.5f
@@ -49,19 +49,19 @@ private const val RICHTWIRKUNG = 0.5f
 /**
  * Nimmt vom Mikrofon in eine WAV-Datei auf.
  *
- * **Hier wird nur aufgenommen.** Die Erkennung läuft später über die fertige
- * Datei — sie hat mit diesem Vorgang nichts zu tun.
+ * Hier wird nur aufgenommen. Die Erkennung läuft später über die fertige
+ * Datei, sie hat mit diesem Vorgang nichts zu tun.
  *
  * Das war einmal anders: Solange live erkannt wurde, schrieb diese Klasse jeden
  * Block zusätzlich in eine Pipe. Nach dem Umbau auf zwei Schritte las diese
- * Pipe niemand mehr, und **eine Pipe, die niemand leert, blockiert den
- * Schreibenden**, sobald ihr Puffer voll ist — nach knapp zwei Sekunden. Die
+ * Pipe niemand mehr, und eine Pipe, die niemand leert, blockiert den
+ * Schreibenden, sobald ihr Puffer voll ist, nach knapp zwei Sekunden. Die
  * Aufnahmeschleife hing dann fest: Der Timer blieb stehen, „Fertig" bewirkte
  * nichts, der Dienst ließ sich nicht mehr beenden und überlebte sogar das
  * Wegwischen der App. Am Gerät gefunden am 2026-08-21.
  *
- * Deshalb steht hier ausdrücklich: **kein zweiter Abnehmer in dieser Klasse.**
- * Wer wieder einen braucht, muss dafür sorgen, dass er auch liest — oder er
+ * Deshalb steht hier ausdrücklich: kein zweiter Abnehmer in dieser Klasse.
+ * Wer wieder einen braucht, muss dafür sorgen, dass er auch liest, oder er
  * legt die Aufnahme still.
  */
 class Mitschnitt(private val ziel: File) : AutoCloseable {
@@ -69,7 +69,7 @@ class Mitschnitt(private val ziel: File) : AutoCloseable {
     /**
      * Rund 60 Millisekunden je Block, sofern das System nicht mehr verlangt.
      *
-     * Vorher waren es 200 — die Welle bekam damit nur fünfmal je Sekunde neue
+     * Vorher waren es 200, die Welle bekam damit nur fünfmal je Sekunde neue
      * Werte und ruckte sichtbar. Kleinere Blöcke heißen häufiger lesen, was
      * hier nichts kostet: Die Schleife wartet ohnehin auf das Mikrofon.
      */
@@ -82,7 +82,7 @@ class Mitschnitt(private val ziel: File) : AutoCloseable {
     private var datei: FileOutputStream? = null
     private val puffer = ByteArray(puffergroesse)
 
-    /** Gesamtzahl geschriebener Audio-Bytes — für den WAV-Kopf und die Dauer. */
+    /** Gesamtzahl geschriebener Audio-Bytes, für den WAV-Kopf und die Dauer. */
     private var geschrieben: Long = 0
 
     /** Lautstärke des zuletzt gelesenen Blocks, 0..1. */
@@ -185,11 +185,11 @@ class Mitschnitt(private val ziel: File) : AutoCloseable {
     }
 
     /**
-     * Spitzenpegel des Blocks — **in Dezibel, nicht linear.**
+     * Spitzenpegel des Blocks, in Dezibel, nicht linear.
      *
      * Das war ein echter Anzeigefehler: Normale Sprache liegt bei etwa −20 dBFS,
      * linear also bei 0,1. Der Ausschlag stand damit bei einem Zehntel, obwohl
-     * die Aufnahme völlig in Ordnung war — es sah aus, als käme kaum etwas an.
+     * die Aufnahme völlig in Ordnung war, es sah aus, als käme kaum etwas an.
      * Am Gerät gemeldet am 2026-08-21.
      *
      * Pegelanzeigen sind aus genau diesem Grund überall logarithmisch: Das Ohr
@@ -229,7 +229,7 @@ class Mitschnitt(private val ziel: File) : AutoCloseable {
 /**
  * Zerlegt den Ton in Fenster fester Länge und misst je Fenster die Spitze.
  *
- * Für die mitlaufende Welle (Phase 18): ein Wert je [WELLE_FENSTER_MS], egal
+ * Für die mitlaufende Welle: ein Wert je [WELLE_FENSTER_MS], egal
  * wie groß die Blöcke sind, die das Mikrofon liefert. Ein Fenster darf über
  * eine Blockgrenze reichen; der angefangene Rest wandert in den nächsten
  * Aufruf. Ausgelagert und `internal`, damit es ohne Mikrofon prüfbar ist.
@@ -280,7 +280,7 @@ private const val ANZEIGE_DB = -55f
 /**
  * Rechnet einen Abtastwert in einen Ausschlag von 0 bis 1 um.
  *
- * Ausgelagert und `internal`, damit die Umrechnung prüfbar ist — sie ist der
+ * Ausgelagert und `internal`, damit die Umrechnung prüfbar ist, sie ist der
  * Grund, warum die Anzeige vorher tot wirkte.
  */
 internal fun alsAusschlag(spitze: Int): Float = ausschlagAusAnteil(spitze / 32_768f)

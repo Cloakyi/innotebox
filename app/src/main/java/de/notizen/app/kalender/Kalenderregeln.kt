@@ -22,13 +22,13 @@ sealed interface Kalendertat {
  *
  * Vier Bedingungen, und jede einzelne hat einen Grund:
  *
- *  * **Der Hauptschalter steht an.** Ist er aus, verschwindet alles, was diese
+ *  * Der Hauptschalter steht an. Ist er aus, verschwindet alles, was diese
  *    App je eingetragen hat. Ein Schalter, der nur neue Termine verhindert und
  *    die alten stehen lässt, ist kein Ausschalter.
- *  * **Die Notiz ist nicht ausgenommen** (`calendarEnabled`).
- *  * **Sie liegt nicht im Papierkorb.** Etwas Weggeworfenes gehört nicht in den
+ *  * Die Notiz ist nicht ausgenommen (`calendarEnabled`).
+ *  * Sie liegt nicht im Papierkorb. Etwas Weggeworfenes gehört nicht in den
  *    Kalender. Kommt es zurück, kommt der Termin mit.
- *  * **Es gibt eine Erinnerung, die noch aussteht.** Ohne Zeitpunkt gibt es
+ *  * Es gibt eine Erinnerung, die noch aussteht. Ohne Zeitpunkt gibt es
  *    nichts einzutragen, und eine bereits ausgelöste ist Vergangenheit.
  */
 fun sollImKalender(zeile: Kalenderzeile, hauptschalterAn: Boolean): Boolean =
@@ -40,12 +40,12 @@ fun sollImKalender(zeile: Kalenderzeile, hauptschalterAn: Boolean): Boolean =
 /**
  * Der Abgleich zwischen den Notizen und dem Kalender.
  *
- * **Reine Funktion, ohne Kalender und ohne Datenbank.** Ein Fehler hier trägt
+ * Reine Funktion, ohne Kalender und ohne Datenbank. Ein Fehler hier trägt
  * entweder Termine ein, die niemand wollte, oder lässt welche stehen, die längst
  * weg sein sollten. Beides fällt erst Wochen später auf, wenn es klingelt oder
  * eben nicht.
  *
- * Ein bestehender Termin wird **immer** neu geschrieben, statt vorher zu
+ * Ein bestehender Termin wird immer neu geschrieben, statt vorher zu
  * vergleichen. Der Titel der Notiz und die Uhrzeit stehen nicht in dieser Zeile,
  * ein Vergleich bräuchte also erst eine Abfrage beim Kalender. Der Fluss, der
  * diese Liste liefert, meldet sich ohnehin nur, wenn sich an genau diesen

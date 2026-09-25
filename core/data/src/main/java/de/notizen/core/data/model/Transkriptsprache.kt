@@ -5,11 +5,11 @@ import java.util.Locale
 /**
  * In welcher Sprache diktiert wird.
  *
- * **Bewusst eine kurze Liste statt aller Locales des Systems.** Die
+ * Bewusst eine kurze Liste statt aller Locales des Systems. Die
  * Spracherkennung läuft auf dem Gerät, und AICore rollt ihre Sprachmodelle
- * einzeln aus — eine Auswahl mit hundert Einträgen wäre zu 95 Prozent eine
+ * einzeln aus, eine Auswahl mit hundert Einträgen wäre zu 95 Prozent eine
  * Sammlung von Enttäuschungen. Hier stehen die Sprachen, für die es die Modelle
- * gibt; ob eine davon auf **diesem** Gerät bereitsteht, sagt ohnehin erst
+ * gibt; ob eine davon auf diesem Gerät bereitsteht, sagt ohnehin erst
  * `checkStatus()`, und die Oberfläche zeigt das an.
  *
  * Die Voreinstellung ist Deutsch, weil die App eine deutschsprachige ist.

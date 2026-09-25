@@ -11,9 +11,9 @@ import kotlinx.serialization.Serializable
 /**
  * Die Schema-Version, die dieser Client schreibt. Muss zu SYNC.md passen.
  *
- * 4 seit dem 2026-09-16 (Phase 20): eine Huelle fuer alle Entitaeten,
+ * 4 seit dem 2026-09-16: eine Huelle fuer alle Entitaeten,
  * Zustaende statt Grabsteinlisten, Zaehler statt Zeitstempel.
- * 5 seit dem 2026-09-19 (Phase 14a, SYNC.md 13): die Felder fuer das Archiv
+ * 5 seit dem 2026-09-19 (SYNC.md 13): die Felder fuer das Archiv
  * im Ordnermodus und den Papierkorb, alle additiv. Die Huelle selbst ist
  * unveraendert; ein Leser auf Schema 4 uebergeht die neuen Felder.
  */
@@ -34,7 +34,7 @@ const val ASSISTENT = "assistant"
 /**
  * Die einheitliche Huelle fuer Notiz, Ordner und Tag (SYNC.md 3.1).
  *
- * **Diese Klasse IST der Vertrag.** `payload` ist bei `DELETED` `null` und
+ * Diese Klasse IST der Vertrag. `payload` ist bei `DELETED` `null` und
  * wird als leeres Objekt geschrieben; sonst vollstaendig. `rev` steigt bei
  * jedem Schreiben um eins ueber das Maximum aus lokalem und fernem Stand.
  */

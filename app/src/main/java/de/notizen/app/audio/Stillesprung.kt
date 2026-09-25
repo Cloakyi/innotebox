@@ -3,12 +3,12 @@ package de.notizen.app.audio
 /**
  * Überspringt beim Abspielen, wo nicht gesprochen wurde.
  *
- * **Wozu:** Wer eine Besprechung mitlaufen lässt, hat hinterher Minuten
+ * Wozu: Wer eine Besprechung mitlaufen lässt, hat hinterher Minuten
  * Aufnahme, in denen niemand redet. Die abzuhören ist verlorene Zeit, und
  * blindes Vorspulen trifft die nächste Stelle selten.
  *
  * Die Abschnitte sind dieselben, aus denen auch das Transkript entsteht
- * ([Pausenschnitt]) — sie werden also nicht eigens berechnet, und was man hört,
+ * ([Pausenschnitt]), sie werden also nicht eigens berechnet, und was man hört,
  * ist genau das, was auch im Text steht.
  */
 object Stillesprung {
@@ -17,7 +17,7 @@ object Stillesprung {
      * Wohin von [positionMs] aus gesprungen werden muss, oder `null`, wenn
      * gerade gesprochen wird.
      *
-     * Gibt das Ende zurück, wenn hinter der Position nichts mehr kommt — das
+     * Gibt das Ende zurück, wenn hinter der Position nichts mehr kommt, das
      * ist der Nachlauf am Schluss, den man sich sonst noch anhört, obwohl die
      * Aufnahme inhaltlich vorbei ist.
      */

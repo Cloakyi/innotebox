@@ -209,7 +209,7 @@ class SicherungspaketTest {
     // ------------------------------------------------------------ Fassung 4
 
     /**
-     * Fassung 4 (Phase 14a): Die Felder aus Schema 5 gehen mit. Ohne sie laege
+     * Fassung 4: Die Felder aus Schema 5 gehen mit. Ohne sie laege
      * nach dem Wiederherstellen jede im Ordnermodus archivierte Notiz wieder
      * im normalen Baum, und jeder Archivordner stuende in der Seitenspalte.
      */

@@ -62,18 +62,18 @@ sealed interface Sicherungsergebnis {
 /**
  * Sichern und Wiederherstellen.
  *
- * **Der Zweck ist ein anderer als beim Abgleich.** Der Abgleich haelt zwei
+ * Der Zweck ist ein anderer als beim Abgleich. Der Abgleich haelt zwei
  * Geraete beieinander; eine Sicherung stellt dieses eine wieder her, wenn nichts
  * mehr da ist. Deshalb geht hier auch mit, was der Abgleich absichtlich
  * weglaesst (siehe [Sicherungsnotiz]), und deshalb liegt alles in EINER Datei,
  * die man kopieren, verschicken und weglegen kann.
  *
- * **Das Format ist trotzdem dasselbe.** Eine Notiz sieht in der Sicherung aus
+ * Das Format ist trotzdem dasselbe. Eine Notiz sieht in der Sicherung aus
  * wie in Google Drive, Feld fuer Feld. Ein zweites Format daneben waere eine
  * zweite Stelle, an der dieselbe Wahrheit steht, und die beiden liefen frueher
  * oder spaeter auseinander.
  *
- * **Beim Wiederherstellen wird nie geloescht.** Es gewinnt der neuere Stand,
+ * Beim Wiederherstellen wird nie geloescht. Es gewinnt der neuere Stand,
  * und was es nur hier gibt, bleibt. Wer eine alte Sicherung einliest, soll
  * dabei nicht verlieren, was er seither geschrieben hat.
  */
@@ -338,7 +338,7 @@ class Sicherung @Inject constructor(
     /**
      * Die Notiz und alles, was in ihrer Datei steht.
      *
-     * **Eintraege und Transkripte werden ersetzt, Anhangszeilen nicht.** Wer in
+     * Eintraege und Transkripte werden ersetzt, Anhangszeilen nicht. Wer in
      * der Sicherung einen Checklisteneintrag nicht mehr hat, soll ihn danach
      * auch hier nicht mehr haben. Eine Anhangszeile dagegen haengt an einer
      * Datei auf der Platte, und die zu entfernen waere ein Loeschen. Geloescht
@@ -437,7 +437,7 @@ class Sicherung @Inject constructor(
     /**
      * Die Wecker zu einer wiederhergestellten Notiz.
      *
-     * **Termine, die schon vorbei sind, werden uebergangen**, genau wie beim
+     * Termine, die schon vorbei sind, werden uebergangen, genau wie beim
      * Abgleich. Eine Sicherung kann Monate alt sein; ihre Erinnerungen alle zu
      * stellen hiesse, dass nach dem Wiederherstellen ein Schwall Meldungen fuer
      * Vergangenes hereinkaeme.

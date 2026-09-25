@@ -8,10 +8,10 @@ import org.junit.Test
 /**
  * Der Vergleich zwischen Rohtranskript und bearbeiteter Fassung.
  *
- * **Warum das mehr ist als Kosmetik:** Ein Sprachmodell, das ein Diktat
+ * Warum das mehr ist als Kosmetik: Ein Sprachmodell, das ein Diktat
  * „aufräumt", schreibt gelegentlich etwas hinein, das nie gesagt wurde. In
  * einer Notiz-App ist das der teuerste denkbare Fehler, weil man dem eigenen
- * Text später glaubt. Die Markierung macht genau diese Stellen sichtbar — also
+ * Text später glaubt. Die Markierung macht genau diese Stellen sichtbar, also
  * muss sie stimmen.
  */
 class TextvergleichTest {

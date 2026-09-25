@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
 /**
  * Eine Spalte, deren Zeilen sich am Griff umordnen lassen, fuer Listen, die
  * in einem gewoehnlichen Scrollbereich stehen und keine `LazyColumn` sein
- * koennen (die Eintraege einer Listennotiz im Editor, Phase 18).
+ * koennen (die Eintraege einer Listennotiz im Editor).
  *
  * Die Geste ist [Ziehzustand]; hier steht nur, was eine Spalte dazu beitragen
  * muss: Sie misst ihre Zeilen selbst und weiss deshalb ohne Umweg, wo jede
@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
  * Lage samt Versatz der gezogenen Zeile, und genau der darf hier nicht
  * hineinrechnen.
  *
- * **Die Nachbarn gleiten.** Tauscht eine Zeile beim Ziehen den Platz, springt
+ * Die Nachbarn gleiten. Tauscht eine Zeile beim Ziehen den Platz, springt
  * sie nicht dorthin, sondern faehrt vom alten Platz hin; das ist die
  * Platzanimation, die `LazyColumn` mit `animateItem` mitbringt und eine
  * Spalte nicht. Nur waehrend gezogen wird: Aenderungen an der Liste selbst

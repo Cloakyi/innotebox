@@ -21,14 +21,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 /**
- * Was geschieht, bevor die App etwas aus dem Netz laden darf (Phase 15, Opt-in).
+ * Was geschieht, bevor die App etwas aus dem Netz laden darf (Opt-in).
  *
- * **Zustimmen geht erst, wenn beides erfüllt ist:** Der Text ist bis ganz
+ * Zustimmen geht erst, wenn beides erfüllt ist: Der Text ist bis ganz
  * unten gescrollt, und zehn Sekunden sind vergangen. Ein Dialog, den man in
  * einer halben Sekunde wegtippt, ist keine Zustimmung, sondern ein Reflex.
  * Der Knopf sagt, was noch fehlt.
  *
- * **Ein Hinweis, keine Nutzungsbedingungen** (seit Alpha 9; vorher stand
+ * Ein Hinweis, keine Nutzungsbedingungen (seit Alpha 9; vorher stand
  * hier ein Platzhalter). [NETZ_HINWEIS] sagt, was der Schalter heute tut:
  * Sprachpakete von ML Kit laden, und was dabei an Google geht. Kommt später
  * etwas dazu (etwa eine KI im Netz), deckt die alte Zustimmung das nicht:

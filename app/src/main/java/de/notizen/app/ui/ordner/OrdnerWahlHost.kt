@@ -9,7 +9,7 @@ import de.notizen.app.ui.stage.StageViewModel
 /**
  * Die Ordnerauswahl fuer eine Mehrfachauswahl von Notizen.
  *
- * **Steht auch im Fluss zur Verfuegung**, nicht nur in der Ordneransicht. Wer
+ * Steht auch im Fluss zur Verfuegung, nicht nur in der Ordneransicht. Wer
  * seine Ordner gerade aufbaut, will Notizen einsortieren, ohne dafuer die
  * ganze App umstellen zu muessen. Umgekehrt bleibt die Einteilung erhalten,
  * wenn er wieder in den Fluss zurueckschaltet.

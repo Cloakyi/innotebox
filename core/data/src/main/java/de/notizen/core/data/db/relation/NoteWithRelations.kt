@@ -62,12 +62,12 @@ data class NoteWithRelations(
     /**
      * Ob an dieser Notiz nichts dran ist.
      *
-     * **Eine Definition, zwei Verwender.** Der Editor verwirft eine leere Notiz
+     * Eine Definition, zwei Verwender. Der Editor verwirft eine leere Notiz
      * beim Verlassen; der Abgleich lädt sie gar nicht erst hoch. Stünde die
-     * Regel zweimal da, liefen die beiden irgendwann auseinander — und dann
+     * Regel zweimal da, liefen die beiden irgendwann auseinander, und dann
      * läge in Drive eine leere Datei, die auf dem Gerät längst weg ist.
      *
-     * Eine gesetzte Erinnerung oder ein Tag macht eine Notiz **nicht** voll:
+     * Eine gesetzte Erinnerung oder ein Tag macht eine Notiz nicht voll:
      * Beides hängt an ihr, ist aber nicht ihr Inhalt.
      */
     val istLeer: Boolean

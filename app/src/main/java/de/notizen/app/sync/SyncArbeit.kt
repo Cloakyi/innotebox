@@ -37,8 +37,8 @@ import javax.inject.Singleton
 /**
  * Ein Abgleich im Hintergrund.
  *
- * **Braucht Netz, sonst nichts.** Anders als der nächtliche Aufräumlauf soll
- * der Abgleich zeitnah passieren — er wartet nicht auf Ladekabel und Leerlauf.
+ * Braucht Netz, sonst nichts. Anders als der nächtliche Aufräumlauf soll
+ * der Abgleich zeitnah passieren, er wartet nicht auf Ladekabel und Leerlauf.
  * Was er kostet, ist ein kurzer HTTP-Aufruf pro geänderter Notiz.
  */
 @HiltWorker
@@ -91,14 +91,14 @@ class SyncArbeit @AssistedInject constructor(
         /**
          * Wie lange nach einer Änderung gewartet wird, bevor es losgeht.
          *
-         * **Die Verzögerung IST die Entprellung.** `REPLACE` auf eindeutig
+         * Die Verzögerung IST die Entprellung. `REPLACE` auf eindeutig
          * benannter Arbeit heißt: Wer während des Tippens zwanzigmal speichert,
          * verschiebt den einen geplanten Lauf zwanzigmal, statt zwanzig Läufe
          * anzustoßen.
          *
          * Fünf Sekunden statt der früheren zehn. Zehn waren spürbar: Man löscht
          * eine Notiz, sieht in Drive nach, und sie ist noch da. Fünf reichen
-         * immer noch, um durchgehendes Tippen zusammenzufassen — der Autosave
+         * immer noch, um durchgehendes Tippen zusammenzufassen, der Autosave
          * selbst wartet ja schon 800 ms.
          */
         const val ENTPRELLUNG = 5L
@@ -126,22 +126,22 @@ class SyncArbeit @AssistedInject constructor(
 /**
  * Merkt, wenn sich etwas Ungesichertes ansammelt, und stößt den Abgleich an.
  *
- * **Eine Stelle statt vieler.** Der Wunsch war, nach jedem Speichern zu
+ * Eine Stelle statt vieler. Ziel ist, nach jedem Speichern zu
  * synchronisieren. Das ließe sich in jedes ViewModel schreiben, das etwas
- * ändert — und genau dort vergisst man es beim nächsten neuen Bildschirm. Der
- * Zähler der ungesicherten Einträge steigt dagegen **bei jeder** Schreiboperation,
+ * ändert, und genau dort vergisst man es beim nächsten neuen Bildschirm. Der
+ * Zähler der ungesicherten Einträge steigt dagegen bei jeder Schreiboperation,
  * ganz gleich wer sie ausgelöst hat: Editor, Wischgeste, Mehrfachauswahl,
  * Auto-Archiv.
  *
  * `drop(1)` überspringt den ersten Wert. Der kommt beim Start und beschreibt
- * den Bestand, nicht eine Änderung — sonst liefe bei jedem App-Start ein
+ * den Bestand, nicht eine Änderung, sonst liefe bei jedem App-Start ein
  * Abgleich los, auch wenn niemand etwas angefasst hat.
  */
 /**
  * Wie lange nach einer Änderung gewartet wird, bevor abgeglichen wird.
  *
  * Zwei Sekunden. Der Autosave selbst wartet schon 800 ms, und im Vordergrund
- * kostet ein Lauf nichts als ein paar Anfragen — die frühere Wartezeit von fünf
+ * kostet ein Lauf nichts als ein paar Anfragen, die frühere Wartezeit von fünf
  * Sekunden plus Planer war am Gerät als Hänger zu spüren.
  */
 private const val ENTPRELLUNG_MS = 2_000L
@@ -187,7 +187,7 @@ class Syncwaechter @Inject constructor(
         // Gefragt wird die Datenbank, nicht ein gemerktes Flag. Ein Flag hätte
         // eine Lücke: `observeUnsyncedCount` meldet sich nur, wenn die ZAHL sich
         // ändert. Wer eine Notiz bearbeitet, die ohnehin schon aussteht, ändert
-        // die Zahl nicht — das Flag bliebe falsch, und beim Schließen passierte
+        // die Zahl nicht, das Flag bliebe falsch, und beim Schließen passierte
         // nichts.
         bereich.launch {
             bearbeitung.offen.collect { offeneEditoren ->
@@ -200,10 +200,10 @@ class Syncwaechter @Inject constructor(
     /**
      * Plant einen Lauf, und zwar auf dem schnelleren der beiden Wege.
      *
-     * **Im Vordergrund läuft der Abgleich direkt, nicht über WorkManager.** Das
+     * Im Vordergrund läuft der Abgleich direkt, nicht über WorkManager. Das
      * ist der Grund, warum das Sicherungssymbol vorher gefühlt ewig auf
      * „Hochladen" stand: WorkManager ist ein *Planer*. Er verspricht, die Arbeit
-     * zu erledigen, nicht sie sofort zu erledigen — er bündelt sie mit anderen
+     * zu erledigen, nicht sie sofort zu erledigen, er bündelt sie mit anderen
      * Aufträgen im System, und das können auf einem echten Gerät Minuten sein.
      * Für Arbeit, die eine laufende App auslöst und deren Ergebnis dieselbe App
      * gerade anzeigt, ist das der falsche Weg: Sie stirbt ja nicht weg.
@@ -219,19 +219,19 @@ class Syncwaechter @Inject constructor(
      * Von Hand ausgelöst: sofort, ohne Entprellung.
      *
      * Nimmt denselben Weg wie alles andere. Ein zweiter Anstoßweg nur für den
-     * Knopf wäre eine zweite Fassung derselben Entscheidung — und die beiden
+     * Knopf wäre eine zweite Fassung derselben Entscheidung, und die beiden
      * liefen irgendwann auseinander.
      */
     /**
      * Der Knopf „Jetzt abgleichen".
      *
-     * **Er raeumt erst auf und laeuft dann.** Alles, was noch als geplanter
+     * Er raeumt erst auf und laeuft dann. Alles, was noch als geplanter
      * oder eingereihter Abgleich herumliegt, wird abbestellt: die eigene
      * Entprellung und der Auftrag beim Planer. Sonst folgt auf den Lauf, den
      * der Nutzer gerade angestossen hat, gleich noch einer, der dasselbe noch
      * einmal tut.
      *
-     * Was **gerade laeuft**, wird nicht abgeschossen. `Abgleich` haelt ein
+     * Was gerade laeuft, wird nicht abgeschossen. `Abgleich` haelt ein
      * Schloss, der neue Lauf wartet also und faengt danach von vorn an. Einen
      * Lauf mitten im Hochladen abzubrechen liesse Drive in einem halben Zustand
      * zurueck, und gewonnen waere nichts: Der wartende Lauf sieht ohnehin alles
@@ -280,7 +280,7 @@ class Syncwaechter @Inject constructor(
      *
      * Ohne Netzbedingung: Fehlt das Netz, kommt `KeinNetz` zurück, und der
      * nächste Auslöser versucht es erneut. Eine Bedingung, die den Lauf
-     * verschiebt, wäre hier wieder der Planer — und den wollen wir gerade
+     * verschiebt, wäre hier wieder der Planer, und den wollen wir gerade
      * umgehen.
      *
      * `Abgleich` selbst lässt nur einen Lauf gleichzeitig zu; ein zweiter
@@ -316,21 +316,21 @@ class Syncwaechter @Inject constructor(
     private var kontext: Context? = null
 
     /**
-     * Gleicht ab, wenn die App in den Vordergrund kommt — und wenn sie ihn verlässt.
+     * Gleicht ab, wenn die App in den Vordergrund kommt, und wenn sie ihn verlässt.
      *
-     * **Das ist der Unterschied zwischen „es synchronisiert" und „es fühlt sich
-     * synchron an".** Der regelmäßige Lauf greift frühestens alle fünfzehn
+     * Das ist der Unterschied zwischen „es synchronisiert" und „es fühlt sich
+     * synchron an". Der regelmäßige Lauf greift frühestens alle fünfzehn
      * Minuten; wer die App öffnet, um eine Notiz zu lesen, die er eben am
      * Rechner geschrieben hat, will nicht warten, bis das System soweit ist.
      *
-     * Beim **Verlassen** noch einmal, weil das der ehrlichste „ich bin fertig"-
+     * Beim Verlassen noch einmal, weil das der ehrlichste „ich bin fertig"-
      * Moment ist: Was gerade getippt wurde, ist dann sicher.
      *
      * Ohne Verzögerung in beiden Fällen. Entprellt werden muss nur, was während
      * des Tippens passiert.
      *
-     * **Mit `ActivityLifecycleCallbacks` statt `ProcessLifecycleOwner`.** Das
-     * ist dieselbe Auskunft ohne eine weitere Abhängigkeit — und die hätte hier
+     * Mit `ActivityLifecycleCallbacks` statt `ProcessLifecycleOwner`. Das
+     * ist dieselbe Auskunft ohne eine weitere Abhängigkeit, und die hätte hier
      * einen Preis gehabt: `lifecycle-process` mit ins Modul zu nehmen brachte
      * die Unit-Tests des App-Moduls zum Scheitern (die eigenen Klassen fehlten
      * plötzlich im Testpfad). Der Zähler unten leistet dasselbe.

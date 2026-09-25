@@ -17,8 +17,8 @@ import org.robolectric.annotation.Config
 /**
  * Prueft die Rueckabwicklung der automatischen Archivierung.
  *
- * Das ist der Test zu Abweichung 3 aus docs/ENTSCHEIDUNGEN.md: Die urspruengliche
- * Spezifikation haette Batch-Undo nicht bauen koennen, weil nirgends stand,
+ * Das ist der Test zu Abweichung 3 aus docs/ENTSCHEIDUNGEN.md: Der erste
+ * Entwurf haette Batch-Undo nicht bauen koennen, weil nirgends stand,
  * aus welcher Stufe eine Notiz kam. Der entscheidende Fall ist deshalb der
  * GEMISCHTE Lauf -- Notizen aus INBOX und aus WORKSPACE in einem Batch.
  * Ein Undo, das pauschal nach INBOX zurueckschiebt, faellt hier durch.

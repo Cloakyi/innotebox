@@ -44,8 +44,8 @@ import de.notizen.app.audio.TranskriptStatus
 /**
  * Der Aufnahmebereich im Editor.
  *
- * **Zwei Schritte, bewusst getrennt: erst aufnehmen, dann transkribieren.**
- * Aufnehmen kann immer, auch ohne Sprachmodell und ohne Netz — es ist der
+ * Zwei Schritte, bewusst getrennt: erst aufnehmen, dann transkribieren.
+ * Aufnehmen kann immer, auch ohne Sprachmodell und ohne Netz, es ist der
  * Schritt, der sich nicht wiederholen lässt. Das Transkript ist ein zweiter,
  * beliebig oft wiederholbarer Vorgang; misslingt er, ist nichts verloren.
  */
@@ -68,7 +68,7 @@ fun AufnahmeBereich(
     onTitel: (() -> Unit)? = null,
     /** Auf der Transkriptseite wird nicht noch einmal zum Aufnehmen eingeladen. */
     nurTranskript: Boolean = false,
-    /** „Einstellungen oeffnen" am ausgegrauten Transkript (Phase 15). */
+    /** „Einstellungen oeffnen" am ausgegrauten Transkript. */
     onEinstellungen: () -> Unit = {},
 ) {
     Surface(
@@ -201,7 +201,7 @@ private fun Ruhend(
     onTranskript: () -> Unit,
     onLaden: () -> Unit,
     onAufbereiten: (Aufbereitung) -> Unit,
-    /** „Einstellungen oeffnen" am ausgegrauten Transkript (Phase 15). */
+    /** „Einstellungen oeffnen" am ausgegrauten Transkript. */
     onEinstellungen: () -> Unit = {},
 ) {
     if (!nurTranskript) {
@@ -230,7 +230,7 @@ private fun Ruhend(
             // AUSGEGRAUT UND NICHT WEG. Ein Knopf, der verschwindet, sieht aus
             // wie ein Fehler; einer, der blass dasteht und sagt warum, ist eine
             // Auskunft. Die Aufnahme darueber bleibt voll bedienbar. Und der
-            // Weg zum Schalter ist gleich daneben (Phase 15).
+            // Weg zum Schalter ist gleich daneben.
             Gesperrt(
                 titel = "Transkript erstellen",
                 symbol = Icons.Outlined.Subtitles,
@@ -258,8 +258,8 @@ private fun Ruhend(
     // Der Modus gehoert sichtbar gemacht: die Erkennungsqualitaet unterscheidet
     // sich hoerbar, und wer den Rueckfall nicht kennt, haelt das Ergebnis fuer
     // einen Fehler der App.
-    // Mit einem Satz dazu, was das Fachwort heisst (Phase 15, Rest aus
-    // Phase 7): Der Hinweis stimmte, sagte aber niemandem, was er bedeutet.
+    // Mit einem Satz dazu, was das Fachwort heisst. Der Hinweis stimmte
+    // vorher schon, sagte aber niemandem, was er bedeutet.
     transkript.modus?.let {
         Hinweis(
             text = when (it) {
@@ -277,7 +277,7 @@ private fun Ruhend(
     if (transkript.teile.isNotEmpty()) {
         when {
             kiVerfuegbar -> AufbereitenKnopf(laeuftAufbereitung, farbe, onAufbereiten)
-            // KI abgeschaltet: ausgegraut wie das Transkript, nicht weg (Phase 15).
+            // KI abgeschaltet: ausgegraut wie das Transkript, nicht weg.
             // Kann das Geraet gar nicht, steht hier nichts (docs/ENTSCHEIDUNGEN.md, AICore).
             !transkriptErlaubt -> Gesperrt(
                 titel = "Text aufbereiten",
@@ -419,7 +419,7 @@ private fun TranskriptKnopf(
 /**
  * Die Nachbearbeitung des Transkripts.
  *
- * Erscheint erst, wenn es etwas aufzubereiten gibt — ein Knopf, den man auf
+ * Erscheint erst, wenn es etwas aufzubereiten gibt, ein Knopf, den man auf
  * leeren Text loslässt, kann nur enttäuschen.
  */
 @Composable

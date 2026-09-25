@@ -70,7 +70,7 @@ private const val SCHWANZ = 0.28f
  *
  * Fest und nicht aus dem Theme, dieselbe Ausnahme wie beim Favoritengold: Die
  * Aussage ist auf jeder Karte dieselbe, und ein Signal, das auf jeder Notiz eine
- * andere Farbe hat, ist keines mehr. Bewusst kein grelles Grün — es blitzt auf
+ * andere Farbe hat, ist keines mehr. Bewusst kein grelles Grün, es blitzt auf
  * einer farbigen Karte auf und soll sie nicht überstrahlen.
  */
 private val ANGEKOMMEN_GRUEN = Color(0xFF4CAF50)
@@ -78,16 +78,16 @@ private val ANGEKOMMEN_GRUEN = Color(0xFF4CAF50)
 /**
  * Eine Linie am Rahmen, die sagt, was mit dieser Notiz gerade passiert.
  *
- * **Warum am Rahmen und nicht als Häkchen oder Snackbar.** Die Rückmeldung
+ * Warum am Rahmen und nicht als Häkchen oder Snackbar. Die Rückmeldung
  * gehört an das Ding, um das es geht. Ein Häkchen am Bildschirmrand sagt „etwas
  * wurde gespeichert"; eine Linie um genau diese Karte sagt „diese Notiz". Und
  * sie hält niemanden auf: Sie belegt keinen Platz und verdeckt nichts.
  *
- * **Kreisen heißt „läuft", einmal herum heißt „fertig", grün heißt „oben".**
+ * Kreisen heißt „läuft", einmal herum heißt „fertig", grün heißt „oben".
  * Ein Aufblitzen allein ließe offen, ob es eine Meldung oder ein Fehler war.
  *
  * [fertig] wird nach einer einmaligen Animation gerufen, damit der Aufrufer
- * seine Marke löschen kann — sonst liefe sie beim nächsten Scrollen erneut,
+ * seine Marke löschen kann, sonst liefe sie beim nächsten Scrollen erneut,
  * sobald die Karte wieder ins Bild kommt. Beim Kreisen wird sie nie gerufen:
  * Dieser Zustand endet, wenn die Notiz oben ist, nicht wenn eine Animation
  * durch ist.

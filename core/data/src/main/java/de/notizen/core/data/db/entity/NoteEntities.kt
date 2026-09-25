@@ -44,7 +44,7 @@ data class NoteEntity(
     val isFavorite: Boolean = false,
     val favoritedAt: Long? = null,
 
-    /** Vorbereitet fuer Phase 11. In Phase 1-9 immer null. */
+    /** Der Ordner der Notiz, `null` heisst Hauptordner. */
     val folderId: String? = null,
 
     val sortIndex: Int = 0,
@@ -130,10 +130,10 @@ data class NoteEntity(
     val origin: Herkunft = Herkunft.APP,
 
     /**
-     * Das Archiv des Ordnermodus (SYNC.md 13, Schema 5, Phase 14a).
+     * Das Archiv des Ordnermodus (SYNC.md 13, Schema 5).
      *
      * `null` heisst: im normalen Ordnerbaum. Gesetzt heisst: im Archivbaum,
-     * und zwar seit diesem Zeitpunkt. **Getrennt von [stage]**, weil die
+     * und zwar seit diesem Zeitpunkt. Getrennt von [stage], weil die
      * beiden Systeme getrennt sind: Eine Notiz kann im Fluss im Eingang
      * liegen und im Ordnersystem archiviert sein. Wer im Ordnermodus
      * archiviert, ruehrt die Stufe nicht an, und umgekehrt.
@@ -149,7 +149,7 @@ data class NoteEntity(
     /**
      * Der geloeschte Ordner, aus dem die Notiz beim Loeschen „nur der Ordner"
      * herausgerueckt ist. Damit zeigt der Ordner im Papierkorb noch, was in
-     * ihm lag (ausgegraut, Phase 14c). Wird beim naechsten Verschieben von
+     * ihm lag (ausgegraut). Wird beim naechsten Verschieben von
      * Hand geleert: Wer die Notiz woandershin legt, hat sich entschieden.
      */
     val ehemaligerOrdnerId: String? = null,

@@ -14,14 +14,14 @@ import javax.inject.Singleton
 /**
  * Stellt und storniert die Wecker.
  *
- * **Exakte Alarme sind ab Android 14 nicht mehr selbstverständlich.** Die App
+ * Exakte Alarme sind ab Android 14 nicht mehr selbstverständlich. Die App
  * fragt `SCHEDULE_EXACT_ALARM` an, und der Nutzer muss es in den
  * Systemeinstellungen gewähren. Die bequeme Alternative `USE_EXACT_ALARM`
  * würde bei der Installation automatisch gewährt, ist laut Google aber
- * Kalender- und Weckerprogrammen vorbehalten — eine Notizen-App, die sie
+ * Kalender- und Weckerprogrammen vorbehalten, eine Notizen-App, die sie
  * benutzt, ist eine, die sich falsch anmeldet.
  *
- * Fehlt die Erlaubnis, wird **nicht heimlich ungenau geweckt.** Eine
+ * Fehlt die Erlaubnis, wird nicht heimlich ungenau geweckt. Eine
  * Erinnerung, die irgendwann in der nächsten Stunde klingelt, ist keine
  * Erinnerung, sondern ein Zufall. Stattdessen sagt die Oberfläche, was fehlt,
  * und führt zur richtigen Einstellung.
@@ -45,22 +45,22 @@ class ErinnerungPlaner @Inject constructor(
     /**
      * Stellt den Wecker.
      *
-     * **`setExactAndAllowWhileIdle` — derselbe Weg, den auch Google Kalender geht.**
+     * `setExactAndAllowWhileIdle`, derselbe Weg, den auch Google Kalender geht.
      * Der Alarm ist exakt und wird auch dann durchgelassen, wenn das Gerät im
      * Doze-Modus liegt; ohne das `AllowWhileIdle` würde er nachts oder bei
      * liegengelassenem Gerät bis zum nächsten Wartungsfenster verschoben, also
      * genau dann, wenn eine Erinnerung am ehesten gebraucht wird.
      *
-     * **Warum nicht `setAlarmClock`,** das noch eine Spur unantastbarer wäre:
+     * Warum nicht `setAlarmClock`, das noch eine Spur unantastbarer wäre:
      * Es trägt die Erinnerung in den Weckerplatz des Systems ein. Solange sie
      * aussteht, stünde ein Weckersymbol in der Statusleiste und der Termin auf
-     * dem Sperrbildschirm — bei einer Erinnerung in drei Wochen drei Wochen
+     * dem Sperrbildschirm, bei einer Erinnerung in drei Wochen drei Wochen
      * lang. Entschieden am 2026-08-21 gegen diesen Preis.
      *
-     * **Die eine Einschränkung, die bleibt:** Android darf zwei Alarme dieser
+     * Die eine Einschränkung, die bleibt: Android darf zwei Alarme dieser
      * Art aus derselben App, die weniger als etwa neun Minuten auseinander
      * liegen, auf diesen Abstand auseinanderziehen. Bei einer Erinnerung je
-     * Notiz, von Hand gesetzt, tritt das praktisch nicht auf — es ist aber der
+     * Notiz, von Hand gesetzt, tritt das praktisch nicht auf, es ist aber der
      * einzige verbleibende Fall, in dem die Uhrzeit nicht auf die Sekunde
      * stimmt, und deshalb steht er hier und nicht im Verborgenen.
      *

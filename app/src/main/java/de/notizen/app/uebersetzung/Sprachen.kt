@@ -7,12 +7,12 @@ package de.notizen.app.uebersetzung
 data class Sprache(val code: String, val name: String)
 
 /**
- * Die Sprachen, die die App zum Übersetzen anbietet (Phase 16).
+ * Die Sprachen, die die App zum Übersetzen anbietet.
  *
- * **Bewusst eine Liste von Hand, nicht alle Locales des Systems.** Alle drei
+ * Bewusst eine Liste von Hand, nicht alle Locales des Systems. Alle drei
  * Wege können jede dieser Sprachen zumindest im Grundsatz (ML Kit führt sie
  * alle, die Übersetzung des Systems je nach geladenen Paketen, die KI nach
- * ihrem Vermögen); ob ein Paar auf **diesem** Gerät gerade geht, sagt erst
+ * ihrem Vermögen); ob ein Paar auf diesem Gerät gerade geht, sagt erst
  * der Versuch, und der Dialog sagt es dann. Deutsch steht vorn, weil die App
  * eine deutschsprachige ist; danach die Nachbarn und die häufigsten Sprachen
  * in Deutschland, dann der Rest alphabetisch.

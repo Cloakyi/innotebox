@@ -58,7 +58,7 @@ import javax.inject.Inject
  * ACHTUNG, ZWEI GETRENNTE SYSTEME: Das hier sind TAG-Farben. Sie faerben nur
  * den Chip und den Punkt im Drawer. Die Farbe der KARTE waehlt man getrennt
  * ueber das Palettensymbol -- eine Notiz behaelt ihren Tag, wenn man sie
- * umfaerbt, und umgekehrt (Spezifikation Abschnitt 5 und 5a).
+ * umfaerbt, und umgekehrt.
  */
 /** Die Farben, die ein Tag-Chip tragen kann. Auch vom Editor benutzt. */
 val TAG_FARBEN = listOf(

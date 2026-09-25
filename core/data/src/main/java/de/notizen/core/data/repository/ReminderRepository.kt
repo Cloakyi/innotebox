@@ -13,14 +13,14 @@ import javax.inject.Singleton
 /**
  * Erinnerungen an Notizen.
  *
- * Hier steht **nur** der Datenteil. Das Stellen und Abbestellen des eigentlichen
+ * Hier steht nur der Datenteil. Das Stellen und Abbestellen des eigentlichen
  * Weckers liegt in `:app`, weil der `AlarmManager` Android ist und `:core:data`
  * ohne Emulator testbar bleiben soll. Die Trennung hat einen praktischen
  * Nutzen: die Regeln, wann eine Erinnerung existiert, lassen sich prüfen, ohne
  * je einen Alarm auszulösen.
  *
  * `triggerAt` wird synchronisiert, `alarmId` und `isFired` nicht (SYNC.md 14.8):
- * **jedes Gerät weckt für sich.** Wer das zusammenzieht, bekommt eine
+ * jedes Gerät weckt für sich. Wer das zusammenzieht, bekommt eine
  * Erinnerung, die auf dem einen Gerät als erledigt gilt und auf dem anderen nie
  * klingelt.
  */
@@ -84,7 +84,7 @@ class ReminderRepository @Inject constructor(
     /**
      * Hakt eine ausgelöste Erinnerung ab.
      *
-     * Gelöscht wird sie ausdrücklich **nicht**: `triggerAt` wird synchronisiert,
+     * Gelöscht wird sie ausdrücklich nicht: `triggerAt` wird synchronisiert,
      * und ein Löschen hier käme auf dem anderen Gerät als „gibt es nicht mehr"
      * an, bevor es dort überhaupt geklingelt hat.
      */

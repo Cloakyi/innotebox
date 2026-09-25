@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 /**
  * Was man mit der ganzen Notiz tun kann.
  *
- * **Warum ein Blatt und keine weiteren Knöpfe in der Leiste:** Die untere
- * Leiste trägt, was man beim Schreiben ständig braucht — Anhang, Farbe,
+ * Warum ein Blatt und keine weiteren Knöpfe in der Leiste: Die untere
+ * Leiste trägt, was man beim Schreiben ständig braucht, Anhang, Farbe,
  * Erinnerung. Löschen, Teilen und Kopieren braucht man einmal, dafür dann
  * bewusst. Sie in dieselbe Reihe zu stellen hieße, den seltenen Griff genauso
- * leicht zu machen wie den häufigen — und Löschen liegt dann einen Fingerbreit
+ * leicht zu machen wie den häufigen, und Löschen liegt dann einen Fingerbreit
  * neben Einfärben.
  *
  * Das Blatt liegt auf der Theme-Fläche, nicht auf der Notiz. Deshalb trägt es
@@ -69,7 +69,7 @@ fun NotizMenueBlatt(
     onTeilen: () -> Unit,
     onLoeschen: () -> Unit,
     onSchliessen: () -> Unit,
-    /** Nur, wenn es einen Weg zum Uebersetzen gibt (Phase 16). */
+    /** Nur, wenn es einen Weg zum Uebersetzen gibt. */
     zeigeUebersetzen: Boolean = false,
     onUebersetzen: () -> Unit = {},
 ) {

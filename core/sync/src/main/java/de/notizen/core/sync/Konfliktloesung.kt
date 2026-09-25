@@ -28,7 +28,7 @@ object Konfliktloesung {
     /**
      * Die Konfliktkopie als eigene Notiz.
      *
-     * Sie bekommt eine **neue Kennung**, sonst waere sie dieselbe Notiz und der
+     * Sie bekommt eine neue Kennung, sonst waere sie dieselbe Notiz und der
      * naechste Abgleich loeste denselben Konflikt erneut aus. Und sie landet im
      * Eingang: Etwas, das Aufmerksamkeit braucht, gehoert dorthin, wo man
      * hinsieht.

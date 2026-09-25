@@ -42,23 +42,23 @@ data class Suchtreffer(
 /**
  * Die Volltextsuche über alle Stufen hinweg.
  *
- * **Text sucht SQLite, gefiltert wird in Kotlin.** Das ist eine bewusste
+ * Text sucht SQLite, gefiltert wird in Kotlin. Das ist eine bewusste
  * Entscheidung und keine Abkürzung: die sechs Filter aus Abschnitt 6 in eine
  * einzige Abfrage zu gießen, hieße dynamisches SQL mit `IN`-Listen, die leer
- * sein können — Room erzeugt daraus `IN ()`, und das ist in SQLite ein
+ * sein können, Room erzeugt daraus `IN ()`, und das ist in SQLite ein
  * Syntaxfehler. Der Ausweg wären Wächter-Parameter und Ersatzwerte, also genau
  * die Sorte Abfrage, die man später nicht mehr gefahrlos anfasst.
  *
  * Die Datenmenge trägt das: es sind die Notizen eines einzelnen Menschen, und
- * die teure Arbeit — das Finden im Volltext — macht weiterhin der Index. Sollte
+ * die teure Arbeit, das Finden im Volltext, macht weiterhin der Index. Sollte
  * es je um Größenordnungen mehr werden, wandern die Filter in die `WHERE`,
  * ohne dass sich die Schnittstelle ändert.
  *
- * **Reihenfolge:** finden, dann filtern, dann anreichern. Genau in dieser
+ * Reihenfolge: finden, dann filtern, dann anreichern. Genau in dieser
  * Ordnung, weil die zweite Ranking-Quelle aus Abschnitt 6 später zwischen den
  * ersten beiden Schritt einsetzt.
  *
- * **Der Papierkorb ist ein zweiter Weg** (Phase 14d). Der Index kennt nur
+ * Der Papierkorb ist ein zweiter Weg. Der Index kennt nur
  * lebende Notizen (`trash` nimmt sie heraus, sonst fände man Weggeworfenes
  * ohne es zu wollen). Ist der Filter an, werden die weggeworfenen Notizen
  * über ihren Text gesucht, so wie es die alte Suchleiste des Papierkorbs tat,

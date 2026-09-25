@@ -23,11 +23,11 @@ sealed interface Schnappschussergebnis {
 /**
  * Die Snapshots im Backup-Ordner (SYNC.md 2 und 10).
  *
- * **Getrennt vom Abgleich, mit Absicht.** Diese Klasse ist die einzige, die
+ * Getrennt vom Abgleich, mit Absicht. Diese Klasse ist die einzige, die
  * den Ordner `InNoteBox-Backup` kennt. `Abgleich` hat keinen Weg dorthin; ein
  * Fehler im Spiegel kann damit konstruktionsbedingt kein Backup beschaedigen.
  *
- * Ein Snapshot ist die Sicherungsdatei aus Phase 10 (Fassung 3, mit
+ * Ein Snapshot ist die normale Sicherungsdatei (Fassung 3, mit
  * Zaehlerstaenden und Grabsteinen), einmal geschrieben und nie veraendert. Die
  * einzige Loeschung hier ist die Aufbewahrungsregel, und sie trifft nur
  * Snapshots.

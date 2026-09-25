@@ -4,7 +4,7 @@ import de.notizen.app.uebersetzung.Uebersetzungsergebnis
 import de.notizen.core.data.model.Uebersetzungsweg
 
 /**
- * Was gerade uebersetzt wird (Phase 16): der Zustand des Dialogs im Editor.
+ * Was gerade uebersetzt wird: der Zustand des Dialogs im Editor.
  *
  * [bereich] sagt, wohin das Ergebnis gehoert: in eine Auswahl im Text, in den
  * ganzen Text oder in die Eintraege einer Liste. [texte] sind die Stuecke, die

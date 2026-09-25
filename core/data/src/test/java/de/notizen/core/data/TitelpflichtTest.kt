@@ -14,7 +14,7 @@ import org.robolectric.RobolectricTestRunner
 
 /**
  * Prueft `setTitle` -- die Datenschicht hinter der Titelpflicht ab WORKSPACE
- * (Phase 3). Ein Titel ist echter Inhalt: er muss `updatedAt` heben, im
+ * . Ein Titel ist echter Inhalt: er muss `updatedAt` heben, im
  * Volltextindex landen und die Notiz als aenderungsbeduerftig markieren.
  */
 @RunWith(RobolectricTestRunner::class)

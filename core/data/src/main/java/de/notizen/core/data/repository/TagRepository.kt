@@ -18,7 +18,7 @@ import javax.inject.Singleton
  *
  * Zur Erinnerung: `colorArgb` faerbt NUR den Chip und den Punkt im Drawer.
  * Mit der Farbe der Notizkarte (NoteColor) hat es nichts zu tun -- das sind
- * zwei getrennte Systeme, siehe Spezifikation Abschnitt 5.
+ * zwei getrennte Systeme.
  */
 @Singleton
 class TagRepository @Inject constructor(

@@ -1,7 +1,7 @@
 package de.notizen.app.uebersetzung
 
 /**
- * Was ein Übersetzungsversuch ergeben hat (Phase 16).
+ * Was ein Übersetzungsversuch ergeben hat.
  *
  * Die Fälle sind absichtlich grob: Der Dialog im Editor muss nur wissen, ob er
  * den Text zeigen, zum Nachladen anbieten oder einen Satz sagen soll.
@@ -28,7 +28,7 @@ sealed interface Uebersetzungsergebnis {
 /**
  * Ein Weg, Text zu übersetzen. Drei Umsetzungen, eine je [de.notizen.core.data.model.Uebersetzungsweg].
  *
- * **Mehrere Texte auf einmal**, weil eine Listennotiz aus Einträgen besteht,
+ * Mehrere Texte auf einmal, weil eine Listennotiz aus Einträgen besteht,
  * die einzeln übersetzt gehören; wer sie mit Zeilenumbrüchen zusammenklebt,
  * bekommt vom Übersetzer gern eine andere Zahl Zeilen zurück.
  */

@@ -10,17 +10,17 @@ import javax.inject.Singleton
 /**
  * Ob gerade jemand an einer Notiz schreibt.
  *
- * **Der Abgleich wartet darauf, und das ist der Kern.** Der Autosave feuert
+ * Der Abgleich wartet darauf, und das ist der Kern. Der Autosave feuert
  * beim Tippen alle paar hundert Millisekunden; hinge der Abgleich nur an einer
  * Entprellung, ginge bei jeder Denkpause die ganze Notizdatei nach Drive. Zwanzig
  * Uploads für einen Absatz, und neunzehn davon sind Zwischenstände, die niemand
  * je sehen wird.
  *
- * **Der ehrlichste „ich bin fertig"-Moment ist das Schließen des Editors.** Nicht
- * eine Pause beim Tippen — die kann auch bedeuten, dass jemand nachdenkt. Erst
+ * Der ehrlichste „ich bin fertig"-Moment ist das Schließen des Editors. Nicht
+ * eine Pause beim Tippen, die kann auch bedeuten, dass jemand nachdenkt. Erst
  * wenn der Editor zu ist, steht fest, dass an dieser Notiz nichts mehr kommt.
  *
- * **Ein Zähler und kein Schalter.** Beim Wechsel von einer Notiz zur nächsten
+ * Ein Zähler und kein Schalter. Beim Wechsel von einer Notiz zur nächsten
  * überlappen sich die beiden Editoren einen Augenblick; ein Schalter stünde in
  * diesem Moment auf „niemand schreibt", und der Abgleich liefe mitten hinein.
  *

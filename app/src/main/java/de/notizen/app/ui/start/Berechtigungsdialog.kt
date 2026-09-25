@@ -94,7 +94,7 @@ fun fehlendeBerechtigungen(context: Context): List<Berechtigung> =
 /**
  * Der Dialog beim Start, der alle Nachfragen auf einmal stellt.
  *
- * **Beim Start und nicht erst an der Stelle, an der es gebraucht wird**
+ * Beim Start und nicht erst an der Stelle, an der es gebraucht wird
  * (seit 2026-09-16). Die Systemabfrage erschien sonst mitten
  * in einer Handlung (ueber dem Zeitwaehler, beim ersten Antippen der Aufnahme),
  * und eine Ablehnung im falschen Moment liess sich nur noch ueber die

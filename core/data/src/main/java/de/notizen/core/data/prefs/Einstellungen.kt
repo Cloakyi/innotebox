@@ -91,7 +91,7 @@ class Einstellungen @Inject constructor(
     }
 
     /**
-     * Dynamic Color ist der Standard (Spezifikation Abschnitt 13). Ausschalten
+     * Dynamic Color ist der Standard. Ausschalten
      * bringt das Fallback-Schema aus dem Seed #001835 zurueck.
      */
     fun dynamicColor(): Flow<Boolean> = store.data.map { it[DYNAMIC_COLOR] ?: true }
@@ -153,7 +153,7 @@ class Einstellungen @Inject constructor(
     /**
      * Sprache der Spracherkennung.
      *
-     * Gilt für Aufnahme UND nachträgliches Transkribieren — sonst nähme man in
+     * Gilt für Aufnahme UND nachträgliches Transkribieren, sonst nähme man in
      * einer Sprache auf und ließe in einer anderen erkennen, und das Ergebnis
      * wäre unerklärlich schlecht.
      */
@@ -171,7 +171,7 @@ class Einstellungen @Inject constructor(
      * Schaltet die Bedienelemente ab, nicht bloß den Aufruf: Ein Knopf, der da
      * ist und nichts tut, wäre schlechter als keiner.
      *
-     * **Wirksam nur mit gültiger, versiegelter Zustimmung** (seit Alpha 9). Die
+     * Wirksam nur mit gültiger, versiegelter Zustimmung (seit Alpha 9). Die
      * KI läuft über ML Kit, und ML Kit schickt Google Kennzahlen über die
      * Nutzung. Das Auslesen dafür braucht nach § 25 TDDDG eine Einwilligung.
      * Die Zustimmung ist eine Aufzeichnung mit Siegel ([KiSiegel]); fehlt sie,
@@ -235,7 +235,7 @@ class Einstellungen @Inject constructor(
         .flowOn(Dispatchers.IO)
 
     /**
-     * Ob beim Verschieben ab dem Workspace ein Titel verlangt wird (Phase 15).
+     * Ob beim Verschieben ab dem Workspace ein Titel verlangt wird.
      * Standard an; wer es abschaltet, bekommt vorher die Rueckfrage mit dem
      * Grund: Im Archiv wird ueber Titel gesucht.
      */
@@ -248,7 +248,7 @@ class Einstellungen @Inject constructor(
     // --------------------------------------------------------- Sicherheit
 
     /**
-     * Ob die App beim Oeffnen entsperrt werden muss (Phase 19). Standard aus;
+     * Ob die App beim Oeffnen entsperrt werden muss. Standard aus;
      * Einschalten geht nur nach einer erfolgreichen Entsperrung, damit sich
      * niemand aussperrt.
      */
@@ -275,7 +275,7 @@ class Einstellungen @Inject constructor(
 
     // ------------------------------------------------------- Uebersetzung
 
-    /** Ueber welchen Weg uebersetzt wird (Phase 16). */
+    /** Ueber welchen Weg uebersetzt wird. */
     fun uebersetzungsweg(): Flow<Uebersetzungsweg> =
         store.data.map { Uebersetzungsweg.ausName(it[UEBERSETZUNGSWEG]) }
 
@@ -298,7 +298,7 @@ class Einstellungen @Inject constructor(
     }
 
     /**
-     * Ob die App ins Netz darf (Phase 15, Opt-in). Standard aus. Eingeschaltet
+     * Ob die App ins Netz darf (Opt-in). Standard aus. Eingeschaltet
      * wird nur ueber den Dialog mit den Bedingungen; hier steht auch, wann.
      * Heute haengt daran nur das Nachladen der Sprachpakete von ML Kit; die
      * Online-KI kommt dazu, sobald ein Anbieter gewaehlt ist.
@@ -315,7 +315,7 @@ class Einstellungen @Inject constructor(
     }
 
     /**
-     * Der gemerkte Geraetestand (Phase 15), oder `null`, wenn noch nie
+     * Der gemerkte Geraetestand, oder `null`, wenn noch nie
      * gemessen wurde (erster Start, Datenloeschung).
      */
     fun geraetestand(): Flow<Geraetestand?> = store.data.map { p ->
@@ -350,8 +350,8 @@ class Einstellungen @Inject constructor(
     /**
      * Hauptschalter der automatischen Archivierung.
      *
-     * **Standardmäßig aus** (Spezifikation Abschnitt 8). Eine Automatik, die
-     * ungefragt Notizen verschiebt, muss man einschalten wollen — sonst wirkt
+     * Standardmäßig aus. Eine Automatik, die
+     * ungefragt Notizen verschiebt, muss man einschalten wollen, sonst wirkt
      * die erste Nacht wie ein Datenverlust.
      */
     fun autoArchivAn(): Flow<Boolean> = store.data.map { it[AUTO_ARCHIV] ?: false }
@@ -363,8 +363,8 @@ class Einstellungen @Inject constructor(
     /**
      * Nach wie vielen Tagen ohne Öffnen eine Notiz dieser Stufe wegwandert.
      *
-     * `0` heißt **aus**. Ein eigener Schalter je Stufe wäre ein zweiter Wert,
-     * der dasselbe sagt — und zwei Werte, die dasselbe sagen, laufen
+     * `0` heißt aus. Ein eigener Schalter je Stufe wäre ein zweiter Wert,
+     * der dasselbe sagt, und zwei Werte, die dasselbe sagen, laufen
      * irgendwann auseinander.
      */
     fun altersgrenze(stage: Stage): Flow<Int> =
@@ -375,7 +375,7 @@ class Einstellungen @Inject constructor(
     }
 
     /**
-     * Wie viele Notizen eine Stufe höchstens hält. `0` heißt **aus**.
+     * Wie viele Notizen eine Stufe höchstens hält. `0` heißt aus.
      *
      * Greift unabhängig vom Alter: Ein Eingang mit zweihundert Notizen ist auch
      * dann kein Eingang mehr, wenn jede davon von gestern ist.
@@ -388,9 +388,9 @@ class Einstellungen @Inject constructor(
     }
 
     /**
-     * Nach wie vielen Tagen der Papierkorb sich selbst leert. `0` heißt **aus**.
+     * Nach wie vielen Tagen der Papierkorb sich selbst leert. `0` heißt aus.
      *
-     * Steht auf `0`, und das ist keine Bequemlichkeit: Hier wird **endgültig**
+     * Steht auf `0`, und das ist keine Bequemlichkeit: Hier wird endgültig
      * gelöscht. Wer das will, soll es sagen.
      */
     fun papierkorbFrist(): Flow<Int> = store.data.map { it[PAPIERKORB_FRIST] ?: 0 }
@@ -402,15 +402,15 @@ class Einstellungen @Inject constructor(
     // ------------------------------------------------------------- Sync
 
     /**
-     * Wie oft im Hintergrund abgeglichen wird, in Minuten. `0` heißt **aus**.
+     * Wie oft im Hintergrund abgeglichen wird, in Minuten. `0` heißt aus.
      *
-     * Untergrenze ist 15 — weniger lässt WorkManager für wiederkehrende Arbeit
+     * Untergrenze ist 15, weniger lässt WorkManager für wiederkehrende Arbeit
      * nicht zu, und ein Wert darunter wäre ein Versprechen, das das System
      * nicht hält.
      *
-     * Steuert **beides**: den regelmäßigen Lauf und den Anstoß nach dem
+     * Steuert beides: den regelmäßigen Lauf und den Anstoß nach dem
      * Speichern. Wer „aus" wählt, will nicht, dass im Hintergrund etwas zu
-     * Google geht — dann darf auch das Speichern nichts auslösen.
+     * Google geht, dann darf auch das Speichern nichts auslösen.
      */
     fun syncIntervall(): Flow<Int> = store.data.map { it[SYNC_INTERVALL] ?: 15 }
 
@@ -421,14 +421,14 @@ class Einstellungen @Inject constructor(
     /**
      * Ob der Nutzer die Verbindung selbst gelöst hat.
      *
-     * **Das ist der eigentliche Ausschalter, und er liegt bewusst hier.** Der
+     * Das ist der eigentliche Ausschalter, und er liegt bewusst hier. Der
      * Widerruf bei Google kann fehlschlagen: kein Netz, ein Konto, das gerade
      * nichts sagt, ein Play-Dienst, der klemmt. „Trennen" darf davon nicht
-     * abhängen — wer seine Sachen trennt, muss das auch können.
+     * abhängen, wer seine Sachen trennt, muss das auch können.
      *
      * Es ist keine zweite Wahrheit neben Googles: Es sind zwei verschiedene
-     * Fragen. Google beantwortet, ob die App auf Drive zugreifen **darf**;
-     * dieser Wert beantwortet, ob sie es **soll**. Verbunden ist nur, wo beides
+     * Fragen. Google beantwortet, ob die App auf Drive zugreifen darf;
+     * dieser Wert beantwortet, ob sie es soll. Verbunden ist nur, wo beides
      * ja ist.
      */
     fun syncGetrennt(): Flow<Boolean> = store.data.map { it[SYNC_GETRENNT] ?: false }
@@ -440,11 +440,11 @@ class Einstellungen @Inject constructor(
     /**
      * Ob der Abgleich auf WLAN warten soll.
      *
-     * **Steht hier, seit auch Dateien mitgehen.** Eine Textnotiz sind ein paar
+     * Steht hier, seit auch Dateien mitgehen. Eine Textnotiz sind ein paar
      * Kilobyte; eine zehnminuetige Aufnahme sind rund zwanzig Megabyte, und die
      * gingen sonst ungefragt ueber das Mobilfunkvolumen.
      *
-     * Voreinstellung ist **aus**, also auch mobil. Wer den Abgleich einschaltet,
+     * Voreinstellung ist aus, also auch mobil. Wer den Abgleich einschaltet,
      * will seine Sachen gesichert haben, und ein Sync, der drei Tage wartet,
      * weil man nicht zu Hause war, sichert nichts.
      */
@@ -457,7 +457,7 @@ class Einstellungen @Inject constructor(
     /**
      * Ob Erinnerungen als Termine im Kalender des Geraets erscheinen.
      *
-     * Voreinstellung **aus**. Eine App, die ungefragt in den Kalender schreibt,
+     * Voreinstellung aus. Eine App, die ungefragt in den Kalender schreibt,
      * hat sich das Recht dazu nicht abgeholt, auch wenn Android es ihr gegeben
      * haette.
      */
@@ -485,7 +485,7 @@ class Einstellungen @Inject constructor(
     /**
      * Ob die App im Ordnermodus laeuft statt im Fluss.
      *
-     * **Ein Schalter, der die ganze App umstellt.** Im Ordnermodus
+     * Ein Schalter, der die ganze App umstellt. Im Ordnermodus
      * verschwinden Eingang, Workspace und Archiv aus der Seitenspalte, und das
      * automatische Aufraeumen ruht -- es raeumt zwischen Stufen, die dann
      * niemand mehr sieht. Die Stufe jeder Notiz bleibt trotzdem gefuehrt, also
@@ -530,7 +530,7 @@ class Einstellungen @Inject constructor(
         store.edit { it[ORDNER_SORTIERUNG] = wert.name }
     }
 
-    /** Wonach die Ordner geordnet stehen (Phase 14e), fuer die ganze App. */
+    /** Wonach die Ordner geordnet stehen, fuer die ganze App. */
     fun ordnerReihenfolge(): Flow<Ordnersortierung> =
         store.data.map { p ->
             p[ORDNER_REIHENFOLGE]
@@ -622,7 +622,7 @@ class Einstellungen @Inject constructor(
     private fun mengengrenzeKey(stage: Stage) = intPreferencesKey("menge_${stage.name}")
 
     /**
-     * Vorschläge, keine Zwangswerte — der Hauptschalter steht ja auf aus.
+     * Vorschläge, keine Zwangswerte, der Hauptschalter steht ja auf aus.
      *
      * Der Eingang ist ein Durchgangsraum und darf schnell räumen; der Workspace
      * ist der Ort, an dem gearbeitet wird, und bekommt deutlich mehr Zeit. Das

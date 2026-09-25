@@ -7,7 +7,7 @@ import org.junit.Test
 /**
  * Das Überspringen der stillen Stellen beim Abspielen.
  *
- * Die Abschnitte sind dieselben, aus denen auch das Transkript entsteht — was
+ * Die Abschnitte sind dieselben, aus denen auch das Transkript entsteht, was
  * man hört, ist also genau das, was im Text steht.
  */
 class StillesprungTest {

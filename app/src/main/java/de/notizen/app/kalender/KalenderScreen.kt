@@ -57,17 +57,17 @@ import java.util.Locale
 /**
  * Der Kalender in der App.
  *
- * **Er zeigt beides**: Notizen mit Erinnerung und die echten Termine des
+ * Er zeigt beides: Notizen mit Erinnerung und die echten Termine des
  * Geräts. Nur die eigenen Notizen zu zeigen wäre eine zweite Liste derselben
  * Erinnerungen, die es an der Notiz schon gibt; erst zusammen ergibt es einen
  * Tagesblick.
  *
- * **Drei Ansichten, und jede beantwortet eine andere Frage.** Der Monat zeigt,
+ * Drei Ansichten, und jede beantwortet eine andere Frage. Der Monat zeigt,
  * an welchen Tagen überhaupt etwas steht; die Woche zeigt, was in den nächsten
  * Tagen kommt; der Tag zeigt einen Tag ohne Ablenkung. Die Pfeile blättern
  * entsprechend um einen Monat, eine Woche oder einen Tag.
  *
- * **Kein Stundenraster wie in einem Terminplaner.** In einer Notizen-App stehen
+ * Kein Stundenraster wie in einem Terminplaner. In einer Notizen-App stehen
  * an einem Tag null bis zwei Dinge; ein Raster von 0 bis 24 Uhr wäre zu
  * neunundneunzig Prozent leere Fläche.
  */
@@ -256,7 +256,7 @@ private fun Wochentagszeile() {
 /**
  * Das Monatsraster.
  *
- * **Immer sechs Zeilen**, auch wenn der Monat mit fünf auskäme. Sonst sprängen
+ * Immer sechs Zeilen, auch wenn der Monat mit fünf auskäme. Sonst sprängen
  * beim Blättern die Liste darunter und der ganze Bildschirm.
  */
 @Composable
@@ -379,7 +379,7 @@ private fun Punkt(farbe: Color) {
 /**
  * Die ganze Woche, nach Tagen gegliedert.
  *
- * **Alle sieben Tage stehen da, auch die leeren.** Eine Woche, aus der die
+ * Alle sieben Tage stehen da, auch die leeren. Eine Woche, aus der die
  * leeren Tage herausfallen, ist eine Liste und keine Woche: Man sähe nicht mehr,
  * dass am Mittwoch nichts ansteht, sondern nur, dass der Mittwoch fehlt.
  */
@@ -460,7 +460,7 @@ private fun Tagesliste(
  * dann sähe derselbe Termin in zwei Ansichten verschieden aus.
  *
  * [schluessel] hält die Schlüssel eindeutig. In der Wochenansicht stehen sieben
- * Tage in **einer** Liste, und zwei Tage dürfen nicht denselben Schlüssel
+ * Tage in einer Liste, und zwei Tage dürfen nicht denselben Schlüssel
  * vergeben.
  */
 private fun LazyListScope.eintraege(

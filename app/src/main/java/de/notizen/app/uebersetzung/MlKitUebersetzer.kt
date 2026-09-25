@@ -19,15 +19,15 @@ import javax.inject.Singleton
  *
  * Läuft ohne AICore und ohne Übersetzungsdienst des Systems, also auch auf
  * dem Xiaomi. Der Preis: Die Sprachmodelle (rund 30 MB je Sprache) lädt die
- * Bibliothek einmal über das Netz, danach bleibt alles auf dem Gerät. **Deshalb
- * nur hinter dem Netz-Schalter** (`Einstellungen.netzErlaubt`, Phase 15): Ohne
+ * Bibliothek einmal über das Netz, danach bleibt alles auf dem Gerät. Deshalb
+ * nur hinter dem Netz-Schalter (`Einstellungen.netzErlaubt`): Ohne
  * ihn meldet dieser Weg „nicht verfügbar", und zwar mit dem Grund.
  *
  * Signaturen am 2026-09-19 aus dem AAR 17.0.3 gelesen: `Translation.getClient`,
  * `Translator.downloadModelIfNeeded(DownloadConditions)`, `translate(String)`,
  * `close()`, `RemoteModelManager.isModelDownloaded`, `TranslateLanguage.fromLanguageTag`.
  *
- * **Geladen wird nur mit [laden].** Der erste Versuch ohne geladenes Modell
+ * Geladen wird nur mit [laden]. Der erste Versuch ohne geladenes Modell
  * meldet [Uebersetzungsergebnis.SprachpaarFehlt] mit `ladbar = true`; der
  * Dialog bietet dann den Knopf, und erst der lädt. Nichts geht von selbst
  * ins Netz, auch nicht mit Schalter.

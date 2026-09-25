@@ -38,16 +38,16 @@ enum class Fassung(val beschriftung: String) {
 }
 
 /**
- * Das Transkript — lesbar, nicht versehentlich änderbar.
+ * Das Transkript, lesbar, nicht versehentlich änderbar.
  *
- * **Das Rohtranskript ist ein Beleg und kein Entwurf.** Es hält fest, was
+ * Das Rohtranskript ist ein Beleg und kein Entwurf. Es hält fest, was
  * tatsächlich gesagt wurde; wer es überschreiben kann, verliert genau dann
  * etwas, wenn er später wissen will, ob ein Satz wirklich so fiel. Deshalb ist
  * es hier nur zu lesen, und Änderungen leben in einer zweiten Fassung daneben.
  *
- * Gezeigt wird standardmäßig die **bearbeitete** Fassung, weil sie die ist, mit
+ * Gezeigt wird standardmäßig die bearbeitete Fassung, weil sie die ist, mit
  * der man weiterarbeitet. Ein Umschalter führt zum Original, und was gegenüber
- * dem Original hinzugekommen ist, wird eingefärbt — wer sieht, was die
+ * dem Original hinzugekommen ist, wird eingefärbt, wer sieht, was die
  * Aufbereitung geändert hat, kann ihr überhaupt erst misstrauen.
  */
 @Composable
@@ -191,7 +191,7 @@ private fun markiert(original: String, bearbeitet: String, markierer: Color) =
  *
  * Ein `TextField` stellt seinen Inhalt normalerweise einfarbig dar. Über eine
  * [VisualTransformation] lässt sich derselbe Text mit Auszeichnungen zeigen,
- * ohne den gespeicherten Inhalt anzufassen — die Zeichen bleiben Zeichen für
+ * ohne den gespeicherten Inhalt anzufassen, die Zeichen bleiben Zeichen für
  * Zeichen dieselben, deshalb genügt [OffsetMapping.Identity] und Cursor und
  * Auswahl sitzen weiter richtig.
  */

@@ -60,9 +60,6 @@ data class ArchiveRunEntity(
  * OHNE DIESE TABELLE IST DAS BATCH-UNDO NICHT BAUBAR: `archive_runs` kennt nur
  * Zaehlwerte, und `notes.autoArchivedBatchId` sagt nur DASS eine Notiz
  * betroffen war -- nicht, ob sie nach INBOX oder nach WORKSPACE zurueckgehoert.
- *
- * Steht so nicht in der urspruenglichen Spezifikation; siehe Korrektur 3 in
- * docs/ENTSCHEIDUNGEN.md.
  */
 @Entity(
     tableName = "archive_run_items",

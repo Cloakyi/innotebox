@@ -5,7 +5,7 @@ import de.notizen.core.data.model.NoteType
 import de.notizen.core.data.model.Stage
 
 /**
- * Was gesucht wird — Text und Filter in einem.
+ * Was gesucht wird, Text und Filter in einem.
  *
  * Alle Mengen bedeuten leer „egal", nicht „nichts". Ein Filter, bei dem nichts
  * angekreuzt ist, schränkt nicht ein; das ist die einzige Lesart, bei der eine
@@ -25,7 +25,7 @@ data class Suchanfrage(
     val zeitraum: Zeitraum = Zeitraum.EGAL,
 
     /**
-     * Ordner als Filter (Phase 14d). Ein gewählter Ordner schließt seine
+     * Ordner als Filter. Ein gewählter Ordner schließt seine
      * Unterordner ein; das rechnet das Repository über den Baum aus, nicht
      * die Oberfläche. Die Stufen bleiben daneben stehen: zwei getrennte
      * Systeme, beide durchsuchbar.
@@ -33,7 +33,7 @@ data class Suchanfrage(
     val ordnerIds: Set<String> = emptySet(),
 
     /**
-     * Ob der Papierkorb mitgesucht wird (Phase 14d), standardmäßig nicht. Der
+     * Ob der Papierkorb mitgesucht wird, standardmäßig nicht. Der
      * Volltextindex kennt nur lebende Notizen; für den Papierkorb läuft ein
      * zweiter Weg über den Text der Notiz, dann wird zusammengeführt.
      */
@@ -59,7 +59,7 @@ data class Suchanfrage(
  *
  * Bewusst nicht an `createdAt`: gesucht wird, woran man zuletzt gearbeitet hat,
  * nicht, wann eine Notiz einmal entstanden ist. Und ausdrücklich nicht an
- * `lastOpenedAt` — bloßes Ansehen darf nicht so aussehen, als hätte man etwas
+ * `lastOpenedAt`, bloßes Ansehen darf nicht so aussehen, als hätte man etwas
  * bearbeitet (siehe die `updatedAt`-Disziplin in docs/ENTSCHEIDUNGEN.md).
  */
 enum class Zeitraum(val beschriftung: String, val tage: Int?) {

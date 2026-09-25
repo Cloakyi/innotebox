@@ -101,7 +101,7 @@ class EinstellungenTest {
     fun `Theme steht standardmaessig auf System mit Dynamic Color`() = runTest {
         assertEquals(ThemeWahl.SYSTEM, einstellungen.themeWahl().first())
         assertEquals(
-            "Dynamic Color ist der Standard (Spezifikation Abschnitt 13)",
+            "Dynamic Color ist der Standard",
             true,
             einstellungen.dynamicColor().first(),
         )
@@ -239,7 +239,7 @@ class EinstellungenTest {
 
     @Test
     fun `das Netz ist voreingestellt verboten und merkt sich die Zustimmung`() = runTest {
-        // Phase 15: Ohne Opt-in geht nichts ins Netz, auch kein Sprachpaket.
+        // Ohne Opt-in geht nichts ins Netz, auch kein Sprachpaket.
         assertFalse(einstellungen.netzErlaubt().first())
         assertEquals(0L, einstellungen.netzZugestimmtAm().first())
 
@@ -256,7 +256,7 @@ class EinstellungenTest {
 
     @Test
     fun `die Sperre ist voreingestellt aus und merkt sich Verzoegerung und Aufnahmeschutz`() = runTest {
-        // Phase 19: Niemand wird ausgesperrt, der es nicht eingeschaltet hat.
+        // Niemand wird ausgesperrt, der es nicht eingeschaltet hat.
         assertFalse(einstellungen.sperreAn().first())
         assertFalse(einstellungen.aufnahmeschutzAn().first())
         assertEquals(Sperrverzoegerung.EINE_MINUTE, einstellungen.sperrverzoegerung().first())

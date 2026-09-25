@@ -12,8 +12,8 @@ import org.junit.Test
 /**
  * Die Umwandlung des markierten Ausschnitts in formatierten Text.
  *
- * Der wichtigste Punkt ist der unauffälligste: **kein Steuerzeichen darf im
- * sichtbaren Text landen.** Es würde als leeres Kästchen erscheinen, und man
+ * Der wichtigste Punkt ist der unauffälligste: kein Steuerzeichen darf im
+ * sichtbaren Text landen. Es würde als leeres Kästchen erscheinen, und man
  * käme nie darauf, woher es kommt.
  */
 class HervorhebungTest {

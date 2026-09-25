@@ -8,23 +8,23 @@ import java.io.OutputStream
 /**
  * Ein Strukturtest, und zwar mit Absicht.
  *
- * **Was hier passiert ist:** Nach dem Umbau auf „erst aufnehmen, dann
+ * Was hier passiert ist: Nach dem Umbau auf „erst aufnehmen, dann
  * transkribieren" blieb in [Mitschnitt] eine Pipe aus dem alten Live-Entwurf
- * stehen. Jeder aufgenommene Block wurde weiterhin hineingeschrieben — nur las
+ * stehen. Jeder aufgenommene Block wurde weiterhin hineingeschrieben, nur las
  * sie niemand mehr. Eine Pipe fasst rund 64 Kilobyte, bei diesem Format also
- * knapp zwei Sekunden. Danach **blockiert der Schreibende**, und zwar in einem
+ * knapp zwei Sekunden. Danach blockiert der Schreibende, und zwar in einem
  * Systemaufruf, den kein `cancel` erreicht.
  *
  * Die Folgen sahen aus wie fünf verschiedene Fehler: Der Timer blieb stehen,
  * „Fertig" bewirkte nichts, der Dienst ließ sich nicht beenden, das
- * Mikrofonsymbol blieb, und selbst das Wegwischen der App half nicht — nur ein
+ * Mikrofonsymbol blieb, und selbst das Wegwischen der App half nicht, nur ein
  * erzwungenes Beenden.
  *
- * **Warum ein Strukturtest und kein richtiger:** Der Fehler steckt in
+ * Warum ein Strukturtest und kein richtiger: Der Fehler steckt in
  * blockierender Ein-/Ausgabe an einem echten `AudioRecord`. Ohne Gerät lässt
  * sich das nicht nachstellen; ein Test, der es vorgäbe, wäre wertlos. Was sich
- * prüfen lässt, ist die Regel, die daraus folgt: **[Mitschnitt] hat genau eine
- * Senke, die Datei.** Das ist weniger, als man gern hätte, aber es ist ehrlich —
+ * prüfen lässt, ist die Regel, die daraus folgt: [Mitschnitt] hat genau eine
+ * Senke, die Datei. Das ist weniger, als man gern hätte, aber es ist ehrlich,
  * und es fängt genau den Rückfall ab, der schon einmal passiert ist.
  */
 class MitschnittAufbauTest {

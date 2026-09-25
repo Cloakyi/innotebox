@@ -8,7 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import de.notizen.app.R
 
 /**
- * Zentrale Typografie der App (Spezifikation Abschnitt 13).
+ * Zentrale Typografie der App.
  *
  * Google Sans Flex, ein Variable Font unter der SIL Open Font License.
  * EINE Datei, Gewichte ueber die wght-Achse -- keine neun Einzelschnitte.

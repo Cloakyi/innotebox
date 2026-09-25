@@ -9,7 +9,7 @@ import org.junit.Test
  *
  * Eine Minute Aufnahme sind 3000 Messwerte, eine Karte zeigt rund 50 Balken.
  * Wie zusammengefasst wird, entscheidet darüber, ob man der Spur ansieht, wo
- * gesprochen wurde — oder ob alles gleich aussieht.
+ * gesprochen wurde, oder ob alles gleich aussieht.
  */
 class WellenformTest {
 

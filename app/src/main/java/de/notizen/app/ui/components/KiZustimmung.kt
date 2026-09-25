@@ -29,18 +29,18 @@ import de.notizen.app.ai.KiZustimmungstext
 /**
  * Die Frage, bevor die KI auf dem Gerät arbeiten darf (seit Alpha 9).
  *
- * **Warum eine Zustimmung und nicht bloß ein Schalter:** Die KI läuft über ML
+ * Warum eine Zustimmung und nicht bloß ein Schalter: Die KI läuft über ML
  * Kit, und ML Kit schickt Google Kennzahlen über die Nutzung (Gerät, App,
  * Leistung, Fehlercodes, Sprachen; nach Googles Angaben nie Inhalte). Für
  * das Auslesen dieser Angaben verlangt § 25 TDDDG eine Einwilligung, und die
  * Bedingungen von Google verlangen, dass die Nutzer davon erfahren. Vor der
  * Zustimmung ruft die App ML Kit gar nicht erst auf.
  *
- * **Das Häkchen zum Alter** kommt aus den Zusatzbedingungen für ML Kit GenAI:
+ * Das Häkchen zum Alter kommt aus den Zusatzbedingungen für ML Kit GenAI:
  * Die Schnittstellen sind nur für Anwendungen, die sich nicht an Menschen
  * unter 18 richten. Ohne Häkchen bleibt „Einschalten" aus.
  *
- * **Die Zustimmung wird versiegelt** (`Zustimmungssiegel`): Sie gilt nur mit
+ * Die Zustimmung wird versiegelt (`Zustimmungssiegel`): Sie gilt nur mit
  * einem Schlüssel dieses Geräts und nur für genau den Text aus
  * [KiZustimmungstext]. Ausschalten löscht Zustimmung und Schlüssel.
  *

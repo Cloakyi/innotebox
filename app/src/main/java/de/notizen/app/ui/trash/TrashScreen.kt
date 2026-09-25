@@ -133,7 +133,7 @@ class TrashViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /**
-     * Der FRUEHERE Inhalt des geoeffneten Ordners (Phase 14c): Notizen und
+     * Der FRUEHERE Inhalt des geoeffneten Ordners: Notizen und
      * Unterordner, die beim Loeschen „nur der Ordner" herausgerueckt sind und
      * jetzt woanders leben. Ausgegraut gezeigt, damit man sieht, was hier lag.
      */
@@ -206,7 +206,7 @@ class TrashViewModel @Inject constructor(
      *
      * Die eigene Suchleiste, die vom 2026-08-25 bis zum 2026-09-14 hier stand,
      * ist weg: Sie passte nicht zum Rest der App und verschwand, sobald keine
-     * Notiz mehr da war. Gesucht wird ab Phase 14d ueber die normale Suche mit
+     * Notiz mehr da war. Gesucht wird ueber die normale Suche mit
      * dem Filter „Papierkorb".
      */
     val notizen: StateFlow<List<NoteWithRelations>> = notes.observeTrash()
@@ -237,7 +237,7 @@ class TrashViewModel @Inject constructor(
 /**
  * Der Papierkorb, seit dem 2026-09-15 mit der Oberflaeche des Eingangs.
  *
- * **Dasselbe Raster, dieselben Karten, dieselben Gesten.** Bis dahin hatte der
+ * Dasselbe Raster, dieselben Karten, dieselben Gesten. Bis dahin hatte der
  * Papierkorb eine eigene Liste mit eigener Suchleiste, und die
  * sah nach nichts in dieser App aus. Jetzt liefert das `StageViewModel`
  * im Papierkorbmodus die Notizen, und `NotizenRaster` zeichnet sie wie
@@ -245,7 +245,7 @@ class TrashViewModel @Inject constructor(
  * dann tippen), nach links ziehen holt zurueck (reisst ab, mit Undo). Tippen
  * holt ebenfalls zurueck.
  *
- * **Die Ordner stehen als Kopfzeilen im selben Raster**, wischbar mit
+ * Die Ordner stehen als Kopfzeilen im selben Raster, wischbar mit
  * denselben Gesten. Sie stehen auch dann da, wenn keine Notiz mehr uebrig ist;
  * bis zum 2026-09-14 brach die alte Ansicht bei leerer Notizliste vor den
  * Ordnern ab, und die Ordner schienen verschwunden.
@@ -524,8 +524,8 @@ private fun PapierkorbOrdnerzeile(
 /**
  * Ein geoeffneter Ordner im Papierkorb.
  *
- * **Hier steht beides nebeneinander: der ganze Ordner und jede einzelne
- * Notiz.** Wer ihn versehentlich weggeworfen hat, holt alles mit einem Griff
+ * Hier steht beides nebeneinander: der ganze Ordner und jede einzelne
+ * Notiz. Wer ihn versehentlich weggeworfen hat, holt alles mit einem Griff
  * zurueck. Wer aufgeraeumt hat, pickt sich die zwei Notizen heraus, die er
  * doch noch braucht, und laesst den Rest liegen.
  */

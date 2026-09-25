@@ -134,7 +134,7 @@ fun EditorScreen(
     viewModel: EditorViewModel,
     onClose: () -> Unit,
     onUndoRequest: (UndoRequest) -> Unit,
-    /** Vom ausgegrauten Transkript zum KI-Schalter in den Einstellungen (Phase 15). */
+    /** Vom ausgegrauten Transkript zum KI-Schalter in den Einstellungen. */
     onEinstellungen: () -> Unit = {},
     // Nur fuer die Liste der Ordner im Menue. Der Editor selbst schreibt sie
     // nicht, er legt seine Notiz nur in einen davon.
@@ -154,7 +154,7 @@ fun EditorScreen(
     var audioseite by rememberSaveable { mutableStateOf(Audioseite.AUFNAHME) }
     var fassung by rememberSaveable { mutableStateOf(Fassung.BEARBEITET) }
     var bearbeitungsmodus by rememberSaveable { mutableStateOf(false) }
-    // Die Liste hat zwei Zustaende (Phase 18): lesen (nur abhaken) und
+    // Die Liste hat zwei Zustaende: lesen (nur abhaken) und
     // bearbeiten (ziehen, entfernen, umschreiben). Umgeschaltet wird oben
     // rechts, der Haken speichert.
     var listeBearbeiten by rememberSaveable { mutableStateOf(false) }
@@ -302,7 +302,7 @@ fun EditorScreen(
     if (titelDialogOffen) {
         TitelDialog(
             ueberschrift = "Titel vorschlagen",
-            // Seit Phase 15 leer, wie beim Verschieben: Die KI schlaegt unten
+            // Leer, wie beim Verschieben: Die KI schlaegt unten
             // vor, sobald sie etwas hat; sonst tippt man selbst.
             erklaerung = "Die KI schlägt einen Titel vor, sobald sie einen hat. " +
                 "Antippen übernimmt ihn, oder du schreibst selbst.",
@@ -353,7 +353,7 @@ fun EditorScreen(
         viewModel.modellPruefen()
         viewModel.aufnahmePruefen(aufnahmeDatei)
         // Erst fragen, dann anbieten: „Uebersetzen" gibt es nur, wenn ein
-        // Weg dafuer da ist (Phase 16).
+        // Weg dafuer da ist.
         viewModel.uebersetzungPruefen()
     }
 
@@ -387,7 +387,7 @@ fun EditorScreen(
         // Am Geraet sah das so aus, als liesse sich der Text nicht weit genug
         // scrollen; tatsaechlich lag er unter der Tastatur.
         //
-        // Seit Phase 18 nicht mehr `imePadding()`, sondern `tastaturAbstand()`:
+        // Nicht mehr `imePadding()`, sondern `tastaturAbstand()`:
         // Compose blieb nach einer Textauswahl gelegentlich auf der Hoehe der
         // Tastatur haengen, und die untere Leiste stand bis zum Neustart
         // mitten im Bild. Die Ursache und der Weg drumherum stehen dort.
@@ -411,7 +411,7 @@ fun EditorScreen(
                     actions = {
                         // Nur bei einer Liste: der Stift oeffnet den
                         // Bearbeitungszustand, der Haken speichert und schliesst
-                        // ihn (Phase 18).
+                        // ihn.
                         if (state.type == NoteType.LIST) {
                             IconButton(
                                 onClick = {
@@ -473,7 +473,7 @@ fun EditorScreen(
         bottomBar = {
             Column(Modifier.background(farbe.container)) {
                 // Die Leiste kommt und geht mit der Tastatur, und zwar
-                // eingeblendet statt schlagartig (Phase 18). Das Mass ist die
+                // eingeblendet statt schlagartig. Das Mass ist die
                 // Tastatur, nicht nur der Fokus: Wer sie mit Zurueck
                 // schliesst, will den Text lesen, nicht formatieren. Ihre
                 // Hoehe waechst von unten, der Text darueber bleibt stehen.
@@ -493,8 +493,8 @@ fun EditorScreen(
                     )
                 }
 
-            // Untere Aktionsleiste. Die Palette gehoert laut Spezifikation
-            // Abschnitt 5a auch hierher, damit man zum Einfaerben nicht erst
+            // Untere Aktionsleiste. Die Palette gehoert auch hierher, damit man
+            // zum Einfaerben nicht erst
             // zurueck in die Liste muss.
             BottomAppBar(
                 containerColor = farbe.container,
@@ -731,8 +731,8 @@ fun EditorScreen(
                     },
                 )
                 else -> {
-                    // Die schwebende Auswahlleiste bekommt „Uebersetzen"
-                    // (Phase 16), aber nur, wenn es einen Weg gibt; sonst
+                    // Die schwebende Auswahlleiste bekommt „Uebersetzen",
+                    // aber nur, wenn es einen Weg gibt; sonst
                     // bleibt die von Compose.
                     val auswahl by rememberUpdatedState(textwert.selection)
                     val ansicht = LocalView.current
@@ -828,7 +828,7 @@ fun EditorScreen(
         )
     }
 
-    // Der Uebersetzungsdialog (Phase 16).
+    // Der Uebersetzungsdialog.
     uebersetzungsanfrage?.let { anfrage ->
         UebersetzenDialog(
             anfrage = anfrage,
@@ -1096,19 +1096,19 @@ private fun NochNichtGebaut(text: String) {
 }
 
 /**
- * Die Eintraege einer Listennotiz, in zwei Zustaenden (Phase 18).
+ * Die Eintraege einer Listennotiz, in zwei Zustaenden.
  *
- * **Lesen** ist der Normalfall: Ein Eintrag laesst sich abhaken und wieder
+ * Lesen ist der Normalfall: Ein Eintrag laesst sich abhaken und wieder
  * oeffnen, sonst nichts. Kein X, kein Griff, der Text ist kein Textfeld. Das
  * ist die Liste, mit der man durch den Laden geht.
  *
- * **Bearbeiten** (Stift oben rechts): links der Griff zum Ziehen, rechts das
+ * Bearbeiten (Stift oben rechts): links der Griff zum Ziehen, rechts das
  * X, und der Text ist wieder ein Textfeld. Vorher stand das X immer da und
  * loeschte sofort; ein Fehlgriff, und der Eintrag war weg. Googles Weg (das X
  * erscheint, sobald der Eintrag den Fokus hat) schuetzt nicht, weil man dann
  * ohnehin im Eintrag steht.
  *
- * **Hinzufuegen geht immer**, in beiden Zustaenden, ueber das Feld unten.
+ * Hinzufuegen geht immer, in beiden Zustaenden, ueber das Feld unten.
  * Fertig wird ein Eintrag mit der Eingabetaste oder wenn das Feld den Fokus
  * verliert, damit nichts Getipptes verloren geht.
  */

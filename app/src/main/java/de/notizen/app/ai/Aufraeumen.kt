@@ -18,14 +18,14 @@ enum class Aufbereitung(val beschriftung: String) {
 /**
  * Macht aus dem Rohtranskript lesbaren Text.
  *
- * **Das Rohtranskript wird dabei nie angefasst** (Abschnitt 12). Das Ergebnis
+ * Das Rohtranskript wird dabei nie angefasst (Abschnitt 12). Das Ergebnis
  * landet im `body` der Notiz, das Original bleibt in `transcripts`. Wer beides
- * zusammenlegt, verliert genau dann etwas, wenn die Aufbereitung daneben lag —
+ * zusammenlegt, verliert genau dann etwas, wenn die Aufbereitung daneben lag,
  * und das merkt man erst später.
  *
  * Die Prompts sind bewusst knapp und verbieten ausdrücklich das Hinzuerfinden.
  * Ein Sprachmodell, das ein lückenhaftes Diktat „sinnvoll ergänzt", schreibt
- * Dinge in die Notiz, die nie gesagt wurden — und in einer Notiz-App ist das
+ * Dinge in die Notiz, die nie gesagt wurden, und in einer Notiz-App ist das
  * der schlimmste denkbare Fehler, weil man ihm später glaubt.
  */
 @Singleton

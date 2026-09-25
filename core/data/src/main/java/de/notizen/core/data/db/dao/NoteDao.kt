@@ -42,7 +42,7 @@ interface NoteDao {
     suspend fun getPlainByIds(ids: List<String>): List<NoteEntity>
 
     /**
-     * Notizen einer Stufe, Favoriten oben (Spezifikation Abschnitt 7).
+     * Notizen einer Stufe, Favoriten oben.
      * Papierkorb bleibt aussen vor.
      */
     @Transaction
@@ -132,7 +132,7 @@ interface NoteDao {
     fun observeAnzahlNichtArchiviert(): Flow<Int>
 
     /**
-     * Archiviert Notizen im Ordnermodus (Phase 14b).
+     * Archiviert Notizen im Ordnermodus.
      *
      * Die Notiz landet oben im Archiv (`folderId` NULL im Archivbaum) und
      * merkt sich in `herkunftOrdnerId`, woher sie kam; SQLite liest dabei den
@@ -166,7 +166,7 @@ interface NoteDao {
     /**
      * Nimmt ein Archivieren zurueck: jede Notiz wieder dorthin, woher sie
      * kam. Fuer die Undo-Leiste, nicht fuer das Zurueckholen von Hand; das
-     * ist immer eine Wahl (Phase 14b).
+     * ist immer eine Wahl.
      */
     @Query(
         """
@@ -318,7 +318,7 @@ interface NoteDao {
      *
      * `ehemaligerOrdnerId` merkt sich, woher die Notiz kam: Der Ordner im
      * Papierkorb zeigt sie dann ausgegraut als seinen frueheren Inhalt
-     * (Phase 14c). [setFolder] leert das wieder, sobald jemand die Notiz von
+     * . [setFolder] leert das wieder, sobald jemand die Notiz von
      * Hand verschiebt.
      */
     @Query(
@@ -329,7 +329,7 @@ interface NoteDao {
     )
     suspend fun moveFolderContents(ordnerId: String, ziel: String?, now: Long)
 
-    /** Die lebenden Notizen, die aus [ehemaligerOrdnerId] herausgerueckt wurden (Phase 14c). */
+    /** Die lebenden Notizen, die aus [ehemaligerOrdnerId] herausgerueckt wurden. */
     @Transaction
     @Query(
         """
@@ -450,7 +450,7 @@ interface NoteDao {
     /**
      * Kandidaten nach ALTER: seit [schwelle] nicht mehr geoeffnet.
      *
-     * Ausgenommen sind Favoriten (Spezifikation Abschnitt 7) und Notizen mit
+     * Ausgenommen sind Favoriten und Notizen mit
      * einer noch nicht ausgeloesten Erinnerung (Abschnitt 8).
      */
     @Query(

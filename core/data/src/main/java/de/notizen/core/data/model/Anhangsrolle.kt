@@ -3,9 +3,9 @@ package de.notizen.core.data.model
 /**
  * Wozu ein Anhang da ist. Gespeichert wird der NAME (siehe SYNC.md 14.1 und 6.6).
  *
- * **Nicht zu verwechseln mit `notes.backgroundAttachmentId`.** Die Rolle sagt,
- * ob ein Anhang im Bildraster der Notiz **auftaucht**; der Verweis sagt, welcher
- * Anhang gerade die **Flaeche** ist. Ein Bild der Notiz darf beides sein.
+ * Nicht zu verwechseln mit `notes.backgroundAttachmentId`. Die Rolle sagt,
+ * ob ein Anhang im Bildraster der Notiz auftaucht; der Verweis sagt, welcher
+ * Anhang gerade die Flaeche ist. Ein Bild der Notiz darf beides sein.
  */
 enum class Anhangsrolle {
     /** Gehoert zum Inhalt der Notiz und steht im Bildraster. */

@@ -23,9 +23,9 @@ import org.junit.Test
 /**
  * Das Drive-Dokument gegen SYNC.md 14.15.
  *
- * **Der wichtigste Teil sind die Felder, die NICHT drinstehen.** Ein
+ * Der wichtigste Teil sind die Felder, die NICHT drinstehen. Ein
  * versehentlich mitgeschriebenes `lastOpenedAt` würde dem anderen Gerät
- * erzählen, wann *dieses* die Notiz geöffnet hat — und damit dessen
+ * erzählen, wann *dieses* die Notiz geöffnet hat, und damit dessen
  * Auto-Archiv steuern. Solche Fehler fallen nie beim Bauen auf, sondern
  * Monate später als seltsames Verhalten auf dem anderen Gerät.
  */
@@ -216,7 +216,7 @@ class AbbildungTest {
     @Test
     fun `eine ankommende Notiz gilt als nie geoeffnet`() {
         // `jetzt` einzusetzen hieße zu behaupten, sie sei eben angesehen
-        // worden — damit wäre sie vor dem Auto-Archiv geschützt, ohne dass
+        // worden, damit wäre sie vor dem Auto-Archiv geschützt, ohne dass
         // jemand sie je gesehen hat.
         val doku = vollstaendig().alsDokument()
         assertEquals(doku.createdAt, doku.alsNotiz().lastOpenedAt)
@@ -269,7 +269,7 @@ class AbbildungTest {
         // Wer im Notfall selbst an seine Notizen muss, soll das ohne Werkzeug
         // können.
         val json = Sync.encodeToString(vollstaendig().alsDokument())
-        assertTrue("Nicht umgebrochen — das liest niemand", json.lines().size > 5)
+        assertTrue("Nicht umgebrochen, das liest niemand", json.lines().size > 5)
         assertTrue("Besprechung" in json)
     }
 }

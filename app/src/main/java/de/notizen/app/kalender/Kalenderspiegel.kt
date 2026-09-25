@@ -17,13 +17,13 @@ import javax.inject.Singleton
 /**
  * Hält den Kalender des Geräts an den Notizen.
  *
- * **Eine Stelle, nicht viele.** Eine Erinnerung entsteht im Editor, kommt vom
+ * Eine Stelle, nicht viele. Eine Erinnerung entsteht im Editor, kommt vom
  * anderen Gerät über den Abgleich oder aus einer eingelesenen Sicherung. Wer an
  * jedem dieser Wege einen Aufruf einbaut, vergisst den vierten, der später
- * dazukommt. Hier wird stattdessen die **Datenbank beobachtet**: Wie eine
+ * dazukommt. Hier wird stattdessen die Datenbank beobachtet: Wie eine
  * Erinnerung entstanden ist, spielt dann keine Rolle mehr.
  *
- * **Der Fluss trägt eine schmale Projektion** (`Kalenderzeile`) und ein
+ * Der Fluss trägt eine schmale Projektion (`Kalenderzeile`) und ein
  * `distinctUntilChanged`. Ohne das meldete er sich bei jeder Änderung an
  * irgendeiner Notiz, und jedes getippte Wort schriebe alle Termine neu.
  *
@@ -73,7 +73,7 @@ class Kalenderspiegel @Inject constructor(
      * Durchlauf gleich danach legt sie im neuen Kalender wieder an.
      *
      * Beim allerersten Durchlauf nach dem Start passiert das ausdrücklich
-     * **nicht**: Da ist `zuletztGewaehlt` noch leer, und das heißt „ich weiß es
+     * nicht: Da ist `zuletztGewaehlt` noch leer, und das heißt „ich weiß es
      * nicht", nicht „es hat sich geändert".
      */
     private suspend fun abgleichen(an: Boolean, kalenderId: Long) {

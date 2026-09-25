@@ -32,7 +32,7 @@ data class KiTitelState(
  * Fallback-Titel, und was die KI beitraegt, kommt nach oder eben gar nicht.
  * Der Zustand `LADBAR` -- Modell noch nicht auf dem Geraet -- fuehrt deshalb
  * nicht zu einem Spinner, sondern zu einem Knopf: laden nur, wenn der Nutzer
- * es will (siehe docs/ENTSCHEIDUNGEN.md, Phase 3).
+ * es will (siehe docs/ENTSCHEIDUNGEN.md).
  */
 @HiltViewModel
 class KiTitelViewModel @Inject constructor(

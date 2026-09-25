@@ -140,17 +140,17 @@ fun OrdnerDialogHost(ordner: OrdnerViewModel, zeigeHinweis: (String) -> Unit) {
 /**
  * Die Frage beim Loeschen eines Ordners: mit oder ohne Inhalt.
  *
- * **Ein Blatt von unten, wie das Notizmenue, keine Dialogbox.** Bis zum
+ * Ein Blatt von unten, wie das Notizmenue, keine Dialogbox. Bis zum
  * 2026-09-14 war es ein `AlertDialog` mit zwei nackten Textzeilen, und das
  * sah nach nichts in dieser App aus. Jetzt liegen die beiden Wege
  * als Karten auf dem Blatt, in derselben Form wie die Ordnerzeilen darueber.
  *
- * **Zwei Wege statt eines Hakens.** Ein Haken „Inhalt mitloeschen" waere
+ * Zwei Wege statt eines Hakens. Ein Haken „Inhalt mitloeschen" waere
  * kleiner, aber man liest ihn im Zweifel nicht, und der Unterschied ist hier
  * dreissig Notizen gross. Zwei Karten, die beide sagen, was danach passiert,
  * lassen sich nicht ueberlesen.
  *
- * **Kein Weg fuehrt hier an einer Rueckholmoeglichkeit vorbei.** Beide Wege
+ * Kein Weg fuehrt hier an einer Rueckholmoeglichkeit vorbei. Beide Wege
  * legen den Ordner in den Papierkorb, und der zweite die Notizen dazu. Und
  * ein leerer Ordner kommt gar nicht erst hierher (`loeschenAnfragen`).
  */
@@ -241,7 +241,7 @@ private fun Loeschweg(
 }
 
 /**
- * Die Farbe eines Ordners (Phase 14e), aus der Tagpalette.
+ * Die Farbe eines Ordners, aus der Tagpalette.
  *
  * Dieselbe Palette wie bei den Tags, und aus demselben Grund frei waehlbar:
  * Eine Ordnerfarbe ist eine Markierung, keine Flaeche mit Text darauf. Wo sie
@@ -336,7 +336,7 @@ fun OrdnerNameDialog(
 /**
  * Die Auswahl eines Ordners, eingerueckt wie der Baum.
  *
- * **Der Hauptordner steht mit zur Wahl**, ganz oben. Ohne ihn gaebe es keinen
+ * Der Hauptordner steht mit zur Wahl, ganz oben. Ohne ihn gaebe es keinen
  * Weg zurueck nach ganz oben, und eine Notiz, die einmal in einem Ordner lag,
  * bliebe fuer immer in irgendeinem.
  *

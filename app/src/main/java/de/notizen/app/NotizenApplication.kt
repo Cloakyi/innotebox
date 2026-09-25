@@ -23,7 +23,7 @@ class NotizenApplication : Application(), Configuration.Provider {
     /**
      * Damit WorkManager die Worker über Hilt bauen kann.
      *
-     * Ohne das scheitert `AufraeumArbeit` beim Erzeugen — mit einer Meldung, die
+     * Ohne das scheitert `AufraeumArbeit` beim Erzeugen, mit einer Meldung, die
      * nach einem fehlenden Konstruktor aussieht und nichts mit Hilt zu tun zu
      * haben scheint.
      */

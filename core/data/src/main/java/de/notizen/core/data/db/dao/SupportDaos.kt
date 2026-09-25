@@ -129,7 +129,7 @@ interface ReminderDao {
     /**
      * Die Erinnerungen eines Zeitraums, mit dem, was der Kalender davon zeigt.
      *
-     * **Auch die bereits ausgeloesten.** In einem Kalender ist der letzte
+     * Auch die bereits ausgeloesten. In einem Kalender ist der letzte
      * Dienstag genauso eine Auskunft wie der naechste; nur kuenftige Termine zu
      * zeigen waere eine Liste und kein Kalender.
      *
@@ -193,7 +193,7 @@ interface ArchiveDao {
 }
 
 /**
- * Ordner. Seit Phase 13 in Gebrauch (vorher nur vorbereitet).
+ * Ordner.
  *
  * Der Baum wird NICHT in SQL gebaut. Diese Abfragen liefern flache Zeilen; wer
  * daraus Eltern, Kinder und Pfade macht, ist `Ordnerregeln` -- und zwar in
@@ -269,7 +269,7 @@ interface FolderDao {
     @Query("UPDATE folders SET colorArgb = :colorArgb, updatedAt = :now WHERE id = :id")
     suspend fun recolor(id: String, colorArgb: Int?, now: Long)
 
-    /** Die eigene Reihenfolge (Phase 14e). Geht mit nach Drive, deshalb steigt `updatedAt`. */
+    /** Die eigene Reihenfolge. Geht mit nach Drive, deshalb steigt `updatedAt`. */
     @Query("UPDATE folders SET sortIndex = :sortIndex, updatedAt = :now WHERE id = :id")
     suspend fun setSortIndex(id: String, sortIndex: Int, now: Long)
 
@@ -296,7 +296,7 @@ interface FolderDao {
     )
     suspend fun herausruecken(id: String, elternId: String?, ehemaligerElternId: String, now: Long)
 
-    /** Die lebenden Ordner, die aus [ehemaligerElternId] herausgerueckt wurden (Phase 14c). */
+    /** Die lebenden Ordner, die aus [ehemaligerElternId] herausgerueckt wurden. */
     @Query(
         "SELECT * FROM folders WHERE ehemaligerElternId = :ehemaligerElternId AND deletedAt IS NULL " +
             "ORDER BY sortIndex ASC, name ASC",
@@ -379,9 +379,9 @@ interface SyncDao {
      * Nicht dasselbe wie [observeUnsyncedCount], und der Unterschied ist der
      * Grund fuer diese zweite Abfrage:
      *
-     * - Gezaehlt werden **Notizen**, nicht Buchungszeilen. Ein Bild und ein
+     * - Gezaehlt werden Notizen, nicht Buchungszeilen. Ein Bild und ein
      *   Transkript derselben Notiz sind eine offene Notiz, nicht drei.
-     * - Notizen, die der Nutzer vom Abgleich **ausgenommen** hat, zaehlen nicht
+     * - Notizen, die der Nutzer vom Abgleich ausgenommen hat, zaehlen nicht
      *   mit. Sie sollen ja gar nicht hoch -- eine Anzeige, die deswegen fuer
      *   immer "nicht gesichert" sagt, waere schlicht falsch.
      * - Anhaenge, Transkripte und Erinnerungen zaehlen ueber ihre Notiz mit.

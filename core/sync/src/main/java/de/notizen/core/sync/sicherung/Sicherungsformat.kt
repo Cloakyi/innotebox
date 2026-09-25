@@ -16,7 +16,7 @@ import java.util.Locale
  * aussieht; diese Zahl beschreibt, wie die Sicherungsdatei drumherum gebaut ist.
  * Die beiden koennen sich unabhaengig voneinander aendern.
  *
- * Fassung 4 (2026-09-19, Phase 14a): Notiz- und Ordnerdokumente tragen die
+ * Fassung 4 (2026-09-19): Notiz- und Ordnerdokumente tragen die
  * Felder aus Schema 5 (SYNC.md 13). Am Aufbau der Datei aendert sich nichts;
  * die Fassung steigt trotzdem, damit eine aeltere App die Datei als neuer
  * erkennt und nicht halb versteht. Fassung 1 bis 3 lesen sich weiter, die
@@ -41,7 +41,7 @@ const val ORDNER_ANHAENGE = "attachments/"
 /**
  * Was oben in der Datei steht.
  *
- * **Zuerst geschrieben, nicht zuletzt.** Wer die Datei mit einem Werkzeug
+ * Zuerst geschrieben, nicht zuletzt. Wer die Datei mit einem Werkzeug
  * oeffnet, das sie von vorn nach hinten liest, soll erfahren, wonach sie gebaut
  * ist, bevor er anfaengt, Notizen zu lesen, die er womoeglich falsch versteht.
  *
@@ -98,12 +98,12 @@ data class Grabsteineintrag(
 /**
  * Eine Notiz in der Sicherung.
  *
- * **Das Notizdokument ist dasselbe wie in Google Drive**, Feld fuer Feld. Es
+ * Das Notizdokument ist dasselbe wie in Google Drive, Feld fuer Feld. Es
  * ist bereits der Vertrag mit dem spaeteren Rechner-Client, es ist geprueft, und
  * es hat eine Abbildung in beide Richtungen. Ein zweites Format daneben waere
  * eine zweite Stelle, an der dieselbe Wahrheit steht.
  *
- * **Drumherum liegt, was der Abgleich absichtlich weglaesst.** Eine Sicherung
+ * Drumherum liegt, was der Abgleich absichtlich weglaesst. Eine Sicherung
  * hat einen anderen Zweck als ein Abgleich: Sie stellt *dieses* Geraet wieder
  * her, nicht ein zweites daneben. Deshalb gehoert hier das Geraetelokale dazu,
  * das drueben niemanden etwas angeht:
@@ -129,7 +129,7 @@ enum class Uebernahme { NEU, ERSETZEN, BEHALTEN }
 /**
  * Ob eine Notiz aus der Datei die hiesige ersetzt.
  *
- * **Der neuere Stand gewinnt, und geloescht wird nie.** Das ist dieselbe Regel,
+ * Der neuere Stand gewinnt, und geloescht wird nie. Das ist dieselbe Regel,
  * nach der auch der Abgleich entscheidet, und sie ist die einzige, die in beiden
  * Faellen richtig ist: Nach einem Datenverlust ist die Datenbank leer, da
  * gewinnt ohnehin alles aus der Datei. Wird eine Sicherung dagegen in einen
@@ -159,7 +159,7 @@ fun dateiname(zeitpunkt: Long): String {
 /**
  * Der Name, unter dem eine Anhangsdatei aus der Sicherung abgelegt wird.
  *
- * **Der Rueckweg aus einer fremden Datei muss geprueft werden.** Ein Eintrag in
+ * Der Rueckweg aus einer fremden Datei muss geprueft werden. Ein Eintrag in
  * einem ZIP-Archiv darf alles heissen, auch `../../shared_prefs/etwas.xml`. Wer
  * so einen Namen ungeprueft an einen Dateipfad haengt, schreibt dorthin, wohin
  * das Archiv zeigt, und nicht dorthin, wohin er wollte.
@@ -202,7 +202,7 @@ data class Neuauflage(
 /**
  * Legt eine Notiz aus der Sicherung als NEUE Notiz an.
  *
- * **Wozu das gut ist.** Eine Notiz, die hier geloescht wurde, unter ihrer alten
+ * Wozu das gut ist. Eine Notiz, die hier geloescht wurde, unter ihrer alten
  * Kennung wiederzubeleben hiesse, gegen ihren Grabstein anzutreten. Der ist
  * keine Kleinigkeit, sondern die Nachricht an alle Geraete, dass es diese Notiz
  * nicht mehr gibt. Wer sie ueberstimmt, muss sie ueberall zurueckziehen, und in
@@ -210,12 +210,12 @@ data class Neuauflage(
  * Notiz wieder. Eine neue Kennung hat gar keinen Grabstein: Es gibt nichts zu
  * streiten, statt den Streit gewinnen zu muessen.
  *
- * **Alles bekommt eine neue Kennung**, nicht nur die Notiz. Eintraege, Anhaenge,
+ * Alles bekommt eine neue Kennung, nicht nur die Notiz. Eintraege, Anhaenge,
  * Transkripte und Erinnerungen haengen an ihr, und eine alte Anhangskennung
  * wieder zu benutzen hiesse, den Grabstein des Anhangs gegen sich zu haben.
  * Genau dem soll die neue Kennung ja aus dem Weg gehen.
  *
- * **Sie landet im Eingang.** Etwas, das zurueckkommt, gehoert dorthin, wo man
+ * Sie landet im Eingang. Etwas, das zurueckkommt, gehoert dorthin, wo man
  * hinsieht. Der Papierkorb bleibt unberuehrt: Lag die Notiz in der Sicherung im
  * Papierkorb, liegt sie danach wieder dort.
  *

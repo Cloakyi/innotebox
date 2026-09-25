@@ -20,12 +20,12 @@ import javax.inject.Singleton
  * vollstaendig zuruecknehmen koennen.
  *
  * ABGRENZUNG: Hier steht KEINE Policy. Welche Notizen betroffen sind, welche
- * Schwellen gelten und wann ueberhaupt gelaufen wird, entscheidet Phase 8
+ * Schwellen gelten und wann ueberhaupt gelaufen wird, entscheidet die Aufraeumarbeit
  * (WorkManager-Job plus Einstellungen). Dieses Repository bekommt die fertige
  * Auswahl uebergeben.
  *
- * WARUM DAS UEBERHAUPT SO GEBAUT IST: Die Spezifikation verlangt, einen
- * kompletten Lauf per Snackbar zuruecknehmen zu koennen. Dafuer reicht
+ * WARUM DAS UEBERHAUPT SO GEBAUT IST: Ein kompletter Lauf soll sich per
+ * Snackbar zuruecknehmen lassen. Dafuer reicht
  * `archive_runs` nicht -- dort stehen nur Zaehlwerte. Erst
  * `archive_run_items.previousStage` weiss, ob eine Notiz nach INBOX oder nach
  * WORKSPACE zurueckgehoert. Siehe Abweichung 3 in docs/ENTSCHEIDUNGEN.md.

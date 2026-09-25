@@ -9,10 +9,10 @@ import org.junit.Test
  *
  * Der wichtigste Punkt ist die Begrenzung: Eine Stunde Aufnahme wären
  * siebzigtausend Werte, von denen nur die letzten paar Dutzend je gezeichnet
- * werden. Ohne Deckel wüchse die Liste mit jeder Sekunde weiter — und der
+ * werden. Ohne Deckel wüchse die Liste mit jeder Sekunde weiter, und der
  * Zustand wird zwanzigmal pro Sekunde kopiert.
  *
- * Seit Phase 18 kommt dazu: Die Werte entstehen in Fenstern fester Länge,
+ * Dazu kommt: Die Werte entstehen in Fenstern fester Länge,
  * nicht je Block, und der Zustand zählt sie durch, damit die Welle über die
  * Zeit läuft statt über die Schübe.
  */

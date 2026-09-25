@@ -8,8 +8,8 @@ data class Sprechabschnitt(val startMs: Long, val endeMs: Long) {
 /**
  * Zerlegt eine Aufnahme an den Sprechpausen.
  *
- * **Das macht ausdrücklich keine KI, und das ist kein Rückschritt.** Die
- * Prompt API auf diesem Gerät nimmt nur Text und Bilder entgegen — `Part` kennt
+ * Das macht ausdrücklich keine KI, und das ist kein Rückschritt. Die
+ * Prompt API auf diesem Gerät nimmt nur Text und Bilder entgegen, `Part` kennt
  * genau zwei Ausprägungen, `TextPart` und `ImagePart` (im AAR nachgesehen am
  * 2026-08-21). Ein Sprachmodell, das Audio zerschneidet, gibt es hier also
  * nicht.
@@ -20,11 +20,11 @@ data class Sprechabschnitt(val startMs: Long, val endeMs: Long) {
  * dieselbe Antwort, ist prüfbar, braucht kein Modell und keine Wartezeit. Eine
  * KI würde dieselbe Frage teurer und unzuverlässiger beantworten.
  *
- * **Der Grundpegel wird gemessen, nicht angenommen.** Eine feste Schwelle
- * müsste raten, wie laut die Umgebung ist — im stillen Zimmer schnitte sie
+ * Der Grundpegel wird gemessen, nicht angenommen. Eine feste Schwelle
+ * müsste raten, wie laut die Umgebung ist, im stillen Zimmer schnitte sie
  * mitten in Wörter, im Zug fände sie überhaupt keine Pause. Gemessen werden
  * deshalb zwei Punkte der Aufnahme, Ruhe und Sprechpegel, und die Schwelle
- * dazwischen gelegt. Siehe [schwelleFuer] — dort steht auch, welcher naive
+ * dazwischen gelegt. Siehe [schwelleFuer], dort steht auch, welcher naive
  * Ansatz daran gescheitert ist.
  */
 object Pausenschnitt {
@@ -42,7 +42,7 @@ object Pausenschnitt {
      * Damit der erste und letzte Laut nicht abgeschnitten wird.
      *
      * Von 120 auf 300 ms erhöht, nachdem am Gerät Wörter fehlten. Sprache
-     * beginnt und endet leiser, als sie in der Mitte ist — ein knapper Rand
+     * beginnt und endet leiser, als sie in der Mitte ist, ein knapper Rand
      * schneidet genau die Konsonanten weg, an denen die Erkennung ein Wort
      * erkennt. Großzügig zu sein kostet hier nichts außer etwas Rechenzeit.
      */
@@ -54,11 +54,11 @@ object Pausenschnitt {
      * Wer minutenlang ohne Atempause redet, erzeugt sonst ein einziges
      * Riesenstück. Die Erkennung beendet sich in solchen Fällen irgendwann von
      * selbst, und alles danach wäre verloren. Lieber ein Schnitt an einer
-     * beliebigen Stelle als ein abgeschnittenes Ende — und der Fortschritt
+     * beliebigen Stelle als ein abgeschnittenes Ende, und der Fortschritt
      * bewegt sich sichtbar, statt minutenlang zu stehen.
      *
      * Von 45 auf 15 Sekunden gesenkt: Die Erkennung hat auch bei Zuspielung aus
-     * einer Datei mit `AUDIO_BUFFER_OVERFLOW` abgebrochen — ihr interner Puffer
+     * einer Datei mit `AUDIO_BUFFER_OVERFLOW` abgebrochen, ihr interner Puffer
      * fasst offenbar weniger, als ein langes Stück mitbringt. Kürzere Häppchen
      * sind der zuverlässige Weg; `Transkriptor` halbiert zusätzlich noch
      * einmal, wenn es trotzdem klemmt.
@@ -69,7 +69,7 @@ object Pausenschnitt {
      * Wo zwischen Ruhe und Sprache die Schwelle liegt.
      *
      * 0,08 heißt: dicht über dem Grundrauschen. Von 0,2 herabgesetzt, nachdem
-     * am Gerät Wörter fehlten — je höher die Schwelle, desto mehr leise
+     * am Gerät Wörter fehlten, je höher die Schwelle, desto mehr leise
      * Sprache gilt als Pause und fällt heraus. Ein bisschen Stille zu viel im
      * Häppchen stört die Erkennung nicht; ein fehlendes Wort schon.
      */
@@ -97,7 +97,7 @@ object Pausenschnitt {
     /**
      * Findet die Sprechabschnitte.
      *
-     * [rahmenPegel] ist der Effektivwert je Messfenster, 0..1 — genau das, was
+     * [rahmenPegel] ist der Effektivwert je Messfenster, 0..1, genau das, was
      * [pcmPegel] aus der Datei liest. Die Funktion selbst kennt weder Datei noch
      * Format und ist deshalb ohne Gerät prüfbar.
      */
@@ -162,16 +162,16 @@ object Pausenschnitt {
     /**
      * Die Lautstärke, ab der es als Sprache zählt.
      *
-     * Gemessen werden zwei Punkte: das **Grundrauschen** (20. Perzentil, der
-     * Wert, unter dem ein Fünftel der Aufnahme liegt) und der **Sprechpegel**
+     * Gemessen werden zwei Punkte: das Grundrauschen (20. Perzentil, der
+     * Wert, unter dem ein Fünftel der Aufnahme liegt) und der Sprechpegel
      * (90. Perzentil). Die Schwelle wird dazwischen gelegt, nah an der Ruhe.
      *
-     * Der Mittelwert taugt dafür nicht — er würde von der Sprache selbst nach
+     * Der Mittelwert taugt dafür nicht, er würde von der Sprache selbst nach
      * oben gezogen, und je mehr gesprochen wird, desto weniger fände man.
      *
-     * **Warum nicht einfach ein Vielfaches des Grundrauschens:** Weil das bei
+     * Warum nicht einfach ein Vielfaches des Grundrauschens: Weil das bei
      * einer Aufnahme, die durchgehend Sprache ist, das Dreifache der SPRACHE
-     * als Schwelle setzt — und dann findet man nichts. Genau dieser Fall ist
+     * als Schwelle setzt, und dann findet man nichts. Genau dieser Fall ist
      * beim Testen aufgefallen und hat den Ansatz gekippt. Liegen laut und leise
      * dicht beieinander, gibt es keine Dynamik, und dann entscheidet allein die
      * absolute Lautstärke, ob die ganze Aufnahme Sprache ist oder Stille.

@@ -7,7 +7,7 @@ package de.notizen.core.data.model
  * den Bereich nie: `Ordnerregeln.darfHinein` laesst ein Verschieben nur
  * innerhalb desselben Bereichs zu, und `parentId` zeigt deshalb immer auf einen
  * Ordner desselben Bereichs. Entschieden am 2026-08-25, ausgestaltet am
- * 2026-09-14, gebaut am 2026-09-19 (Phase 14a).
+ * 2026-09-14, gebaut am 2026-09-19.
  */
 enum class Bereich {
     ORDNER,

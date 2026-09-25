@@ -12,7 +12,7 @@ import javax.inject.Singleton
  * Der Zustand des KI-Modells, uebersetzt aus `FeatureStatus`.
  *
  * [LADBAR] ist der Zustand, der weh tut: das Modell ist NICHT auf dem Geraet.
- * Der Titeldialog darf darauf nicht warten (siehe docs/ENTSCHEIDUNGEN.md, Phase 3).
+ * Der Titeldialog darf darauf nicht warten (siehe docs/ENTSCHEIDUNGEN.md).
  */
 enum class KiZustand {
     BEREIT,
@@ -74,14 +74,14 @@ class TitelKi @Inject constructor() {
     /**
      * Laedt das Modell und meldet den Zustand DANACH.
      *
-     * Nur auf ausdrueckliche Ansage des Nutzers aufrufen. Am Messgeraet kostete
+     * Nur auf ausdrueckliche Ansage des Nutzers aufrufen. Auf dem Testgeraet kostete
      * der Uebergang 0 Bytes, weil die Daten schon lokal lagen -- auf einem
      * frisch aufgesetzten Geraet kann derselbe Aufruf ein echter, langsamer
      * Transfer sein (siehe docs/ENTSCHEIDUNGEN.md).
      *
      * Fortschritt wird hier bewusst NICHT gemeldet: `DownloadProgress` liefert
      * nur die geladenen Bytes, keine Gesamtgroesse. Ein Balken ist damit nicht
-     * baubar. Die sichtbare Fortschrittsanzeige ist Phase 7.
+     * baubar.
      */
     suspend fun laden(): KiZustand = withContext(Dispatchers.IO) {
         mitModell({ KiZustand.FEHLER }) { modell ->

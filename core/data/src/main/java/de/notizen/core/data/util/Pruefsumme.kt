@@ -6,8 +6,8 @@ import java.security.MessageDigest
 /**
  * Inhaltshash einer Anhangsdatei (SHA-256, klein geschrieben in Hex).
  *
- * Erspart in Phase 9 das erneute Hochladen unveraenderter Anhaenge. **Kein
- * Dublettenerkenner:** Bilder werden beim Import neu kodiert (siehe
+ * Erspart beim Abgleich das erneute Hochladen unveraenderter Anhaenge. Kein
+ * Dublettenerkenner: Bilder werden beim Import neu kodiert (siehe
  * `Bildspeicher`), zwei Geraete kommen beim selben Foto deshalb nicht
  * zwangslaeufig auf denselben Wert. So steht es auch in SYNC.md 14.6.
  *

@@ -38,9 +38,9 @@ import de.notizen.app.sicherheit.Entsperrung
 import de.notizen.app.sicherheit.alsActivity
 
 /**
- * Der Sperrbildschirm (Phase 19): Logo, ein Satz, ein Knopf.
+ * Der Sperrbildschirm: Logo, ein Satz, ein Knopf.
  *
- * **Ein bildschirmfüllender Dialog, kein Overlay im Inhalt.** Dialoge und
+ * Ein bildschirmfüllender Dialog, kein Overlay im Inhalt. Dialoge und
  * Blätter der App (Notizmenü, Farbwahl) sind eigene Fenster und lägen über
  * einem Overlay; ein Dialog, der nach ihnen entsteht, liegt über allen. Die
  * App darunter bleibt zusammengesetzt, damit nach dem Entsperren alles dort

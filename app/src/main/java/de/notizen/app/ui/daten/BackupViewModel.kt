@@ -31,12 +31,12 @@ data class Sicherungslage(
 /**
  * Sichern und Wiederherstellen, von der Oberfläche aus gesehen.
  *
- * **Die Datei wählt das System, nicht die App.** Beide Wege gehen über den
+ * Die Datei wählt das System, nicht die App. Beide Wege gehen über den
  * Dateiwähler von Android: Die App bekommt eine Adresse, die genau auf diese
  * eine Datei zeigt, und sonst nichts. Sie braucht dafür keine Berechtigung auf
  * den Speicher, und sie kann auch nichts anderes anfassen.
  *
- * **Die Arbeit hängt am Lebenslauf dieses Bildschirms.** Wer ihn während einer
+ * Die Arbeit hängt am Lebenslauf dieses Bildschirms. Wer ihn während einer
  * großen Sicherung verlässt, bricht sie ab. Für eine Aufgabe, die der Nutzer
  * ausdrücklich anstößt und deren Ergebnis er sofort sehen will, ist das die
  * ehrlichere Wahl gegenüber einem Hintergrundauftrag, dessen Ausgang niemand

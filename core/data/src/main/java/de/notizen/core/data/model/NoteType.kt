@@ -10,7 +10,7 @@ enum class NoteType {
 
     /**
      * IM UMFANG NICHT ENTHALTEN. Existiert nur, damit Zeichnungs-Notizen in
-     * Phase 11 ohne Schema-Migration nachruestbar sind. Der FAB bietet diesen
+     * spaeter ohne Schema-Migration nachruestbar sind. Der FAB bietet diesen
      * Typ nicht an, und nichts erzeugt ihn.
      */
     DRAWING,

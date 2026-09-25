@@ -13,7 +13,7 @@ data class NotizFarbe(val container: Color, val onContainer: Color)
 /**
  * Die vier Tonwerte einer Palettenfarbe.
  *
- * Die Referenzfarben aus Abschnitt 5a der Spezifikation (Google-Kalender-Palette)
+ * Die Referenzfarben (Google-Kalender-Palette)
  * sind AUSGANGSPUNKTE, nicht fertige Kartenfarben. Ungemildertes #F6BF26 als
  * Flaeche im Dark Mode blendet und macht Text unlesbar.
  *
@@ -57,7 +57,7 @@ internal val TONWERTE: Map<NoteColor, Tonwerte> = mapOf(
  *
  * DEFAULT hat bewusst KEINEN festen Wert: die Karte uebernimmt die Flaeche des
  * Themes. Bei aktivem Dynamic Color wechselt sie damit mit dem Hintergrundbild
- * -- das ist gewollt (Spezifikation Abschnitt 5a).
+ * -- das ist gewollt.
  *
  * Ob hell oder dunkel gilt, wird aus der Theme-Flaeche abgelesen statt aus
  * `isSystemInDarkTheme()`. Nur so stimmt es auch, wenn der Nutzer das Theme in
@@ -102,8 +102,8 @@ fun NoteColor.anzeigename(): String = when (this) {
 /**
  * Wie Geändertes im Transkript hervorgehoben wird.
  *
- * **Ein Textmarker, keine Textfarbe.** Der erste Versuch färbte die Schrift ein
- * — auf einer eingefärbten Notiz war das Ergebnis nur noch fett, weil eine
+ * Ein Textmarker, keine Textfarbe. Der erste Versuch färbte die Schrift ein,
+ * auf einer eingefärbten Notiz war das Ergebnis nur noch fett, weil eine
  * zweite lesbare Textfarbe auf einer farbigen Fläche schlicht nicht zu haben
  * ist: Der Kontrast der Palette ist ausschließlich für `onContainer` gegen
  * `container` nachgerechnet (`NoteColorContrastTest`), für alles andere gilt er
@@ -112,7 +112,7 @@ fun NoteColor.anzeigename(): String = when (this) {
  * Ein hinterlegter Streifen löst das: Die Schrift behält ihre geprüfte Farbe,
  * die Markierung entsteht aus der Fläche dahinter. Das funktioniert auf jeder
  * Notizfarbe gleich gut und ist auch bei vielen Wörtern auf einen Blick zu
- * sehen — genau das, was Fettschrift nicht leistet.
+ * sehen, genau das, was Fettschrift nicht leistet.
  */
 @Composable
 @ReadOnlyComposable
@@ -138,7 +138,7 @@ private const val MARKIERER_DECKUNG = 0.22f
  * Stern, der auf jeder Notiz anders aussieht, ist kein Erkennungszeichen mehr.
  * Gold ist dafür die Farbe, die niemand erklären muss.
  *
- * Eine der wenigen erlaubten festen Farben im UI-Code — dieselbe Ausnahme wie
+ * Eine der wenigen erlaubten festen Farben im UI-Code, dieselbe Ausnahme wie
  * für die Palette selbst, und aus demselben Grund.
  */
 val FAVORIT_GOLD = Color(0xFFFFC107)
@@ -146,7 +146,7 @@ val FAVORIT_GOLD = Color(0xFFFFC107)
 /**
  * Deckung des Abdunklers ueber einem Hintergrundbild.
  *
- * **Der Wert ist berechnet, nicht gewaehlt.** Ein Hintergrundbild kann jede
+ * Der Wert ist berechnet, nicht gewaehlt. Ein Hintergrundbild kann jede
  * Farbe haben, also auch reines Weiss -- und genau das ist der schlechteste
  * Fall fuer weisse Schrift. Bei 0,55 Schwarz darueber ergibt sich selbst dann
  * noch ein Kontrast von rund 4,75:1, die geforderten 4,5:1 sind also auch im

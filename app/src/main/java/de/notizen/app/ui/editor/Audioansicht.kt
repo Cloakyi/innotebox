@@ -37,9 +37,9 @@ enum class Audioseite(val beschriftung: String) {
 /**
  * Der Umschalter zwischen Aufnahme und Transkript.
  *
- * **Zwei Seiten statt einer langen.** Eine Audionotiz hat zwei Gesichter: das
+ * Zwei Seiten statt einer langen. Eine Audionotiz hat zwei Gesichter: das
  * Gehörte und das Gelesene. Beides untereinander auf einen Bildschirm zu
- * stapeln hieße, dass man für das eine immer am anderen vorbeiscrollt —
+ * stapeln hieße, dass man für das eine immer am anderen vorbeiscrollt,
  * und das Transkript ist bei einer längeren Aufnahme lang.
  */
 @Composable
@@ -93,7 +93,7 @@ fun Seitenumschalter(
 }
 
 /**
- * Die Aufnahmeseite — **nur die Aufnahme.**
+ * Die Aufnahmeseite, nur die Aufnahme.
  *
  * Kein Textfeld, kein Transkript. Wer hier ist, will hören; das Gelesene liegt
  * einen Umschalter weiter. Eine Seite, die beides zeigt, ist für beides die

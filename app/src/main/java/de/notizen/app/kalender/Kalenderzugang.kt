@@ -18,9 +18,9 @@ import javax.inject.Singleton
 /**
  * Ein Kalender auf dem Gerät, in den geschrieben werden darf.
  *
- * **Ein Konto ist nicht ein Kalender.** Hinter einer Adresse können mehrere
+ * Ein Konto ist nicht ein Kalender. Hinter einer Adresse können mehrere
  * liegen: der eigene, dazu geteilte, abonnierte und die für Geburtstage. Genau
- * einer davon ist der **Hauptkalender** des Kontos, und das ist der, den man
+ * einer davon ist der Hauptkalender des Kontos, und das ist der, den man
  * meint, wenn man „mein Kalender" sagt. Er heißt beim Anbieter wie die Adresse
  * selbst, und deshalb sieht die Liste ohne [haupt] aus, als stünde dort ein
  * Konto zur Auswahl statt eines Kalenders.
@@ -48,7 +48,7 @@ fun kalenderbeschriftung(wahl: Kalenderwahl): String =
 /**
  * Welcher Kalender beim Einschalten vorgeschlagen wird.
  *
- * **Der Hauptkalender, nicht der erste der Liste.** Vorher wurde einfach der
+ * Der Hauptkalender, nicht der erste der Liste. Vorher wurde einfach der
  * erste genommen, und der war der alphabetisch erste: Wer neben seinem Konto
  * noch einen zweiten Kalender hat, bekam den vorgeschlagen und musste erst
  * merken, dass er umstellen muss. Aufgefallen am 2026-08-23.
@@ -84,9 +84,9 @@ data class Fremdtermin(
 /**
  * Der Kalender des Geräts.
  *
- * **Nicht Googles Kalender-API über OAuth, sondern der Anbieter auf dem Gerät.**
+ * Nicht Googles Kalender-API über OAuth, sondern der Anbieter auf dem Gerät.
  * Der Unterschied ist keine Geschmacksfrage. Der Bereich `calendar.events` gilt
- * bei Google als **sensibel**; ihn anzufordern würde die Grundlage kosten, auf
+ * bei Google als sensibel; ihn anzufordern würde die Grundlage kosten, auf
  * der diese App steht. `drive.file` ist nicht sensibel, deshalb darf sie ohne
  * Googles Prüfung veröffentlicht werden (siehe docs/ENTSCHEIDUNGEN.md). Ein sensibler Bereich
  * daneben erzwingt die Verifizierung mit Datenschutzerklärung, Demo-Video und je
@@ -96,8 +96,8 @@ data class Fremdtermin(
  * der ohnehin auf dem Gerät eingerichtet ist, und das System trägt ihn zu Google.
  * Es braucht nur die Berechtigung für den Kalender.
  *
- * **Kein eigener Kalender.** Über den Anbieter ließe sich zwar einer anlegen, aber
- * nur ein **lokaler** — und der ginge nie zu Google. Ein eigener Google-Kalender
+ * Kein eigener Kalender. Über den Anbieter ließe sich zwar einer anlegen, aber
+ * nur ein lokaler, und der ginge nie zu Google. Ein eigener Google-Kalender
  * bräuchte wieder die API und damit den sensiblen Bereich. Also wird in einen
  * bestehenden geschrieben, den der Nutzer auswählt.
  *
@@ -112,7 +112,7 @@ class Kalenderzugang @Inject constructor(
     /**
      * Ob das System den Zugriff gerade erlaubt.
      *
-     * **Vor jedem Zugriff gefragt, nicht einmal gemerkt.** Die Erlaubnis lässt
+     * Vor jedem Zugriff gefragt, nicht einmal gemerkt. Die Erlaubnis lässt
      * sich in den Systemeinstellungen jederzeit entziehen, und dann fliegt jeder
      * Aufruf. Eine App, die einen einmal geholten Zustand für dauerhaft hält,
      * stürzt genau dann ab, wenn jemand aufräumt.
@@ -184,13 +184,13 @@ class Kalenderzugang @Inject constructor(
     /**
      * Trägt einen Termin ein und gibt seine Kennung zurück.
      *
-     * **Eine halbe Stunde lang**, nicht ein Zeitpunkt. Der Kalender-Anbieter
+     * Eine halbe Stunde lang, nicht ein Zeitpunkt. Der Kalender-Anbieter
      * verlangt für einen Termin ohne Wiederholung entweder `DTEND` oder
      * `DURATION`; ein Termin ohne Ende wird abgewiesen. Eine Erinnerung ist
      * eigentlich punktförmig, aber ein Balken, den man im Tagesplan sieht, ist
      * nützlicher als ein Strich, den man übersieht.
      *
-     * **`CUSTOM_APP_PACKAGE` zeigt zurück auf diese App.** Tippt man den Termin
+     * `CUSTOM_APP_PACKAGE` zeigt zurück auf diese App. Tippt man den Termin
      * in Google Kalender an, führt er zur Notiz statt in eine Sackgasse.
      */
     suspend fun eintragen(
@@ -261,7 +261,7 @@ class Kalenderzugang @Inject constructor(
     /**
      * Die Termine eines Zeitraums, ohne die aus dieser App.
      *
-     * **Über `Instances`, nicht über `Events`.** `Events` führt die Regel einer
+     * Über `Instances`, nicht über `Events`. `Events` führt die Regel einer
      * Terminserie, nicht ihre einzelnen Termine. Ein wöchentliches Treffen stünde
      * dort einmal und erschiene im Monat genau einmal statt viermal.
      *

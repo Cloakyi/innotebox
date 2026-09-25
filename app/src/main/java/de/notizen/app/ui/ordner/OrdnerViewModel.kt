@@ -46,7 +46,7 @@ sealed interface Ordnerdialog {
     data class Verschieben(val ordner: FolderEntity) : Ordnerdialog
     data class Loeschen(val ordner: FolderEntity) : Ordnerdialog
 
-    /** Die Farbe des Ordners, aus der Tagpalette (Phase 14e). */
+    /** Die Farbe des Ordners, aus der Tagpalette. */
     data class Farbe(val ordner: FolderEntity) : Ordnerdialog
 
     /**
@@ -61,7 +61,7 @@ sealed interface Ordnerdialog {
 /**
  * Die Ordner einer Ansicht.
  *
- * **Nur die Ordner, nicht die Notizen.** Die stehen im StageViewModel, das
+ * Nur die Ordner, nicht die Notizen. Die stehen im StageViewModel, das
  * schon alles kann, was an einer Notizkarte haengt. Zwei ViewModels
  * nebeneinander auf einem Bildschirm sind hier die einfachere Loesung als
  * eines, das beides tut: Ein Ordner und eine Notiz haben ausser ihrem Platz auf
@@ -78,7 +78,7 @@ class OrdnerViewModel @Inject constructor(
     val ordnerId: String? = savedState["ordner"]
 
     /**
-     * Welcher Baum: der normale oder das Archiv des Ordnermodus (Phase 14b).
+     * Welcher Baum: der normale oder das Archiv des Ordnermodus.
      *
      * Kommt als festes Argument der Archivroute herein, so wie `papierkorb`
      * bei der Papierkorbroute. Alles darunter rechnet nur ueber diesen Baum:
@@ -101,7 +101,7 @@ class OrdnerViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /**
-     * Wonach die Ordner geordnet stehen (Phase 14e). EAGERLY aus demselben
+     * Wonach die Ordner geordnet stehen. EAGERLY aus demselben
      * Grund wie [alle]: `baumzeilen` und `zieleFuer` lesen den Wert direkt.
      */
     val sortierung: StateFlow<Ordnersortierung> = einstellungen.ordnerReihenfolge()
@@ -213,7 +213,7 @@ class OrdnerViewModel @Inject constructor(
         }
     }
 
-    /** Die Farbe des Ordners, `null` nimmt sie weg (Phase 14e). */
+    /** Die Farbe des Ordners, `null` nimmt sie weg. */
     fun umfaerben(id: String, colorArgb: Int?) {
         viewModelScope.launch {
             ordner.umfaerben(id, colorArgb)
@@ -236,7 +236,7 @@ class OrdnerViewModel @Inject constructor(
     /**
      * Der Einstieg ins Loeschen.
      *
-     * **Ein leerer Ordner wird ohne Rueckfrage geloescht.** Die Frage "nur den
+     * Ein leerer Ordner wird ohne Rueckfrage geloescht. Die Frage "nur den
      * Ordner oder samt Inhalt" hat bei einem Ordner ohne Inhalt keine zwei
      * Antworten; sie zu stellen waere eine Huerde ohne Sinn (seit
      * 2026-09-14). Die Undo-Leiste bleibt, wie bei jedem Loeschen.

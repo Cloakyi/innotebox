@@ -1,7 +1,7 @@
 package de.notizen.core.data.model
 
 /**
- * Ob eine KI-Funktion auf diesem Geraet geht (Phase 15).
+ * Ob eine KI-Funktion auf diesem Geraet geht.
  *
  * Drei Stufen, und die mittlere ist die wichtige: `LADBAR` heisst, das Modell
  * fehlt noch, laesst sich aber holen. Wer das mit `NICHT` zusammenwirft, sagt
@@ -14,7 +14,7 @@ enum class Faehigkeit {
 }
 
 /**
- * Was dieses Geraet an KI kann, einmal gemessen und gemerkt (Phase 15).
+ * Was dieses Geraet an KI kann, einmal gemessen und gemerkt.
  *
  * Gemessen wird beim ersten Start (und nach Datenloeschung), danach bei jedem
  * Start nur leicht nachgeprueft: Weicht das Ergebnis ab, meldet die App das

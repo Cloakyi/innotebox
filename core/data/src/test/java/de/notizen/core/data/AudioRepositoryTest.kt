@@ -17,8 +17,8 @@ import org.robolectric.annotation.Config
 /**
  * Was eine Aufnahme in der Datenbank hinterlässt.
  *
- * Der wichtigste Punkt steht im letzten Test: **das Transkript muss durchsuchbar
- * werden.** Der FTS-Index wird von Hand gepflegt, und wer eine neue
+ * Der wichtigste Punkt steht im letzten Test: das Transkript muss durchsuchbar
+ * werden. Der FTS-Index wird von Hand gepflegt, und wer eine neue
  * Schreiboperation ergänzt und `reindex()` vergisst, merkt es nur hier.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -104,7 +104,7 @@ class AudioRepositoryTest : DatenbankTestbasis() {
 
     @Test
     fun `derselbe Inhalt ergibt denselben Hash`() = runTest {
-        // Grundlage dafuer, dass Phase 9 unveraenderte Anhaenge nicht erneut
+        // Grundlage dafuer, dass der Abgleich unveraenderte Anhaenge nicht erneut
         // hochlaedt.
         val a = notes.create()
         val b = notes.create()

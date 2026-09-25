@@ -15,9 +15,9 @@ import org.robolectric.annotation.Config
 /**
  * Was das Symbol in der Kopfzeile zählt.
  *
- * **Die Zahl ist eine Zusage, keine Statistik.** Steht dort „alles gesichert",
+ * Die Zahl ist eine Zusage, keine Statistik. Steht dort „alles gesichert",
  * verlässt sich jemand darauf. Zählt sie dagegen dauerhaft etwas mit, das gar
- * nicht hochgehört, steht dort für immer „nicht gesichert" — und dann sieht
+ * nicht hochgehört, steht dort für immer „nicht gesichert", und dann sieht
  * niemand mehr hin, wenn es einmal stimmt.
  */
 @RunWith(RobolectricTestRunner::class)

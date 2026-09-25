@@ -10,8 +10,8 @@ import javax.inject.Singleton
 /**
  * Was gerade aufgenommen wird.
  *
- * **Während der Aufnahme gibt es keinen Text.** Aufgenommen wird erst, erkannt
- * später — das ist der Kern des Entwurfs. Der Zustand hier trägt deshalb nur,
+ * Während der Aufnahme gibt es keinen Text. Aufgenommen wird erst, erkannt
+ * später, das ist der Kern des Entwurfs. Der Zustand hier trägt deshalb nur,
  * was man beim Sprechen wirklich sehen will: läuft es, wie lange schon, und
  * kommt überhaupt Ton an.
  */
@@ -30,7 +30,7 @@ data class AufnahmeStatus(
     /**
      * Wie viele Werte der Welle seit Beginn der Aufnahme gemessen wurden, auch
      * die schon vergessenen. Die Welle läuft daran entlang wie an einer Uhr
-     * (Phase 18): Der letzte Wert in [verlauf] hat die Nummer `verlaufGesamt - 1`.
+     * : Der letzte Wert in [verlauf] hat die Nummer `verlaufGesamt - 1`.
      */
     val verlaufGesamt: Long = 0,
     val fehler: String? = null,
@@ -38,7 +38,7 @@ data class AufnahmeStatus(
      * Ob je etwas anderes als Stille ankam.
      *
      * Ohne diese Angabe sähe eine Aufnahme mit stummem Mikrofon genauso aus wie
-     * eine gelungene — man merkte es erst, wenn hinterher kein Transkript
+     * eine gelungene, man merkte es erst, wenn hinterher kein Transkript
      * herauskommt, und suchte den Fehler an der falschen Stelle.
      */
     val hatTon: Boolean = false,
@@ -67,7 +67,7 @@ private const val VERLAUF_LAENGE = 300
  *
  * Liegt außerhalb von beidem: Der Dienst überlebt das Verlassen des Screens,
  * und der Screen überlebt einen Neustart des Dienstes. Ein Zustand, der einem
- * von beiden gehörte, ginge beim Drehen des Geräts verloren — und eine laufende
+ * von beiden gehörte, ginge beim Drehen des Geräts verloren, und eine laufende
  * Aufnahme darf das nicht.
  */
 @Singleton

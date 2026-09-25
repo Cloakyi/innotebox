@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.TextToolbar
 import androidx.compose.ui.platform.TextToolbarStatus
 
 /**
- * Die schwebende Auswahlleiste des Textes, mit „Übersetzen" (Phase 16).
+ * Die schwebende Auswahlleiste des Textes, mit „Übersetzen".
  *
  * Compose bringt eine eigene Leiste mit (`AndroidTextToolbar`), aber die
  * kennt nur Ausschneiden, Kopieren, Einfügen und Alles auswählen, und sie ist

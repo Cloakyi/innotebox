@@ -10,7 +10,7 @@
     -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Phase 19: die Sperre der App ueber den Systemdialog (Biometrie, Bildschirmsperre) -->
+    <!-- Die Sperre der App ueber den Systemdialog (Biometrie, Bildschirmsperre) -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <!-- Damit Abgleich und Sicherung im Hintergrund nicht vom Energiesparen angehalten
          werden. Der Nutzer entscheidet im Dialog beim Start, die App fragt nur. -->
@@ -53,7 +53,7 @@
 
         Bewusst KEINE CAMERA-Berechtigung: Das Foto macht die Kamera-App, nicht
         diese hier. Wer android.permission.CAMERA eintraegt, macht sie fuer
-        ACTION_IMAGE_CAPTURE sogar zur Pflicht und muss sie dann auch erfragen —
+        ACTION_IMAGE_CAPTURE sogar zur Pflicht und muss sie dann auch erfragen,
         fuer nichts.
     -->
     <queries>

@@ -111,13 +111,13 @@ class NoteRepository @Inject constructor(
     /** Alle Notizen ausserhalb des Papierkorbs. Fuer den Ordnermodus. */
     fun observeAnzahlGesamt(): Flow<Int> = noteDao.observeAnzahlGesamt()
 
-    /** Die beiden Baeume des Ordnermodus, je fuer sich gezaehlt (Phase 14b). */
+    /** Die beiden Baeume des Ordnermodus, je fuer sich gezaehlt. */
     fun observeAnzahlImOrdnerArchiv(): Flow<Int> = noteDao.observeAnzahlImOrdnerArchiv()
 
     fun observeAnzahlNichtArchiviert(): Flow<Int> = noteDao.observeAnzahlNichtArchiviert()
 
     /**
-     * Archiviert Notizen im Ordnermodus (Phase 14b, SYNC.md 13).
+     * Archiviert Notizen im Ordnermodus (SYNC.md 13).
      *
      * Sie landen oben im Archiv und merken sich ihren Herkunftsordner. Die
      * Stufe bleibt, wie sie ist: Wer im Ordnersystem archiviert, veraendert
@@ -174,7 +174,7 @@ class NoteRepository @Inject constructor(
     // -------------------------------------------------------------- anlegen
 
     /**
-     * Neue Notiz. Landet immer in INBOX (Spezifikation Abschnitt 14).
+     * Neue Notiz. Landet immer in INBOX.
      *
      * [ordnerId] legt sie zusaetzlich in einen Ordner. Die Stufe bleibt
      * trotzdem der Eingang, auch im Ordnermodus: Sie wird dort nicht gezeigt,
@@ -207,20 +207,20 @@ class NoteRepository @Inject constructor(
      * WAS MITGEHT und was nicht, ist eine inhaltliche Entscheidung, keine
      * technische:
      *
-     *  * **Mit:** Titel, Text, Farbe, Hintergrundbild, Eintraege, Tags,
+     *  * Mit: Titel, Text, Farbe, Hintergrundbild, Eintraege, Tags,
      *    Anhaenge und Transkripte. Das alles beschreibt, was in der Notiz
      *    steht -- eine Kopie ohne das waere keine.
-     *  * **Ohne: Favorit und Erinnerung.** Beides sind Aussagen ueber DIESE
+     *  * Ohne: Favorit und Erinnerung. Beides sind Aussagen ueber DIESE
      *    Notiz, nicht ueber ihren Inhalt. Eine mitkopierte Erinnerung wuerde
      *    zweimal klingeln, ein mitkopierter Stern die Favoritenliste
      *    verdoppeln.
-     *  * **Ohne: Stufe und Auto-Archiv-Vermerk.** Die Kopie ist neu und faengt
+     *  * Ohne: Stufe und Auto-Archiv-Vermerk. Die Kopie ist neu und faengt
      *    im Eingang an, wie jede neue Notiz.
      *
      * [zielDatei] entscheidet, wohin die Datei eines Anhangs kopiert wird --
      * das muss die App-Schicht sagen, denn nur sie kennt die Ablage. Gibt sie
      * `null` zurueck oder scheitert das Kopieren, wird der Anhang
-     * **uebersprungen**: Eine Anhangszeile ohne Datei saehe aus wie ein Bild,
+     * uebersprungen: Eine Anhangszeile ohne Datei saehe aus wie ein Bild,
      * das man ansehen kann.
      */
     suspend fun duplizieren(
@@ -358,7 +358,7 @@ class NoteRepository @Inject constructor(
      * Verwirft eine Notiz, die weder Titel noch Inhalt hat.
      *
      * Der Editor hat keinen Speichern-Knopf: wer eine leere Notiz oeffnet und
-     * wieder verlaesst, will sie nicht behalten (Spezifikation Abschnitt 9).
+     * wieder verlaesst, will sie nicht behalten.
      * Gibt zurueck, ob geloescht wurde.
      */
     suspend fun discardIfEmpty(id: String): Boolean {
@@ -464,7 +464,7 @@ class NoteRepository @Inject constructor(
      * Meldet eine Notiz erneut zum Hochladen an.
      *
      * Für den Fall, dass jemand es genau jetzt wissen will. Fasst `updatedAt`
-     * nicht an — es hat sich ja nichts geändert, und ein hochgezähltes
+     * nicht an, es hat sich ja nichts geändert, und ein hochgezähltes
      * `updatedAt` sähe auf dem anderen Gerät aus wie eine Bearbeitung, die es
      * nie gab. Kostet im schlimmsten Fall einen überflüssigen Upload.
      */
@@ -473,7 +473,7 @@ class NoteRepository @Inject constructor(
     /**
      * Nimmt eine Notiz vom Kalender aus oder wieder hinein.
      *
-     * **Kein `markDirty`, kein `updatedAt`.** Das Feld ist rein lokal, genau wie
+     * Kein `markDirty`, kein `updatedAt`. Das Feld ist rein lokal, genau wie
      * `syncEnabled`: Welcher Kalender gemeint ist, weiss nur dieses Geraet. Den
      * Abgleich anzustossen hiesse, eine Entscheidung zu verschicken, die
      * drueben nichts bedeutet.
@@ -602,18 +602,18 @@ class NoteRepository @Inject constructor(
      *
      * Gibt zurück, wie viele Notizen es getroffen hat.
      *
-     * **Hier wird endgültig gelöscht, und das ist der Unterschied zum
-     * Auto-Archiv.** Deshalb drei Vorsichtsmaßnahmen:
+     * Hier wird endgültig gelöscht, und das ist der Unterschied zum
+     * Auto-Archiv. Deshalb drei Vorsichtsmaßnahmen:
      *
-     *  1. `tage <= 0` heißt **aus** und tut nichts. Der Standardwert ist 0.
+     *  1. `tage <= 0` heißt aus und tut nichts. Der Standardwert ist 0.
      *  2. Es läuft über [purge] und damit über denselben Weg wie das
-     *     Löschen von Hand — mit Tombstones und mit dem Aufräumen der Dateien.
+     *     Löschen von Hand, mit Tombstones und mit dem Aufräumen der Dateien.
      *     Ein eigener, kürzerer Weg wäre die Stelle, an der man eines von
      *     beidem vergisst.
      *  3. Gemessen wird an `deletedAt`. Wer eine Notiz heute wegwirft, hat noch
-     *     die volle Frist — auch wenn die Notiz selbst uralt ist.
+     *     die volle Frist, auch wenn die Notiz selbst uralt ist.
      *
-     * **Kein Undo.** Ein Papierkorb, dessen Leeren man rückgängig machen kann,
+     * Kein Undo. Ein Papierkorb, dessen Leeren man rückgängig machen kann,
      * ist ein zweiter Papierkorb. Die Frist IST die Rücknahmemöglichkeit.
      */
     suspend fun papierkorbAufraeumen(tage: Int): Int {

@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Eine Stufe mit ihren beiden Grenzen. `0` heißt jeweils **aus**.
+ * Eine Stufe mit ihren beiden Grenzen. `0` heißt jeweils aus.
  */
 data class Stufengrenzen(
     val tage: Int = 0,
@@ -43,7 +43,7 @@ data class Aufraeumzustand(
  * Einstellungen und Protokoll des automatischen Aufräumens.
  *
  * Die Auswahlwerte sind bewusst grob gestuft. Ob nach 30 oder nach 31 Tagen
- * archiviert wird, ist keine Frage, die jemand beantworten kann — ein freies
+ * archiviert wird, ist keine Frage, die jemand beantworten kann, ein freies
  * Zahlenfeld würde nur so tun, als gäbe es darauf eine richtige Antwort.
  */
 @HiltViewModel
@@ -85,7 +85,7 @@ class AufraeumViewModel @Inject constructor(
     /**
      * Nimmt einen protokollierten Lauf zurück.
      *
-     * Auch Wochen später noch möglich, solange der Lauf im Protokoll steht —
+     * Auch Wochen später noch möglich, solange der Lauf im Protokoll steht,
      * die Benachrichtigung ist nur der schnelle Weg, nicht der einzige.
      */
     fun zuruecknehmen(batchId: String) = viewModelScope.launch { archiv.undo(batchId) }

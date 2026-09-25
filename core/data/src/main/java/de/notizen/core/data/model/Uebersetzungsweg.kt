@@ -1,7 +1,7 @@
 package de.notizen.core.data.model
 
 /**
- * Über welchen Weg die App übersetzt (Phase 16, entschieden am 2026-09-14).
+ * Über welchen Weg die App übersetzt (entschieden am 2026-09-14).
  *
  * Drei Wege, weil kein einzelner überall da ist: Die Übersetzung des Systems
  * fehlt auf manchen Geräten ganz (Xiaomi), die KI auf dem Gerät hängt an

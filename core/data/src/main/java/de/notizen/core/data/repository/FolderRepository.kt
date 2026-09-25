@@ -21,12 +21,12 @@ import javax.inject.Singleton
 /**
  * Ordner. Das selbstgebaute Ordnungssystem neben dem Fluss.
  *
- * **Der Baum wird hier nicht berechnet.** Wer wissen will, was unter einem
+ * Der Baum wird hier nicht berechnet. Wer wissen will, was unter einem
  * Ordner liegt, fragt `Ordnerregeln`; dieses Repository schreibt nur. Die
  * Trennung ist Absicht: Die Rechenregeln sind die Stelle, an der ein Kreis im
  * Baum entsteht, und die soll ohne Datenbank pruefbar bleiben.
  *
- * **Geloescht wird weich.** Ein Ordner behaelt seine Zeile und bekommt ein
+ * Geloescht wird weich. Ein Ordner behaelt seine Zeile und bekommt ein
  * `deletedAt`. Anders als bei den Tags gibt es fuer Ordner keinen Grabstein in
  * Drive: Der Abgleich schickt ausschliesslich Grabsteine vom Typ NOTE. Die
  * weiche Loeschung ist damit die einzige Nachricht, die das andere Geraet je
@@ -66,7 +66,7 @@ class FolderRepository @Inject constructor(
      * "Rechnungen" nebeneinander sind ein Versehen, das man sieht und in einer
      * Sekunde behebt.
      *
-     * **Der Bereich erbt sich vom Elternteil.** Ein Unterordner eines
+     * Der Bereich erbt sich vom Elternteil. Ein Unterordner eines
      * Archivordners ist ein Archivordner; [bereich] zaehlt nur auf der obersten
      * Ebene, wo es kein Elternteil gibt, das es sagen koennte.
      */
@@ -101,7 +101,7 @@ class FolderRepository @Inject constructor(
     }
 
     /**
-     * Schreibt die eigene Reihenfolge einer Geschwisterreihe (Phase 14e): die
+     * Schreibt die eigene Reihenfolge einer Geschwisterreihe: die
      * Stelle in [ids] wird der `sortIndex`. Nur was sich geaendert hat, wird
      * geschrieben und abgeglichen; wer den Haken drueckt, ohne gezogen zu
      * haben, loest keinen Abgleich aus.
@@ -130,7 +130,7 @@ class FolderRepository @Inject constructor(
     /**
      * Haengt einen Ordner woandershin. `null` ist die oberste Ebene.
      *
-     * **Die Pruefung steht hier und nicht nur in der Oberflaeche.** Die
+     * Die Pruefung steht hier und nicht nur in der Oberflaeche. Die
      * Ordnerauswahl bietet unmoegliche Ziele zwar gar nicht erst an, aber der
      * Baum kann sich zwischen dem Aufgehen der Auswahl und dem Antippen
      * geaendert haben -- etwa durch einen Abgleich, der einen Ordner
@@ -155,7 +155,7 @@ class FolderRepository @Inject constructor(
      * Loescht einen Ordner, ohne seinen Inhalt mitzunehmen.
      *
      * Notizen und Unterordner wandern nach [zielId]; ohne Angabe eine Ebene
-     * hoeher. **Das ist der schonende Weg**, und er war lange der einzige: Wer
+     * hoeher. Das ist der schonende Weg, und er war lange der einzige: Wer
      * einen Ordner wegraeumt, will meistens den Ordner los sein und nicht das,
      * was darin lag.
      *
@@ -164,7 +164,7 @@ class FolderRepository @Inject constructor(
      * inzwischen woanders, und sie ein zweites Mal zu verschieben waere eine
      * Ueberraschung. Was herausgerueckt ist, merkt sich aber, woher es kam
      * (`ehemaligerOrdnerId`, `ehemaligerElternId`): Der Ordner im Papierkorb
-     * zeigt es ausgegraut als seinen frueheren Inhalt (Phase 14c).
+     * zeigt es ausgegraut als seinen frueheren Inhalt.
      */
     suspend fun loeschen(id: String, zielId: String? = null) {
         val jetzt = clock.now()
@@ -191,13 +191,13 @@ class FolderRepository @Inject constructor(
     /**
      * Loescht einen Ordner MIT allem, was darin liegt.
      *
-     * **Alles landet im Papierkorb, nichts verschwindet.** Die Notizen behalten
+     * Alles landet im Papierkorb, nichts verschwindet. Die Notizen behalten
      * dabei ihre `folderId` -- genau das ist der Grund, warum sich der Ordner
      * spaeter samt Inhalt zurueckholen laesst. Ohne sie waeren es hinterher
      * dreissig einzelne Notizen im Papierkorb, und niemand wuesste mehr, dass
      * sie zusammengehoerten.
      *
-     * **Die Unterordner gehen mit, und ihre Notizen auch.** Ein Loeschen „samt
+     * Die Unterordner gehen mit, und ihre Notizen auch. Ein Loeschen „samt
      * Inhalt", das beim ersten Unterordner haltmacht, waere die Sorte
      * Halbheit, die man erst bemerkt, wenn man den Papierkorb durchsucht.
      */
@@ -229,8 +229,8 @@ class FolderRepository @Inject constructor(
      * versehentlich geloescht hat, will alles zurueck; wer ihn aufgeraeumt hat
      * und nur die Huelle braucht, will genau das.
      *
-     * **Die Eltern werden mit zurueckgeholt, wenn sie auch im Papierkorb
-     * liegen.** Sonst haette der Ordner ein Elternteil, das es nicht gibt, und
+     * Die Eltern werden mit zurueckgeholt, wenn sie auch im Papierkorb
+     * liegen. Sonst haette der Ordner ein Elternteil, das es nicht gibt, und
      * haenge nach `Ordnerregeln.kinder` an der Wurzel statt dort, wo er war.
      */
     suspend fun wiederherstellen(id: String, mitNotizen: Boolean) {
@@ -303,7 +303,7 @@ class FolderRepository @Inject constructor(
     /**
      * Entfernt einen Ordner endgueltig aus dem Papierkorb.
      *
-     * **Die Notizen darin gehen NICHT mit.** Sie liegen weiter im Papierkorb
+     * Die Notizen darin gehen NICHT mit. Sie liegen weiter im Papierkorb
      * und lassen sich einzeln zurueckholen; nur ihre Ordnerkennung zeigt danach
      * ins Leere, was heisst: Hauptordner. Endgueltiges Loeschen von Notizen
      * laeuft ueber den einen Weg, den es dafuer gibt (`NoteRepository.purge`),
@@ -354,7 +354,7 @@ class FolderRepository @Inject constructor(
 
     /**
      * Was aus einem geloeschten Ordner herausgerueckt ist und jetzt woanders
-     * lebt (Phase 14c): der fruehere Inhalt, ausgegraut im Papierkorb.
+     * lebt: der fruehere Inhalt, ausgegraut im Papierkorb.
      */
     fun observeHerausgerueckteNotizen(ordnerId: String) =
         noteDao.observeHerausgerueckte(ordnerId)

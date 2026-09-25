@@ -47,7 +47,7 @@ class SicherungsformatTest {
      *
      * Der naheliegende Fehler wäre `ausDatei >= lokalUpdatedAt`. Damit würde
      * beim Einlesen derselben Sicherung jede einzelne Notiz neu geschrieben,
-     * neu indiziert und für den Abgleich vorgemerkt — Arbeit ohne jede Wirkung,
+     * neu indiziert und für den Abgleich vorgemerkt, Arbeit ohne jede Wirkung,
      * und in Google Drive landete anschließend der gesamte Bestand noch einmal.
      */
     @Test

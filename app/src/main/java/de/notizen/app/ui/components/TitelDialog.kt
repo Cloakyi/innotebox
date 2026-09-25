@@ -34,13 +34,13 @@ import de.notizen.app.ai.KiZustand
 /**
  * Titel nachtragen, bevor eine Notiz den Eingang verlaesst.
  *
- * **Das Feld ist leer** (Phase 15, Nutzer 2026-09-14). Bis dahin stand der
+ * Das Feld ist leer (seit 2026-09-14). Bis dahin stand der
  * abgeleitete Titel schon darin, und man bestaetigte ihn, ohne ihn zu lesen.
  * Jetzt steht ein Platzhalter als ganzer Satz, darunter ein Ladekreis, bis
  * der Vorschlag der KI da ist; Antippen uebernimmt ihn ins Feld. Bei KI aus
  * oder nicht verfuegbar steht darunter gar nichts, kein Hinweis.
  *
- * **Ohne Titel kein Verschieben.** Der Knopf bleibt tot, solange das Feld leer
+ * Ohne Titel kein Verschieben. Der Knopf bleibt tot, solange das Feld leer
  * ist, und „Abbrechen" verschiebt nicht. Der Dialog ist ein Angebot, einen
  * Titel zu vergeben, keine Sperre, die man mit Leerlauf umgeht.
  *
@@ -105,7 +105,7 @@ fun TitelDialog(
 }
 
 /**
- * Der KI-Teil des Dialogs (Phase 15).
+ * Der KI-Teil des Dialogs.
  *
  * Solange die KI arbeitet, ein Ladekreis; danach der Vorschlag zum Antippen.
  * Bei KI aus, nicht verfuegbar, ohne Ergebnis oder mit Fehler steht hier

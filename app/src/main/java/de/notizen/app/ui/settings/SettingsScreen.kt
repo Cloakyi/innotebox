@@ -85,7 +85,7 @@ fun SettingsScreen(
     onBackup: () -> Unit,
     onProtokoll: () -> Unit,
     onLizenzen: () -> Unit,
-    /** Welcher Abschnitt beim Aufgehen angesprungen und kurz hervorgehoben wird (Phase 15). */
+    /** Welcher Abschnitt beim Aufgehen angesprungen und kurz hervorgehoben wird. */
     hervorheben: String? = null,
     themeViewModel: ThemeViewModel = hiltViewModel(),
     gestenViewModel: GestenViewModel = hiltViewModel(),
@@ -111,7 +111,7 @@ fun SettingsScreen(
     var netzDialog by remember { mutableStateOf(false) }
     var kiDialog by remember { mutableStateOf(false) }
 
-    // DER SPRUNG ZUM KI-SCHALTER (Phase 15): vom ausgegrauten Transkript her
+    // DER SPRUNG ZUM KI-SCHALTER: vom ausgegrauten Transkript her
     // kommt man mit `hervorheben = "ki"` hierher. Die Liste scrollt zum
     // Schalter, und er bekommt fuer eine Sekunde eine Flaeche in `primary`,
     // die verblasst. Dieselbe Mechanik wie das Aufblitzen der Karte in 14c.
@@ -253,7 +253,7 @@ fun SettingsScreen(
                     "vollständig erhalten."
             },
         )
-        // Die Titelpflicht (Phase 15). Ausschalten fragt nach, Einschalten
+        // Die Titelpflicht. Ausschalten fragt nach, Einschalten
         // nicht: Wer die Sicherung wieder einschaltet, braucht keine Warnung.
         EchterSchalter(
             titel = "Titel beim Verschieben verlangen",
@@ -445,7 +445,7 @@ fun SettingsScreen(
             )
         }
 
-        // DER GERAETESTAND (Phase 15): einmal gemessen, hier gezeigt. Kein
+        // DER GERAETESTAND: einmal gemessen, hier gezeigt. Kein
         // Schalter, eine Auskunft. Solange nie gemessen wurde, steht das da,
         // und nicht eine geratene Zusage.
         Hinweiszeile(geraetestandText(ki.geraetestand, ki.aktiv))
@@ -453,7 +453,7 @@ fun SettingsScreen(
         // Die Messzeile "Uebersetzung auf dem Geraet" stand hier vom 2026-09-03
         // bis zum 2026-09-14. Sie hat ihre Frage beantwortet (Pixel: Dienst da,
         // Xiaomi: keiner) und kam danach wieder raus. Die
-        // Messung selbst (`KiEinstellung.uebersetzung`) bleibt fuer Phase 16.
+        // Messung selbst (`KiEinstellung.uebersetzung`) dient jetzt der Uebersetzung.
 
         // Der Schalter bleibt bedienbar, auch wenn das Geraet nichts kann. Ihn
         // auszugrauen hiesse zu behaupten, die Einstellung sei falsch -- sie
@@ -467,7 +467,7 @@ fun SettingsScreen(
             )
         }
 
-        // DAS NETZ-OPT-IN (Phase 15). Einschalten nur ueber den Dialog mit den
+        // DAS NETZ-OPT-IN. Einschalten nur ueber den Dialog mit den
         // Bedingungen (bis unten lesen, zehn Sekunden); Ausschalten sofort.
         EchterSchalter(
             titel = "Verarbeitung im Netz",
@@ -507,7 +507,7 @@ fun SettingsScreen(
 
 
         Abschnitt("Sicherheit")
-        // DIE SPERRE (Phase 19): eine Funktion der App, nicht des Systems.
+        // DIE SPERRE: eine Funktion der App, nicht des Systems.
         // Ein- und Ausschalten nur nach einer erfolgreichen Entsperrung: Wer
         // sich nicht ausweisen kann, sperrt sich sonst aus, und wer die App
         // offen vorfindet, soll die Sperre nicht abschalten koennen.
@@ -716,7 +716,7 @@ private fun Angabe(titel: String, wert: String) {
 /**
  * Die Auswahl des Kalenders.
  *
- * **Zwei Zeilen je Eintrag, nicht eine.** Der Hauptkalender eines Google-Kontos
+ * Zwei Zeilen je Eintrag, nicht eine. Der Hauptkalender eines Google-Kontos
  * heisst beim Anbieter genau wie die Adresse des Kontos. In einer einzeiligen
  * Liste stand deshalb eine Mailadresse zwischen Namen wie „Arbeit", und es sah
  * aus, als koenne man dort Konten waehlen statt Kalender. Aufgefallen am
@@ -805,7 +805,7 @@ private fun Kalenderauswahl(
 /** Der Wert von `hervorheben`, der zum KI-Schalter springt. */
 const val HERVORHEBEN_KI = "ki"
 
-/** Der Satz zum gemerkten Geraetestand in den Einstellungen (Phase 15). */
+/** Der Satz zum gemerkten Geraetestand in den Einstellungen. */
 private fun geraetestandText(stand: Geraetestand?, kiAn: Boolean): String {
     if (!kiAn && stand == null) return "Was dieses Gerät an KI kann, prüft die App, sobald du die KI einschaltest."
     if (stand == null) return "Was dieses Gerät an KI kann, wird beim nächsten Start geprüft."
@@ -824,7 +824,7 @@ private fun geraetestandText(stand: Geraetestand?, kiAn: Boolean): String {
 }
 
 /**
- * Ein Weg zum Uebersetzen: Radioknopf, Name, Satz dazu (Phase 16).
+ * Ein Weg zum Uebersetzen: Radioknopf, Name, Satz dazu.
  *
  * Nicht verfuegbar heisst blass und nicht antippbar. Der Satz sagt, warum,
  * und wo noetig, was man dagegen tun kann.

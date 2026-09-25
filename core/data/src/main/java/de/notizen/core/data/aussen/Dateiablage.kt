@@ -9,11 +9,11 @@ import javax.inject.Singleton
 /**
  * Die Endung, unter der ein Anhang abgelegt wird.
  *
- * **Reine Funktion, damit sie prüfbar ist.** Die Endung ist nicht Kosmetik: Sie
+ * Reine Funktion, damit sie prüfbar ist. Die Endung ist nicht Kosmetik: Sie
  * entscheidet, ob ein Bildbetrachter oder ein Musikprogramm die Datei anfassen
  * kann, wenn der Nutzer sie aus der App heraus teilt.
  *
- * Unbekanntes wird `bin`. Eine geratene Endung wäre schlimmer als gar keine —
+ * Unbekanntes wird `bin`. Eine geratene Endung wäre schlimmer als gar keine,
  * eine Datei, die `jpg` heißt und keines ist, führt jedes Programm in die Irre.
  */
 fun endungFuer(mimeType: String): String = when (mimeType.substringBefore(';').trim().lowercase()) {
@@ -32,13 +32,13 @@ fun endungFuer(mimeType: String): String = when (mimeType.substringBefore(';').t
 /**
  * Legt heruntergeladene Anhänge im privaten Speicher der App ab.
  *
- * **Ein eigener Ordner, nicht der von Bildern oder Aufnahmen.** Die beiden
+ * Ein eigener Ordner, nicht der von Bildern oder Aufnahmen. Die beiden
  * bestehenden Ordner gehören dem, was auf diesem Gerät entstanden ist; hier
  * liegt, was von woanders kam. Getrennt zu halten kostet nichts und erspart die
  * Frage, wem eine Datei gehört, wenn einmal aufgeräumt werden muss.
  *
  * Der Pfad landet als `localPath` an der Anhangszeile, und die Oberfläche liest
- * ausschließlich den — sie muss also nicht wissen, woher eine Datei stammt.
+ * ausschließlich den, sie muss also nicht wissen, woher eine Datei stammt.
  */
 @Singleton
 class Dateiablage @Inject constructor(

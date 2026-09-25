@@ -10,10 +10,10 @@ import org.junit.Test
 /**
  * Textauszeichnung.
  *
- * Der Schwerpunkt liegt auf der **Zuordnung zwischen Quelle und Anzeige**. Die
+ * Der Schwerpunkt liegt auf der Zuordnung zwischen Quelle und Anzeige. Die
  * gestaltete Darstellung sieht man sofort, wenn sie falsch ist; eine kaputte
  * Zuordnung merkt man erst daran, dass der Cursor an der falschen Stelle steht
- * oder die App mitten im Tippen abstürzt — und dann ist unklar, warum.
+ * oder die App mitten im Tippen abstürzt, und dann ist unklar, warum.
  */
 class AuszeichnungTest {
 
@@ -42,7 +42,7 @@ class AuszeichnungTest {
 
     @Test
     fun `Fettschrift wird nicht als zweimal kursiv gelesen`() {
-        // Genau daran scheitert der naive Ausdruck: `**fett**` zerfiele in zwei
+        // Genau daran scheitert der naive Ausdruck: `fett` zerfiele in zwei
         // kursive Stücke, und übrig bliebe „fett" mit falscher Gestalt.
         val aufgeloest = Auszeichnung.aufloesen("**fett**")
         assertEquals("fett", aufgeloest.text.text)
@@ -126,11 +126,11 @@ class AuszeichnungTest {
     fun `ausserhalb liegende Anfragen werden auf den Rand gezogen`() {
         // Compose reicht während einer Änderung kurz Werte herein, die zum
         // ALTEN Text gehören. Ohne Begrenzung wäre das ein Absturz mitten im
-        // Tippen — und ein sehr schwer nachstellbarer.
+        // Tippen, und ein sehr schwer nachstellbarer.
         //
         // Geprüft wird das Abschneiden, nicht ein bestimmter Wert: Welche
         // Quellposition zur sichtbaren Null gehört, ist eine Entscheidung
-        // (bei `**fett**` die 2, also direkt vor dem „f"), und die gehört
+        // (bei `fett` die 2, also direkt vor dem „f"), und die gehört
         // in den Test darunter statt hierher.
         val a = Auszeichnung.aufloesen("**fett**")
         assertEquals(a.zuordnung.originalToTransformed(0), a.zuordnung.originalToTransformed(-5))
@@ -146,7 +146,7 @@ class AuszeichnungTest {
         // Anzeige zeigt aufs Ende der Quelle.
         //
         // Für den Cursor heißt das: vorn im fetten Wort steht er INNERHALB der
-        // Auszeichnung (Quelle 2, direkt vor dem „f") — wer dort tippt, schreibt
+        // Auszeichnung (Quelle 2, direkt vor dem „f"), wer dort tippt, schreibt
         // fett weiter. Am Ende steht er hinter den schließenden Zeichen, tippt
         // also außerhalb weiter. Diese Asymmetrie ist gewollt: Sie ist genau
         // das, was man von einer Textverarbeitung kennt.
@@ -159,7 +159,7 @@ class AuszeichnungTest {
     @Test
     fun `hinter einer Auszeichnung zeigt die Stelle auf das naechste sichtbare Zeichen`() {
         // Derselbe Fall, aber mitten im Text statt am Ende: Nach „fett" folgt
-        // ein Leerzeichen, und genau darauf muss die Stelle zeigen — nicht auf
+        // ein Leerzeichen, und genau darauf muss die Stelle zeigen, nicht auf
         // eines der schließenden Sternchen.
         val quelle = "**fett** und mehr"
         val a = Auszeichnung.aufloesen(quelle)
@@ -227,7 +227,7 @@ class AuszeichnungTest {
     fun `der Cursor am sichtbaren Ende eines fetten Wortes hebt es auf`() {
         // Der zweite Punkt aus der Rückmeldung. Tippt man ans sichtbare Ende
         // von „Welt", rechnet die Anzeige das auf die Quellstelle HINTER den
-        // schließenden Sternchen zurück — Position 14, nicht 11. Ohne die
+        // schließenden Sternchen zurück, Position 14, nicht 11. Ohne die
         // erweiterte Erkennung müsste man den Cursor erst von Hand ins Wort
         // hineinschieben, um die Fettschrift loszuwerden.
         val quelle = "Hallo **Welt**"
@@ -260,7 +260,7 @@ class AuszeichnungTest {
 
     @Test
     fun `ohne Auswahl gilt das Wort unter dem Cursor`() {
-        // Sonst müsste man erst markieren, um ein einzelnes Wort auszuzeichnen —
+        // Sonst müsste man erst markieren, um ein einzelnes Wort auszuzeichnen,
         // und genau dieser Umweg macht das Schreiben zäh.
         val nachher = Auszeichnung.umschalten(
             TextFieldValue("Hallo Welt", TextRange(8)),
@@ -292,7 +292,7 @@ class AuszeichnungTest {
     @Test
     fun `eine Auswahl mitten im Wort befreit genau diese Auswahl`() {
         // Ausgewählt ist „et" in „fett". Übrig bleiben zwei fette Stücke mit
-        // einem normalen dazwischen — genau das, was jede Textverarbeitung
+        // einem normalen dazwischen, genau das, was jede Textverarbeitung
         // täte.
         val wert = TextFieldValue("**fett**", TextRange(3, 5))
         val nachher = Auszeichnung.umschalten(wert, Auszeichnung.Art.FETT)
@@ -308,7 +308,7 @@ class AuszeichnungTest {
     fun `nur das gemeinte Wort verliert die Fettschrift`() {
         // Der Fall aus der Rückmeldung: Wer ein fettes Wort schreibt,
         // Leertaste drückt und weiterschreibt, hat BEIDE Wörter in derselben
-        // Auszeichnung — der Cursor stand ja zwischen den Zeichen. Wer dann
+        // Auszeichnung, der Cursor stand ja zwischen den Zeichen. Wer dann
         // „fett" antippt, meint das zweite Wort und nicht beide.
         val wert = TextFieldValue("**Hallo Welt**", TextRange(11))
         val nachher = Auszeichnung.umschalten(wert, Auszeichnung.Art.FETT)
@@ -326,7 +326,7 @@ class AuszeichnungTest {
     @Test
     fun `das Leerzeichen an der Bruchstelle bleibt draussen`() {
         // `**Hallo ** Welt` wäre eine Auszeichnung, die ein Leerzeichen
-        // umfasst: unsichtbar, aber im gespeicherten Text — und die wandert in
+        // umfasst: unsichtbar, aber im gespeicherten Text, und die wandert in
         // den Sync.
         val nachher = Auszeichnung.umschalten(
             TextFieldValue("**Hallo Welt**", TextRange(11)),
@@ -334,7 +334,7 @@ class AuszeichnungTest {
         )
         // Geprüft wird das, was gemeint ist: Kein ausgezeichnetes Stück darf mit
         // Leerraum anfangen oder aufhören. Über die Zeichenfolge `** ` allein
-        // ginge das nicht — die steht in `**Hallo** Welt` völlig zu Recht.
+        // ginge das nicht, die steht in `Hallo Welt` völlig zu Recht.
         val aufgeloest = Auszeichnung.aufloesen(nachher.text)
         aufgeloest.text.spanStyles.forEach { bereich ->
             val stueck = aufgeloest.text.text.substring(bereich.start, bereich.end)
@@ -394,7 +394,7 @@ class AuszeichnungTest {
 
     @Test
     fun `aktiv meldet fett, wenn der Cursor im fetten Wort steht`() {
-        // Der Knopf muss anzeigen, was man sieht — sonst tut er beim Antippen
+        // Der Knopf muss anzeigen, was man sieht, sonst tut er beim Antippen
         // etwas anderes, als er verspricht.
         val wert = TextFieldValue("Hallo **Welt**", TextRange(11))
         assertTrue(Auszeichnung.Art.FETT in Auszeichnung.aktiv(wert))
@@ -453,8 +453,8 @@ class AuszeichnungTest {
 
     @Test
     fun `fett wird nicht faelschlich als kursiv gemeldet`() {
-        // Bei `**fett**` liegt links und rechts der Auswahl je ein `*`. Die
-        // naive Prüfung meldete deshalb auch kursiv — und der Kursiv-Knopf
+        // Bei `fett` liegt links und rechts der Auswahl je ein `*`. Die
+        // naive Prüfung meldete deshalb auch kursiv, und der Kursiv-Knopf
         // hätte je ein Sternchen entfernt und aus fett kursiv gemacht.
         val wert = TextFieldValue("**fett**", TextRange(2, 6))
         assertFalse(Auszeichnung.Art.KURSIV in Auszeichnung.aktiv(wert))

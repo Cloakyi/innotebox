@@ -14,10 +14,10 @@ import javax.inject.Singleton
 data class Wegstand(val verfuegbar: Boolean, val hinweis: String)
 
 /**
- * Die Übersetzung der App (Phase 16): wählt den Weg aus den Einstellungen und
+ * Die Übersetzung der App: wählt den Weg aus den Einstellungen und
  * sagt, welche Wege dieses Gerät überhaupt hat.
  *
- * **Erst fragen, dann anbieten.** Der Editor zeigt „Übersetzen" nur, wenn
+ * Erst fragen, dann anbieten. Der Editor zeigt „Übersetzen" nur, wenn
  * [irgendeinWeg] ja sagt; die Einstellungen zeigen Wege, die nicht gehen,
  * ausgegraut mit dem Grund. Das ist dieselbe Haltung wie bei AICore: Was das
  * Gerät nicht kann, wird gemessen, nicht geraten.

@@ -44,7 +44,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 
-    // Seit Phase 20 laufen hier die Szenarien mit zwei simulierten Clients
+    // Hier laufen die Szenarien mit zwei simulierten Clients
     // (SYNC.md 12): zwei echte Room-Datenbanken gegen ein Drive im Speicher.
     // Dieselben drei Vorkehrungen wie in :core:data (Robolectric, NATIVE
     // SQLite, ASM 9.9), aus denselben Gruenden.

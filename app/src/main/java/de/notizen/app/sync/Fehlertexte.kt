@@ -7,9 +7,9 @@ import com.google.android.gms.common.api.CommonStatusCodes
 /**
  * Macht aus einem Play-Services-Fehler einen Satz.
  *
- * **Warum es das braucht:** Ein `ApiException` trägt als Meldung nur den
+ * Warum es das braucht: Ein `ApiException` trägt als Meldung nur den
  * nackten Zahlencode, etwa `8: null`. Genau das stand nach einem Fehlversuch in
- * der App — eine Zahl, die niemandem sagt, ob er warten, neu anmelden oder etwas
+ * der App, eine Zahl, die niemandem sagt, ob er warten, neu anmelden oder etwas
  * einstellen soll. Und `8` bedeutet ausgerechnet „unbekannter interner Fehler",
  * also: gleich nochmal versuchen.
  *

@@ -6,7 +6,7 @@ import java.io.File
 /**
  * Wo eine heruntergeladene Anhangsdatei hingehört.
  *
- * **Warum das eine Schnittstelle ist:** Der Abgleich liegt in `:core:sync` und
+ * Warum das eine Schnittstelle ist: Der Abgleich liegt in `:core:sync` und
  * kennt kein Android. Er weiß, dass eine Datei aus Drive kommt und wohin ihr
  * Inhalt gehört, aber nicht, wo dieses Gerät seine Dateien führt. Das ist eine
  * Frage an die Plattform, keine an den Abgleich.
@@ -17,7 +17,7 @@ interface Anhangablage {
      * Die Datei, in die ein Anhang geschrieben wird.
      *
      * Der Ordner existiert danach. Ob die Datei schon Inhalt hat, sagt sie
-     * selbst — der Aufrufer prüft das, statt blind erneut herunterzuladen.
+     * selbst, der Aufrufer prüft das, statt blind erneut herunterzuladen.
      */
     fun ziel(anhangId: String, mimeType: String): File
 
@@ -37,13 +37,13 @@ interface Anhangablage {
 /**
  * Was mit Erinnerungen geschieht, die vom anderen Gerät kommen.
  *
- * **Eine Erinnerungszeile ohne bestellten Wecker ist ein Versprechen, das nie
- * klingelt.** Genau deshalb wurden Erinnerungen beim Holen lange gar nicht erst
- * geschrieben. Das Bestellen selbst gehört in `:app` — `AlarmManager` ist
+ * Eine Erinnerungszeile ohne bestellten Wecker ist ein Versprechen, das nie
+ * klingelt. Genau deshalb wurden Erinnerungen beim Holen lange gar nicht erst
+ * geschrieben. Das Bestellen selbst gehört in `:app`, `AlarmManager` ist
  * Android, und `:core:sync` soll auf der JVM prüfbar bleiben.
  *
- * `alarmId` und `isFired` bleiben gerätelokal (SYNC.md 14.8): **jedes Gerät
- * weckt für sich.** Die Umsetzung vergibt deshalb eine eigene `alarmId` und
+ * `alarmId` und `isFired` bleiben gerätelokal (SYNC.md 14.8): jedes Gerät
+ * weckt für sich. Die Umsetzung vergibt deshalb eine eigene `alarmId` und
  * übernimmt nicht die der Gegenseite.
  */
 interface Weckdienst {

@@ -253,7 +253,7 @@ internal fun stelleVon(
 /**
  * Etwas, das ueber den Karten steht und ueber die volle Breite geht.
  *
- * **Im selben Scrollbereich und nicht darueber.** Die Ordneransicht setzt ihre
+ * Im selben Scrollbereich und nicht darueber. Die Ordneransicht setzt ihre
  * Unterordner hierhin. Ein eigener Block ueber dem Raster waere bei drei
  * Ordnern huebsch und bei dreissig eine Wand, hinter der die Notizen nicht mehr
  * zu sehen sind. So scrollt alles zusammen weg.

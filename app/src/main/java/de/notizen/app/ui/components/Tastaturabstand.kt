@@ -23,13 +23,13 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.roundToInt
 
 /**
- * Der Abstand zur Tastatur, der sich nicht aufhaengt (Phase 18).
+ * Der Abstand zur Tastatur, der sich nicht aufhaengt.
  *
- * **Der Fehler:** Nach dem Schliessen der Tastatur blieb der Editor manchmal
+ * Der Fehler: Nach dem Schliessen der Tastatur blieb der Editor manchmal
  * hochgeschoben, die untere Leiste stand mitten im Bild, bis zum Neustart der
  * App. Meist nach einer Auswahl im Text.
  *
- * **Die Ursache liegt in Compose, nicht in unserem Code** (foundation-layout
+ * Die Ursache liegt in Compose, nicht in unserem Code (foundation-layout
  * 1.12.0, `WindowInsets.android.kt`, Klasse `InsetsListener`; am 2026-09-19
  * in der Quelle nachgelesen). Der Listener merkt sich mit `onPrepare`, dass
  * eine Tastaturanimation beginnt, und ignoriert ab da jedes
@@ -43,11 +43,11 @@ import kotlin.math.roundToInt
  * Zurueckgesetzt wird der Zustand nur, wenn kein Composable mehr Insets liest;
  * das ist in dieser App nie der Fall, weil jedes Scaffold sie liest.
  *
- * **Was trotzdem stimmt:** `WindowInsets.imeAnimationTarget` setzt derselbe
+ * Was trotzdem stimmt: `WindowInsets.imeAnimationTarget` setzt derselbe
  * Listener VOR der Sperre, bei jedem `onApplyWindowInsets`. Es sagt immer, wo
  * die Tastatur wirklich ist oder gleich sein wird.
  *
- * **Deshalb:** Solange die Animation laeuft, folgt der Abstand wie bisher dem
+ * Deshalb: Solange die Animation laeuft, folgt der Abstand wie bisher dem
  * animierten Wert, Bild fuer Bild mit der Tastatur. Bewegt sich der Wert nach
  * einem neuen Ziel aber gar nicht ([STILLSTAND_MS]) oder kommt er nie an
  * ([HOECHSTENS_MS]), gilt das Ziel, und der Abstand faehrt in einer kurzen

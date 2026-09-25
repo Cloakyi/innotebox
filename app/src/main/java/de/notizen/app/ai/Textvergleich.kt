@@ -6,15 +6,15 @@ data class Textteil(val text: String, val neu: Boolean)
 /**
  * Vergleicht die bearbeitete Fassung mit dem Rohtranskript.
  *
- * **Wozu:** Wer sieht, was die Aufbereitung geändert hat, kann ihr überhaupt
+ * Wozu: Wer sieht, was die Aufbereitung geändert hat, kann ihr überhaupt
  * erst misstrauen. Ein Sprachmodell, das ein Diktat „aufräumt", schreibt
- * gelegentlich etwas hinein, das nie gesagt wurde — das ist in einer Notiz-App
+ * gelegentlich etwas hinein, das nie gesagt wurde, das ist in einer Notiz-App
  * der teuerste denkbare Fehler, weil man dem eigenen Text später glaubt.
  * Markierte Änderungen machen genau diese Stellen sichtbar.
  *
- * Verglichen wird **wortweise** über die längste gemeinsame Folge. Zeilenweise
+ * Verglichen wird wortweise über die längste gemeinsame Folge. Zeilenweise
  * wäre billiger, würde aber bei einem umgeschriebenen Absatz alles als neu
- * markieren, auch die Wörter, die stehen geblieben sind — und dann sagt die
+ * markieren, auch die Wörter, die stehen geblieben sind, und dann sagt die
  * Markierung nichts mehr aus.
  */
 object Textvergleich {
@@ -23,7 +23,7 @@ object Textvergleich {
      * Ab dieser Wortzahl wird grob verglichen.
      *
      * Die Tabelle des Wortvergleichs wächst mit dem Produkt beider Längen. Bei
-     * 1200 Wörtern je Seite sind das anderthalb Millionen Felder — noch
+     * 1200 Wörtern je Seite sind das anderthalb Millionen Felder, noch
      * vertretbar. Bei einem Transkript von einer Stunde wären es das
      * Hundertfache, und die App bliebe beim Umschalten stehen. Dann lieber grob
      * als gar nicht: gemeinsamer Anfang, gemeinsames Ende, der Rest gilt als
@@ -122,7 +122,7 @@ object Textvergleich {
         }
     }
 
-    /** Benachbarte Stücke gleicher Art zusammenziehen — sonst wären es Tausende. */
+    /** Benachbarte Stücke gleicher Art zusammenziehen, sonst wären es Tausende. */
     private fun zusammenfassen(teile: List<Textteil>): List<Textteil> {
         val ergebnis = mutableListOf<Textteil>()
         teile.forEach { teil ->
