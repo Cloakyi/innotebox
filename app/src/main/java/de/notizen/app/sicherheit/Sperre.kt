@@ -12,7 +12,7 @@ import javax.inject.Singleton
 /**
  * Ob die App gerade gesperrt ist (Phase 19).
  *
- * **Eine Funktion der App, nicht des Systems** (Nutzer, 2026-09-19): wie bei
+ * **Eine Funktion der App, nicht des Systems** (seit 2026-09-19): wie bei
  * Banking-Apps und dem Tagebuch auf dem Pixel, nicht über Androids
  * vertrauliches Profil. Gesperrt wird beim Start des Prozesses und nach der
  * eingestellten Zeit im Hintergrund; entsperrt wird über den Systemdialog

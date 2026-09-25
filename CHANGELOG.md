@@ -20,6 +20,8 @@ Datenschutz und Lizenzen nachgeschärft.
   Impressum; die Seite „Lizenzen" zeigt die GPL, die zusätzliche Erlaubnis und die
   NOTICE-Dateien der Bibliotheken.
 - Die Schrift ist jetzt die unveränderte Datei aus Google Fonts.
+- Die Beschriftungen der Wischgesten tragen ihre Umlaute („Nächste Stufe“, „Endgültig löschen“,
+  „Zurückholen“).
 
 ## Alpha 8 (2026-09-25)
 

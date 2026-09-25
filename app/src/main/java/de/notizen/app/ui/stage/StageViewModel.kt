@@ -693,7 +693,7 @@ class StageViewModel @Inject constructor(
      * Stufenwechsel, inklusive Titelpflicht.
      *
      * Ab WORKSPACE braucht eine Notiz einen Titel (Spezifikation Abschnitt 4).
-     * **Seit Phase 15 strenger** (Nutzer, 2026-08-21 und 2026-09-14): Ohne
+     * **Seit Phase 15 strenger** (2026-08-21 und 2026-09-14): Ohne
      * Titel kein Verschieben, Punkt. Kein stilles Auffuellen mehr.
      *
      *  - keine ohne Titel  -> direkt verschieben, auch ueber eine Stufe hinweg

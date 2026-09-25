@@ -430,7 +430,7 @@ private fun Abschnitt(
  * Antippen oeffnet ihn. Die drei Punkte und langes Druecken bieten den kurzen
  * Weg: zurueckholen oder endgueltig loeschen, ohne erst hineinzugehen. Bis
  * zum 2026-09-14 musste man fuer das endgueltige Loeschen in jeden Ordner
- * einzeln hinein; bei zwanzig Ordnern war das eine Zumutung (Nutzer).
+ * einzeln hinein; bei zwanzig Ordnern war das eine Zumutung.
  */
 @Composable
 private fun PapierkorbOrdnerzeile(

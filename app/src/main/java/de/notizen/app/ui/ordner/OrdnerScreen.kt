@@ -106,8 +106,8 @@ fun OrdnerScreen(
             add(Kopfzeile("weg") { Wegzeile(weg = weg, imArchiv = ordner.imArchiv, onOrdner = onOrdner) })
         }
 
-        // DER ANLEGEKNOPF STEHT OBEN, nicht unter der Liste. Am 2026-08-25 vom
-        // Nutzer gewuenscht, und er hat recht: Unten stand er mal direkt unter
+        // DER ANLEGEKNOPF STEHT OBEN, nicht unter der Liste (seit 2026-08-25).
+        // Unten stand er mal direkt unter
         // dem Weg, mal nach dreissig Ordnern, mal unter einem Hinweistext. Oben
         // steht er immer an derselben Stelle.
         add(

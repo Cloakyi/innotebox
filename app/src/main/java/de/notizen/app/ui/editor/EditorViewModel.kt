@@ -969,8 +969,8 @@ class EditorViewModel @Inject constructor(
     /**
      * Wählt ein Bild aus der Galerie **nur** als Fläche.
      *
-     * Es zählt nicht zu den Bildern der Notiz und erscheint nicht im Raster —
-     * das war der ausdrückliche Wunsch. Ein vorher eigens gewähltes
+     * Es zählt nicht zu den Bildern der Notiz und erscheint nicht im Raster;
+     * genau dafür gibt es diesen Weg. Ein vorher eigens gewähltes
      * Hintergrundbild räumt das Repository dabei weg.
      */
     fun hintergrundWaehlen(adresse: android.net.Uri) {

@@ -21,8 +21,8 @@ enum class WischZiel {
 
     /**
      * Nur im Papierkorb: die Notiz kommt zurueck. Rastet ein wie das
-     * Loeschen, erst ein Tippen holt zurueck (Nutzer, 2026-09-15: auch das
-     * Zurueckholen soll die zweite Handlung verlangen). Dazu die Snackbar.
+     * Loeschen, erst ein Tippen holt zurueck (seit 2026-09-15: auch das
+     * Zurueckholen verlangt die zweite Handlung). Dazu die Snackbar.
      */
     WIEDERHERSTELLEN,
 
@@ -35,12 +35,12 @@ enum class WischZiel {
     ;
 
     fun beschriftung(): String = when (this) {
-        NAECHSTE_STUFE -> "Naechste Stufe"
+        NAECHSTE_STUFE -> "Nächste Stufe"
         VORHERIGE_STUFE -> "Vorherige Stufe"
         PAPIERKORB -> "Papierkorb"
         NICHTS -> "Nichts"
-        WIEDERHERSTELLEN -> "Zurueckholen"
-        ENDGUELTIG -> "Endgueltig loeschen"
+        WIEDERHERSTELLEN -> "Zurückholen"
+        ENDGUELTIG -> "Endgültig löschen"
     }
 
     /**

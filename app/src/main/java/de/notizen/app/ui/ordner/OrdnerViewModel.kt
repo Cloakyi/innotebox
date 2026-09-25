@@ -238,7 +238,7 @@ class OrdnerViewModel @Inject constructor(
      *
      * **Ein leerer Ordner wird ohne Rueckfrage geloescht.** Die Frage "nur den
      * Ordner oder samt Inhalt" hat bei einem Ordner ohne Inhalt keine zwei
-     * Antworten; sie zu stellen waere eine Huerde ohne Sinn (Nutzer,
+     * Antworten; sie zu stellen waere eine Huerde ohne Sinn (seit
      * 2026-09-14). Die Undo-Leiste bleibt, wie bei jedem Loeschen.
      */
     fun loeschenAnfragen(karte: Ordnerkarte) {
