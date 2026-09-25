@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Was Android in seine eigene Sicherung (Google Drive des Geräts) und beim
+    Umzug auf ein neues Gerät mitnimmt (seit Alpha 9).
+
+    In die Cloud-Sicherung geht nichts. Die App hat ihre eigenen Wege, die der
+    Mensch in der Hand hat: die Sicherungsdatei und den Abgleich über das
+    eigene Google Drive. Eine zweite, stille Kopie der ganzen Datenbank bei
+    Google widerspräche dem, und sie nähme auch Notizen mit, die ausdrücklich
+    auf dem Gerät bleiben sollen.
+
+    Der Umzug von Gerät zu Gerät (Kabel oder direkte Verbindung beim
+    Einrichten) bleibt, wie er ist: Er geht vom eigenen Gerät zum eigenen
+    Gerät und nicht über einen Dienst.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" path="." />
+        <exclude domain="file" path="." />
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="external" path="." />
+        <exclude domain="device_root" path="." />
+        <exclude domain="device_file" path="." />
+        <exclude domain="device_database" path="." />
+        <exclude domain="device_sharedpref" path="." />
+    </cloud-backup>
+</data-extraction-rules>

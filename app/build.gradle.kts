@@ -37,13 +37,13 @@ android {
         //
         // Der Name, den man in den Einstellungen und in Androids App-Info sieht,
         // traegt die Stufe und eine Zaehlung (seit 2026-09-19):
-        //   "Alpha n"  geschlossener Test mit wenigen Personen
+        //   "Alpha n"  Testfassung, öffentlich auf GitHub
         //   "Beta n"   offener Test
         //   "1.0"      die Vollversion, danach 1.1, 1.2 ...
         // Innerhalb der Alpha zaehlt n wie der versionCode. Beginnt die Beta,
         // faengt n wieder bei 1 an, der versionCode laeuft weiter.
-        versionCode = 8
-        versionName = "Alpha 8"
+        versionCode = 9
+        versionName = "Alpha 9"
     }
 
     // DER RELEASE-SCHLUESSEL (Phase 21) liegt beim Nutzer, nie im Projekt.

@@ -277,12 +277,16 @@ class EditorViewModel @Inject constructor(
      */
     fun modellPruefen() {
         viewModelScope.launch {
+            // Der Schalter aus den Einstellungen zaehlt ZUERST: Ist die KI aus
+            // (oder fehlt die Zustimmung, seit Alpha 9), wird ML Kit gar nicht
+            // erst gefragt, auch nicht nach dem Sprachmodell. Die Knoepfe
+            // erscheinen dann nicht, statt dazustehen und nichts zu tun.
+            if (!einstellungen.kiAktiv().first()) {
+                _kiVerfuegbar.value = false
+                return@launch
+            }
             _modell.value = transkription.zustand().first
-            // Der Schalter aus den Einstellungen zaehlt ZUERST: Ist die
-            // KI-Aufbereitung abgeschaltet, wird das Modell gar nicht erst
-            // gefragt -- und die Knoepfe erscheinen nicht, statt dazustehen und
-            // nichts zu tun.
-            _kiVerfuegbar.value = einstellungen.kiAktiv().first() && aufraeumen.verfuegbar()
+            _kiVerfuegbar.value = aufraeumen.verfuegbar()
         }
     }
 

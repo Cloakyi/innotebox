@@ -161,17 +161,43 @@ class Einstellungen @Inject constructor(
     }
 
     /**
-     * Ob die KI-Aufbereitung angeboten wird.
+     * Ob die KI auf dem Gerät arbeiten darf: Titelvorschläge, das Umwandeln in
+     * Text und das Aufbereiten von Transkripten.
      *
      * Schaltet die Bedienelemente ab, nicht bloß den Aufruf: Ein Knopf, der da
-     * ist und nichts tut, wäre schlechter als keiner. Betroffen sind
-     * Titelvorschläge und das Aufbereiten von Transkripten — die
-     * Spracherkennung selbst hängt nicht daran, sie ist keine Textgenerierung.
+     * ist und nichts tut, wäre schlechter als keiner.
+     *
+     * **Wirksam nur mit Zustimmung** (seit Alpha 9). Die KI läuft über ML Kit,
+     * und ML Kit schickt Google Kennzahlen über die Nutzung (Gerät, App,
+     * Leistung, Fehler, Sprachen). Das Auslesen dafür braucht nach § 25 TDDDG
+     * eine Einwilligung. Solange keine vorliegt, gilt die KI als aus, und die
+     * App ruft ML Kit gar nicht erst auf, auch kein `checkStatus`.
      */
-    fun kiAktiv(): Flow<Boolean> = store.data.map { it[KI_AKTIV] ?: true }
+    fun kiAktiv(): Flow<Boolean> =
+        store.data.map { (it[KI_AKTIV] ?: true) && it[KI_ZUGESTIMMT_AM] != null }
 
-    suspend fun setKiAktiv(an: Boolean) {
-        store.edit { it[KI_AKTIV] = an }
+    /**
+     * Ob beim Start nach der KI gefragt wird: nicht ausgeschaltet und noch
+     * ohne Zustimmung. Trifft den ersten Start und jede Installation aus der
+     * Zeit vor der Zustimmung; wer ablehnt, wird nicht wieder gefragt.
+     */
+    fun kiFrageOffen(): Flow<Boolean> =
+        store.data.map { (it[KI_AKTIV] ?: true) && it[KI_ZUGESTIMMT_AM] == null }
+
+    /** Einschalten gibt es nur zusammen mit dem Zeitpunkt der Zustimmung. */
+    suspend fun kiEinschalten(zugestimmtAm: Long) {
+        store.edit {
+            it[KI_AKTIV] = true
+            it[KI_ZUGESTIMMT_AM] = zugestimmtAm
+        }
+    }
+
+    /** Ausschalten nimmt die Zustimmung zurück; wer wieder einschaltet, stimmt neu zu. */
+    suspend fun kiAusschalten() {
+        store.edit {
+            it[KI_AKTIV] = false
+            it.remove(KI_ZUGESTIMMT_AM)
+        }
     }
 
     /**
@@ -600,6 +626,7 @@ class Einstellungen @Inject constructor(
         val WISCH_PAPIERKORB_LINKS = stringPreferencesKey("wisch_papierkorb_links")
         val TRANSKRIPTSPRACHE = stringPreferencesKey("transkriptsprache")
         val KI_AKTIV = booleanPreferencesKey("ki_aktiv")
+        val KI_ZUGESTIMMT_AM = longPreferencesKey("ki_zugestimmt_am")
         val TITELPFLICHT = booleanPreferencesKey("titelpflicht")
         val GERAET_SPRACHE = stringPreferencesKey("geraet_sprache")
         val GERAET_TEXTKI = stringPreferencesKey("geraet_textki")

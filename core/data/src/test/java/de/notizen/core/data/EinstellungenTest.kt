@@ -184,14 +184,29 @@ class EinstellungenTest {
     }
 
     @Test
-    fun `die KI-Aufbereitung ist voreingestellt an`() = runTest {
-        assertTrue(einstellungen.kiAktiv().first())
+    fun `ohne Zustimmung ist die KI aus und die Frage offen`() = runTest {
+        // Seit Alpha 9: ML Kit meldet Kennzahlen an Google, also erst fragen.
+        assertFalse(einstellungen.kiAktiv().first())
+        assertTrue(einstellungen.kiFrageOffen().first())
     }
 
     @Test
-    fun `die KI-Aufbereitung laesst sich abschalten`() = runTest {
-        einstellungen.setKiAktiv(false)
+    fun `mit Zustimmung ist die KI an und die Frage erledigt`() = runTest {
+        einstellungen.kiEinschalten(zugestimmtAm = 1_700_000_000_000L)
+        assertTrue(einstellungen.kiAktiv().first())
+        assertFalse(einstellungen.kiFrageOffen().first())
+    }
+
+    @Test
+    fun `Ausschalten nimmt die Zustimmung zurueck und fragt nicht wieder`() = runTest {
+        einstellungen.kiEinschalten(zugestimmtAm = 1_700_000_000_000L)
+        einstellungen.kiAusschalten()
         assertFalse(einstellungen.kiAktiv().first())
+        assertFalse(einstellungen.kiFrageOffen().first())
+
+        // Wer wieder einschaltet, stimmt neu zu; ohne das bleibt sie aus.
+        einstellungen.kiEinschalten(zugestimmtAm = 1_800_000_000_000L)
+        assertTrue(einstellungen.kiAktiv().first())
     }
 
     @Test
@@ -199,7 +214,7 @@ class EinstellungenTest {
         // Ausdruecklich getrennt: Die Spracherkennung ist keine
         // Textgenerierung. Wer die KI-Aufbereitung abschaltet, will keine
         // erfundenen Titel -- ein Transkript will er trotzdem.
-        einstellungen.setKiAktiv(false)
+        einstellungen.kiAusschalten()
         einstellungen.setTranskriptsprache(Transkriptsprache.FRANZOESISCH)
 
         assertFalse(einstellungen.kiAktiv().first())

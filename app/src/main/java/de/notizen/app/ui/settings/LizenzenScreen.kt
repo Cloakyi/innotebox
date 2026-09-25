@@ -66,28 +66,57 @@ fun LizenzenScreen(innerPadding: PaddingValues) {
         modifier = Modifier.fillMaxSize().padding(innerPadding),
         contentPadding = PaddingValues(bottom = 48.dp),
     ) {
+        // Die Hinweise, die Abschnitt 5 d der GPL fuer eine Oberflaeche
+        // verlangt: Copyright, keine Gewaehrleistung, Weitergabe unter der
+        // Lizenz, und wo man sie lesen kann (hier, ohne Netz).
         item {
             Absatz(
-                "InNoteBox ist freie Software, Copyright 2026 Cloak Studio. Sie steht unter der " +
-                    "GNU General Public License, Version 3, mit einer zusätzlichen Erlaubnis, " +
-                    "die Bibliotheken von Google mitzuliefern, die selbst nicht frei sind.",
+                "InNoteBox ist freie Software, Copyright 2026 Cloak Studio. Du darfst sie unter " +
+                    "den Bedingungen der GNU General Public License, Version 3, weitergeben und " +
+                    "verändern. Dazu kommt eine zusätzliche Erlaubnis für die Bibliotheken von " +
+                    "Google, die selbst nicht frei sind.",
             )
-            Zeile(
-                titel = "Quelltext und Lizenz",
-                wert = QUELLTEXT.removePrefix("https://"),
-                onClick = { oeffnen(null, null, QUELLTEXT) },
+            Absatz(
+                "InNoteBox kommt ohne jede Gewährleistung, soweit das Gesetz das zulässt. " +
+                    "Einzelheiten stehen in der Lizenz.",
             )
         }
 
         val d = daten
         if (d == null) return@LazyColumn
 
+        item {
+            Zeile(
+                titel = "GNU General Public License, Version 3",
+                wert = "Die Lizenz von InNoteBox",
+                onClick = { oeffnen("GNU General Public License", d.app.lizenz, null) },
+            )
+            Zeile(
+                titel = "Zusätzliche Erlaubnis",
+                wert = "Für die Bibliotheken von Google",
+                onClick = { oeffnen("Zusätzliche Erlaubnis", d.app.zusatz, null) },
+            )
+            Zeile(
+                titel = "Quelltext",
+                wert = QUELLTEXT.removePrefix("https://"),
+                onClick = { oeffnen(null, null, QUELLTEXT) },
+            )
+        }
+
         item { Ueberschrift("Bibliotheken") }
         items(d.bibliotheken, key = { "b:" + it.name }) { b ->
             Zeile(
                 titel = b.name,
                 wert = "${b.version}, ${b.lizenz}",
-                onClick = { oeffnen(b.name, b.text, b.url) },
+                onClick = {
+                    // Eine NOTICE-Datei gehoert nach Apache 2.0 zum Lizenztext dazu.
+                    val hinweis = b.hinweis
+                    if (b.text != null && hinweis != null) {
+                        offen = Lizenzanzeige(b.name, d.texte[b.text] + "\n\n\n" + d.texte[hinweis])
+                    } else {
+                        oeffnen(b.name, b.text, b.url)
+                    }
+                },
             )
         }
 
@@ -147,13 +176,19 @@ internal data class Bibliothek(
     /** Stelle in [Lizenzdaten.texte], oder `null`, wenn die Bedingungen beim Anbieter stehen. */
     val text: Int?,
     val url: String?,
+    /** Die NOTICE-Datei der Bibliothek, falls sie eine mitbringt. */
+    val hinweis: Int? = null,
 )
+
+/** Die eigene Lizenz der App: die GPL und die zusätzliche Erlaubnis. */
+internal data class Eigenlizenz(val lizenz: Int, val zusatz: Int)
 
 internal data class Enthalten(val name: String, val texte: List<Int>)
 
 internal data class Schrift(val name: String, val lizenz: String, val text: Int)
 
 internal data class Lizenzdaten(
+    val app: Eigenlizenz,
     val bibliotheken: List<Bibliothek>,
     val enthalten: List<Enthalten>,
     val schriften: List<Schrift>,
@@ -170,6 +205,7 @@ internal fun lizenzdatenAus(wurzel: JSONObject): Lizenzdaten {
         (0 until length()).map { umwandeln(getJSONObject(it)) }
 
     return Lizenzdaten(
+        app = wurzel.getJSONObject("app").let { Eigenlizenz(it.getInt("lizenz"), it.getInt("zusatz")) },
         bibliotheken = wurzel.getJSONArray("bibliotheken").liste {
             Bibliothek(
                 name = it.getString("name"),
@@ -177,6 +213,7 @@ internal fun lizenzdatenAus(wurzel: JSONObject): Lizenzdaten {
                 lizenz = it.getString("lizenz"),
                 text = if (it.has("text")) it.getInt("text") else null,
                 url = if (it.has("url")) it.getString("url") else null,
+                hinweis = if (it.has("hinweis")) it.getInt("hinweis") else null,
             )
         },
         enthalten = wurzel.getJSONArray("enthalten").liste { e ->

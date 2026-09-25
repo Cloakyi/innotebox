@@ -30,7 +30,7 @@ data class Sicherungszustand(
     /** Der Satz hinter dem Symbol. Wird beim Antippen gezeigt. */
     val text: String
         get() = when (stand) {
-            Sicherung.AUS -> "Der Abgleich ist aus. Es geht nichts zu Google."
+            Sicherung.AUS -> "Der Abgleich ist aus. Deine Notizen gehen nicht zu Google."
             Sicherung.GESICHERT -> "Alle Notizen sind gesichert."
             Sicherung.OFFEN -> if (offen == 1) {
                 "Eine Notiz ist noch nicht gesichert."

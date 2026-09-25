@@ -14,12 +14,14 @@ import androidx.core.app.ServiceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import de.notizen.app.MainActivity
 import de.notizen.app.erinnerung.ErinnerungEmpfaenger
+import de.notizen.core.data.prefs.Einstellungen
 import de.notizen.core.data.repository.AudioRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -73,6 +75,8 @@ class AufnahmeDienst : Service() {
     @Inject lateinit var transkription: Transkription
 
     @Inject lateinit var audio: AudioRepository
+
+    @Inject lateinit var einstellungen: Einstellungen
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var arbeit: Job? = null
@@ -169,6 +173,18 @@ class AufnahmeDienst : Service() {
             val datei = aufnahmeDatei(this@AufnahmeDienst, notizId)
             if (!datei.exists()) {
                 sitzung.transkriptFehler("Zu dieser Notiz gibt es keine Aufnahme.")
+                sitzung.transkriptFertig()
+                withContext(Dispatchers.Main) { beenden() }
+                return@launch
+            }
+
+            // Die Oberflaeche bietet das Umwandeln ohne KI gar nicht an. Kommt
+            // der Auftrag trotzdem (alte Benachrichtigung, Schalter gerade
+            // umgelegt), fragt der Dienst ML Kit nicht ohne Zustimmung.
+            if (!einstellungen.kiAktiv().first()) {
+                sitzung.transkriptFehler(
+                    "Die KI ist in den Einstellungen ausgeschaltet. Die Aufnahme bleibt erhalten.",
+                )
                 sitzung.transkriptFertig()
                 withContext(Dispatchers.Main) { beenden() }
                 return@launch

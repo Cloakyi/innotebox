@@ -106,12 +106,25 @@ nachladbar sein (`DOWNLOADABLE`). Deshalb:
   sich den Stand; das Nachladen eines Modells ist immer ein Knopf, nie ein Automatismus. Bei
   jedem weiteren Start läuft dieselbe Messung ohne Dialog, und nur eine Abweichung führt zur
   vollen Prüfung.
-- **Der Schalter „Von der KI aufbereiten lassen"** betrifft Titel und Aufbereiten, nicht die
-  Spracherkennung; die ist keine Textgenerierung. Abgeschaltet werden die Bedienelemente.
+- **Der Schalter „Von der KI aufbereiten lassen"** betrifft Titel, Aufbereiten und das
+  Umwandeln in Text. Wer die KI ausschaltet, will nichts von ihr, auch wenn die Erkennung
+  technisch etwas anderes ist. Abgeschaltet werden die Bedienelemente.
+- **Die KI braucht eine Zustimmung** (seit Alpha 9). ML Kit rechnet auf dem Gerät, schickt
+  Google aber Kennzahlen über die Nutzung (Gerät, App, eine Kennung der Installation,
+  Leistung, Fehlercodes, Sprachen). Das Auslesen dafür braucht nach § 25 TDDDG eine
+  Einwilligung, und die Bedingungen von Google verlangen, dass die Nutzer davon erfahren.
+  `Einstellungen.kiAktiv()` ist deshalb nur wahr, wenn eingeschaltet **und** zugestimmt ist;
+  ohne das ruft die App ML Kit nicht auf, auch kein `checkStatus()`. Der Dialog
+  (`KiZustimmungDialog`) kommt beim Start, solange nicht entschieden ist, und hinter dem
+  Schalter; er verlangt die Bestätigung der Volljährigkeit, weil die GenAI-Bedingungen von
+  Google die Schnittstellen nur für Anwendungen erlauben, die sich nicht an Minderjährige
+  richten. Ausschalten nimmt die Zustimmung zurück.
 
 Alles, was ins Netz ginge, kommt erst nach einer ausdrücklichen Zustimmung (Schalter
-„Verarbeitung im Netz" mit Bedingungen, Zustimmen erst nach dem Lesen bis unten und nach
-zehn Sekunden). Heute hängt daran nur das Nachladen der Sprachpakete von ML Kit Translate.
+„Verarbeitung im Netz", Zustimmen erst nach dem Lesen bis unten und nach zehn Sekunden). Der
+Dialog sagt, was der Schalter heute erlaubt: Sprachpakete von ML Kit Translate laden, rund
+30 MB je Sprache, und was dabei an Google geht. Kommt später etwas dazu, etwa eine KI im Netz,
+deckt die alte Zustimmung das nicht; dann ändert sich der Text, und der Schalter fragt neu.
 
 ## 8. Audio
 
@@ -168,7 +181,7 @@ Absicht verschieden.
 Androids Sicherung spielt Daten einer neueren App-Version nur dann nicht in eine ältere
 zurück, wenn die Nummer größer ist; bei gleicher Nummer landete einmal eine Datenbank auf
 Stand 6 in einem Build mit Stand 5, und die App stürzte bei jedem Start ab. `versionName`
-trägt Stufe und Zählung („Alpha 8"). Die Einstellungen zeigen Version, Build, Paketname und
+trägt Stufe und Zählung („Alpha 9"). Die Einstellungen zeigen Version, Build, Paketname und
 Webseite, gelesen aus dem Paket.
 
 Release ist nur arm64 (`ndk.abiFilters`), weil ML Kit sonst Bibliotheken für vier
@@ -228,6 +241,12 @@ Migrationen überschreiben `migrate(SQLiteConnection)`. Die Schemadateien liegen
 Tokenizer `unicode61`, damit „Kuche" auch „Küche" findet. `SyncDao.markDirty()` ändert
 gezielt zwei Spalten statt eines Upserts, der die Drive-Zuordnung überschriebe. Tests laufen
 über Robolectric mit `sqliteMode=NATIVE`, `sdk=34` und ASM 9.9; die Uhr steht in Tests still.
+
+**Keine Cloud-Sicherung durch Android** (seit Alpha 9, `res/xml/datensicherung.xml`). Die App
+hat ihre eigenen Wege, die der Mensch in der Hand hat: die Sicherungsdatei und den Abgleich
+über das eigene Drive. Eine stille Kopie der ganzen Datenbank in der Gerätesicherung bei
+Google nähme auch Notizen mit, die ausdrücklich auf dem Gerät bleiben sollen. Der Umzug von
+Gerät zu Gerät beim Einrichten bleibt erlaubt.
 
 ## 15. Die Phasen
 

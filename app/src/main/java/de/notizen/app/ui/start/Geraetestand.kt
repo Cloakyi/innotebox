@@ -30,7 +30,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.notizen.app.ai.Geraetepruefung
 import de.notizen.core.data.model.Faehigkeit
 import de.notizen.core.data.model.Geraetestand
+import de.notizen.app.ui.components.KiZustimmungDialog
 import de.notizen.core.data.prefs.Einstellungen
+import de.notizen.core.data.util.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,6 +44,9 @@ import javax.inject.Inject
 sealed interface Geraetefrage {
     /** Nichts zu sagen: alles da, oder der Stand ist bekannt und unveraendert. */
     data object Nichts : Geraetefrage
+
+    /** Ob die KI ueberhaupt arbeiten darf. Kommt vor jeder Messung (seit Alpha 9). */
+    data object Zustimmung : Geraetefrage
 
     /** Etwas laesst sich nachladen. */
     data class Freischalten(val stand: Geraetestand, val laedt: Boolean = false) : Geraetefrage
@@ -61,11 +66,18 @@ sealed interface Geraetefrage {
  * Weicht das Ergebnis vom gemerkten Stand ab, sagt die App es und prueft
  * wieder voll. So versucht sie nie, eine Funktion zu laden, die es nicht mehr
  * gibt, und sie fragt nicht bei jedem Start alles durch.
+ *
+ * **Gemessen wird nur mit Zustimmung** (seit Alpha 9). Die Messung ruft ML Kit
+ * auf, und ML Kit meldet Kennzahlen an Google. Solange die KI nicht
+ * eingeschaltet ist, fragt die App beim Start einmal nach
+ * ([Geraetefrage.Zustimmung]) oder, nach einem Nein, gar nichts; gemessen
+ * wird dann nicht.
  */
 @HiltViewModel
 class GeraetestandViewModel @Inject constructor(
     private val pruefung: Geraetepruefung,
     private val einstellungen: Einstellungen,
+    private val clock: Clock,
 ) : ViewModel() {
 
     private val _frage = MutableStateFlow<Geraetefrage>(Geraetefrage.Nichts)
@@ -78,13 +90,45 @@ class GeraetestandViewModel @Inject constructor(
         if (geprueft) return
         geprueft = true
         viewModelScope.launch {
-            val alt = einstellungen.geraetestand().first()
-            val neu = pruefung.messen()
-            when {
-                alt == null -> vollePruefung(neu)
-                neu.weichtAbVon(alt) -> _frage.value = Geraetefrage.Veraendert(neu)
-                else -> einstellungen.setGeraetestand(neu)
+            if (einstellungen.kiFrageOffen().first()) {
+                _frage.value = Geraetefrage.Zustimmung
+                return@launch
             }
+            messen()
+        }
+    }
+
+    /** Die leichte Messung, nur bei eingeschalteter KI. Ohne sie kein Aufruf an ML Kit. */
+    private suspend fun messen() {
+        if (!einstellungen.kiAktiv().first()) return
+        val alt = einstellungen.geraetestand().first()
+        val neu = pruefung.messen()
+        when {
+            alt == null -> vollePruefung(neu)
+            neu.weichtAbVon(alt) -> _frage.value = Geraetefrage.Veraendert(neu)
+            else -> einstellungen.setGeraetestand(neu)
+        }
+    }
+
+    /** „Einschalten" im Dialog zur KI: Zustimmung merken, dann wie gewohnt messen. */
+    fun kiZustimmen() {
+        viewModelScope.launch {
+            einstellungen.kiEinschalten(clock.now())
+            _frage.value = Geraetefrage.Nichts
+            messen()
+        }
+    }
+
+    /** Daneben getippt oder Zurück: keine Entscheidung, beim nächsten Start wieder fragen. */
+    fun kiSpaeter() {
+        _frage.value = Geraetefrage.Nichts
+    }
+
+    /** „Ohne KI": ausschalten und nicht wieder fragen. Gemessen wird nichts. */
+    fun kiAblehnen() {
+        viewModelScope.launch {
+            einstellungen.kiAusschalten()
+            _frage.value = Geraetefrage.Nichts
         }
     }
 
@@ -126,7 +170,7 @@ class GeraetestandViewModel @Inject constructor(
             is Geraetefrage.Freischalten -> f.stand
             is Geraetefrage.Fehlt -> f.stand
             is Geraetefrage.Veraendert -> f.neu
-            Geraetefrage.Nichts -> null
+            Geraetefrage.Nichts, Geraetefrage.Zustimmung -> null
         }
         viewModelScope.launch {
             stand?.let { einstellungen.setGeraetestand(it) }
@@ -151,6 +195,13 @@ fun Geraetestanddialog(aktiv: Boolean, viewModel: GeraetestandViewModel = hiltVi
     when (val f = frage) {
         Geraetefrage.Nichts -> Unit
 
+        Geraetefrage.Zustimmung -> KiZustimmungDialog(
+            ablehnenText = "Ohne KI",
+            onZustimmen = viewModel::kiZustimmen,
+            onAblehnen = viewModel::kiAblehnen,
+            onSchliessen = viewModel::kiSpaeter,
+        )
+
         is Geraetefrage.Veraendert -> AlertDialog(
             onDismissRequest = viewModel::veraenderungGesehen,
             title = { Text("Etwas hat sich verändert") },
@@ -172,8 +223,8 @@ fun Geraetestanddialog(aktiv: Boolean, viewModel: GeraetestandViewModel = hiltVi
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
                         text = "Dieses Gerät bringt die KI mit, ein Teil davon muss noch " +
-                            "geladen werden. Alles läuft danach auf dem Gerät, nichts " +
-                            "verlässt es. Die App lädt nur, wenn du es hier sagst.",
+                            "geladen werden. Alles läuft danach auf dem Gerät, deine Notizen " +
+                            "verlassen es nicht. Die App lädt nur, wenn du es hier sagst.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

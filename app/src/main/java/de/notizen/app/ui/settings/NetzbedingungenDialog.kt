@@ -21,17 +21,19 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 /**
- * Die Bedingungen, bevor die App ins Netz darf (Phase 15, Opt-in).
+ * Was geschieht, bevor die App etwas aus dem Netz laden darf (Phase 15, Opt-in).
  *
  * **Zustimmen geht erst, wenn beides erfüllt ist:** Der Text ist bis ganz
  * unten gescrollt, und zehn Sekunden sind vergangen. Ein Dialog, den man in
  * einer halben Sekunde wegtippt, ist keine Zustimmung, sondern ein Reflex.
  * Der Knopf sagt, was noch fehlt.
  *
- * **Der Text ist ein Platzhalter.** Die Nutzungsbedingungen liefert der
- * Nutzer; sie stehen in [NETZ_BEDINGUNGEN] und werden dort ausgetauscht.
- * Heute hängt am Schalter nur das Nachladen der Sprachpakete von ML Kit
- * (Phase 16); die Online-KI kommt dazu, sobald ein Anbieter gewählt ist.
+ * **Ein Hinweis, keine Nutzungsbedingungen** (seit Alpha 9; vorher stand
+ * hier ein Platzhalter). [NETZ_HINWEIS] sagt, was der Schalter heute tut:
+ * Sprachpakete von ML Kit laden, und was dabei an Google geht. Kommt später
+ * etwas dazu (etwa eine KI im Netz), deckt die alte Zustimmung das nicht:
+ * Dann ändert sich der Text, und der Schalter fragt neu
+ * (docs/ENTSCHEIDUNGEN.md, Abschnitt 7).
  */
 @Composable
 fun NetzbedingungenDialog(
@@ -56,9 +58,8 @@ fun NetzbedingungenDialog(
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Bis hierher bleibt alles auf dem Gerät. Mit diesem Schalter darf die " +
-                        "App Daten ins Netz geben, und zwar nur für das, was hier steht. Lies " +
-                        "den Text bis zum Ende.",
+                    text = "Mit diesem Schalter darf die App etwas aus dem Netz laden, und " +
+                        "zwar nur das, was hier steht. Lies den Text bis zum Ende.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 12.dp),
@@ -70,7 +71,7 @@ fun NetzbedingungenDialog(
                         .verticalScroll(scroll),
                 ) {
                     Text(
-                        text = NETZ_BEDINGUNGEN,
+                        text = NETZ_HINWEIS,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -98,19 +99,18 @@ fun NetzbedingungenDialog(
 private const val WARTEZEIT_S = 10
 
 /**
- * PLATZHALTER. Der Text der Nutzungsbedingungen folgt (docs/ENTSCHEIDUNGEN.md,
- * Abschnitt 7). Was hier steht, sagt nur, was der Schalter heute tut.
+ * Was der Schalter heute tut und was dabei an Google geht. Die Angaben zu ML
+ * Kit stammen aus Googles Offenlegung (developers.google.com/ml-kit/android-data-disclosure),
+ * die Größe der Sprachpakete aus der Dokumentation der Übersetzung.
  */
-const val NETZ_BEDINGUNGEN: String =
-    "Dieser Text ist ein Platzhalter. Die Nutzungsbedingungen für die Verarbeitung im " +
-        "Netz folgen.\n\n" +
-        "Was der Schalter heute tut: Er erlaubt der App, Sprachpakete für die Übersetzung " +
-        "über ML Kit aus dem Netz zu laden (rund 30 MB je Sprache). Die Pakete kommen von " +
-        "Google. Deine Notizen verlassen dabei das Gerät nicht; übersetzt wird nach dem " +
-        "Laden auf dem Gerät.\n\n" +
-        "Was der Schalter später tun wird: Sobald ein Anbieter für die Verarbeitung im " +
-        "Netz gewählt ist, dürfen Titelvorschläge und Übersetzungen an diesen Anbieter " +
-        "gehen. Welcher das ist und was er mit den Daten tut, steht dann an dieser Stelle, " +
-        "bevor du zustimmst.\n\n" +
-        "Du kannst den Schalter jederzeit wieder ausschalten. Dann geht nichts mehr ins " +
-        "Netz, und schon geladene Sprachpakete bleiben auf dem Gerät."
+const val NETZ_HINWEIS: String =
+    "Was der Schalter erlaubt: Die App darf für die Übersetzung über ML Kit " +
+        "Sprachpakete laden. Jedes Paket ist rund 30 MB groß und kommt von Servern von " +
+        "Google. Geladen wird erst, wenn du beim Übersetzen auf „Sprachpaket laden“ tippst.\n\n" +
+        "Was dabei an Google geht: Beim Laden erfährt Google deine IP-Adresse und " +
+        "welches Sprachpaket du holst. ML Kit schickt Google außerdem Angaben über die " +
+        "Nutzung: Gerät und App, Leistung, Fehlercodes und die eingestellten Sprachen. " +
+        "Deine Texte und Notizen sind nicht dabei, übersetzt wird auf dem Gerät.\n\n" +
+        "Ausschalten kannst du jederzeit. Danach lädt die App nichts mehr, und geladene " +
+        "Sprachpakete bleiben auf dem Gerät. Mehr dazu steht in der " +
+        "Datenschutzerklärung auf innotebox.de."

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.notizen.app.ai.Aufraeumen
+import de.notizen.app.ai.Geraetepruefung
 import de.notizen.app.audio.Modellzustand
 import de.notizen.app.audio.Transkription
 import de.notizen.app.uebersetzung.Uebersetzung
@@ -20,13 +21,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class KiEinstellung(
     val sprache: Transkriptsprache = Transkriptsprache.STANDARD,
-    val aktiv: Boolean = true,
+    val aktiv: Boolean = false,
 
     /**
      * Was dieses Geraet ueberhaupt kann.
@@ -71,6 +73,7 @@ class KiEinstellungenViewModel @Inject constructor(
     private val transkription: Transkription,
     private val uebersetzungspruefung: Uebersetzungspruefung,
     private val uebersetzung: Uebersetzung,
+    private val geraetepruefung: Geraetepruefung,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -129,14 +132,22 @@ class KiEinstellungenViewModel @Inject constructor(
      */
     fun geraetPruefen() {
         viewModelScope.launch {
-            val textki = runCatching { aufraeumen.verfuegbar() }.getOrDefault(false)
-            val sprache = runCatching { transkription.zustand().first }.getOrNull()
+            // Ohne eingeschaltete KI wird ML Kit nicht gefragt (Zustimmung,
+            // seit Alpha 9). `null` heisst dann „nicht gefragt", und die
+            // Hinweise zum Geraet bleiben weg, statt etwas zu behaupten.
+            val kiAn = einstellungen.kiAktiv().first()
+            val textki = if (kiAn) runCatching { aufraeumen.verfuegbar() }.getOrDefault(false) else null
+            val sprache = if (kiAn) runCatching { transkription.zustand().first }.getOrNull() else null
 
             geraet.value = KiEinstellung(
                 textkiDa = textki,
-                spracherkennungDa = sprache is Modellzustand.Bereit ||
-                    sprache is Modellzustand.Ladbar ||
-                    sprache is Modellzustand.Laedt,
+                spracherkennungDa = if (!kiAn) {
+                    null
+                } else {
+                    sprache is Modellzustand.Bereit ||
+                        sprache is Modellzustand.Ladbar ||
+                        sprache is Modellzustand.Laedt
+                },
                 // MESSEN STATT RATEN. Ob ein Geraet die Uebersetzung des
                 // Systems mitbringt, laesst sich von aussen nicht sagen -- es
                 // haengt am Hersteller und an dem, was er mitliefert. Also
@@ -167,8 +178,25 @@ class KiEinstellungenViewModel @Inject constructor(
         viewModelScope.launch { einstellungen.setTranskriptsprache(wert) }
     }
 
-    fun setAktiv(an: Boolean) {
-        viewModelScope.launch { einstellungen.setKiAktiv(an) }
+    /**
+     * Einschalten nur aus dem Dialog mit der Zustimmung heraus. Danach wird
+     * das Geraet gemessen, damit die Zeile zum Geraetestand stimmt; geladen
+     * wird dabei nichts.
+     */
+    fun kiEinschalten() {
+        viewModelScope.launch {
+            einstellungen.kiEinschalten(clock.now())
+            runCatching { geraetepruefung.messen() }.getOrNull()?.let { einstellungen.setGeraetestand(it) }
+            geraetPruefen()
+        }
+    }
+
+    /** Ausschalten geht sofort und nimmt die Zustimmung zurueck. */
+    fun kiAusschalten() {
+        viewModelScope.launch {
+            einstellungen.kiAusschalten()
+            geraetPruefen()
+        }
     }
 
     fun setTitelpflicht(an: Boolean) {

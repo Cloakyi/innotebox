@@ -55,6 +55,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.notizen.app.kalender.KalenderViewModel
 import de.notizen.app.ui.ordner.OrdnungViewModel
+import de.notizen.app.ui.components.DATENSCHUTZ
+import de.notizen.app.ui.components.KiZustimmungDialog
 import de.notizen.app.kalender.Kalenderwahl
 import de.notizen.app.kalender.kalenderbeschriftung
 import de.notizen.app.sync.SyncViewModel
@@ -107,6 +109,7 @@ fun SettingsScreen(
     var erklaerungOffen by remember { mutableStateOf(false) }
     var titelpflichtFrage by remember { mutableStateOf(false) }
     var netzDialog by remember { mutableStateOf(false) }
+    var kiDialog by remember { mutableStateOf(false) }
 
     // DER SPRUNG ZUM KI-SCHALTER (Phase 15): vom ausgegrauten Transkript her
     // kommt man mit `hervorheben = "ki"` hierher. Die Liste scrollt zum
@@ -420,14 +423,26 @@ fun SettingsScreen(
                     "Aus. Aufnahmen bleiben Aufnahmen, Titel kommen aus dem Text"
                 },
                 an = ki.aktiv,
-                onAendern = kiViewModel::setAktiv,
+                // Einschalten nur mit Zustimmung (ML Kit meldet Kennzahlen an
+                // Google), Ausschalten sofort.
+                onAendern = { an -> if (an) kiDialog = true else kiViewModel.kiAusschalten() },
+            )
+        }
+        if (kiDialog) {
+            KiZustimmungDialog(
+                ablehnenText = "Abbrechen",
+                onZustimmen = {
+                    kiDialog = false
+                    kiViewModel.kiEinschalten()
+                },
+                onAblehnen = { kiDialog = false },
             )
         }
 
         // DER GERAETESTAND (Phase 15): einmal gemessen, hier gezeigt. Kein
         // Schalter, eine Auskunft. Solange nie gemessen wurde, steht das da,
         // und nicht eine geratene Zusage.
-        Hinweiszeile(geraetestandText(ki.geraetestand))
+        Hinweiszeile(geraetestandText(ki.geraetestand, ki.aktiv))
 
         // Die Messzeile "Uebersetzung auf dem Geraet" stand hier vom 2026-09-03
         // bis zum 2026-09-14. Sie hat ihre Frage beantwortet (Pixel: Dienst da,
@@ -453,7 +468,7 @@ fun SettingsScreen(
             hinweis = if (ki.netzErlaubt) {
                 "An. Sprachpakete für die Übersetzung dürfen aus dem Netz geladen werden"
             } else {
-                "Aus. Deine Notizen verlassen das Gerät nicht. Zum Einschalten liest du erst die Bedingungen"
+                "Aus. Es werden keine Sprachpakete geladen. Zum Einschalten liest du erst, was dabei an Google geht"
             },
             an = ki.netzErlaubt,
             onAendern = { an -> if (an) netzDialog = true else kiViewModel.netzErlauben(false) },
@@ -644,6 +659,10 @@ private fun UeberDieApp(onLizenzen: () -> Unit) {
     val build = paket?.longVersionCode?.toString() ?: "unbekannt"
 
     Angabe("Version", "$version, Build $build")
+    Hinweiszeile(
+        "Das ist eine Testfassung. Lege regelmäßig eine Sicherung an, unter „Sichern " +
+            "und Wiederherstellen“ weiter oben.",
+    )
     Angabe("Paketname", context.packageName)
     Eintrag(
         titel = "Webseite",
@@ -655,9 +674,20 @@ private fun UeberDieApp(onLizenzen: () -> Unit) {
         },
     )
     Eintrag("Lizenzen", "Freie Software und die Bibliotheken darin", onLizenzen)
+    Eintrag(
+        titel = "Datenschutzerklärung",
+        wert = "Was die App mit deinen Daten tut, und was nicht",
+        onClick = { runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, DATENSCHUTZ.toUri())) } },
+    )
+    Eintrag(
+        titel = "Impressum",
+        wert = "Wer hinter InNoteBox steht",
+        onClick = { runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, IMPRESSUM.toUri())) } },
+    )
 }
 
 private const val WEBSEITE = "https://innotebox.de"
+private const val IMPRESSUM = "https://innotebox.de/impressum"
 
 /** Eine Zeile mit Titel und Wert, ohne Handlung dahinter. */
 @Composable
@@ -765,7 +795,8 @@ private fun Kalenderauswahl(
 const val HERVORHEBEN_KI = "ki"
 
 /** Der Satz zum gemerkten Geraetestand in den Einstellungen (Phase 15). */
-private fun geraetestandText(stand: Geraetestand?): String {
+private fun geraetestandText(stand: Geraetestand?, kiAn: Boolean): String {
+    if (!kiAn && stand == null) return "Was dieses Gerät an KI kann, prüft die App, sobald du die KI einschaltest."
     if (stand == null) return "Was dieses Gerät an KI kann, wird beim nächsten Start geprüft."
     if (stand.allesVerfuegbar) return "Dieses Gerät bietet alle KI-Funktionen dieser App."
     val teile = buildList {

@@ -13,8 +13,17 @@
  *    Diese Pakete tragen eine eigene Liste (third_party_licenses.json/.txt).
  * 3. Die Schrift Google Sans Flex (SIL Open Font License 1.1).
  *
+ * 4. Die eigene Lizenz der App: LICENSE (GPL-3.0) und ZUSATZERLAUBNIS.md aus
+ *    dem Projektstamm, damit die App sie ohne Netz zeigen kann.
+ *
  * Gleiche Lizenztexte stehen nur einmal in der Datei; die Eintraege verweisen
  * auf sie. Die Texte der Apache-Lizenz und der OFL liegen in gradle/lizenztexte.
+ * Bringt eine Bibliothek eine NOTICE-Datei mit (Apache 2.0, Abschnitt 4 d),
+ * steht sie als "hinweis" am Eintrag.
+ *
+ * Eine Lizenz, die hier nicht ausdruecklich bekannt ist, bricht die Aufgabe
+ * ab. Dann muss ein Mensch nachsehen, was sie verlangt, und sie in `bekannt`
+ * eintragen; geraten wird nicht.
  */
 
 import groovy.json.JsonOutput
@@ -25,6 +34,21 @@ import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
+
+// Die Namen, unter denen die POM-Dateien ihre Lizenz fuehren, und wie sie in
+// der App heissen. Nur was hier steht, gilt als bekannt.
+val bekannt = mapOf(
+    "The Apache Software License, Version 2.0" to "Apache License 2.0",
+    "The Apache License, Version 2.0" to "Apache License 2.0",
+    "Apache License, Version 2.0" to "Apache License 2.0",
+    "Apache 2.0" to "Apache License 2.0",
+    "Apache-2.0" to "Apache License 2.0",
+    "The MIT License" to "MIT License",
+    "BSD-3-Clause" to "BSD 3-Clause License",
+    "Android Software Development Kit License" to "Android Software Development Kit License",
+    "ML Kit Terms of Service" to "ML Kit Terms of Service",
+    "CC0" to "CC0",
+)
 
 // Lizenzen ohne mitgelieferten Text: Die Bedingungen stehen beim Anbieter.
 val verweise = mapOf(
@@ -76,41 +100,49 @@ tasks.register("lizenzen") {
                 .filterIsInstance<ResolvedArtifactResult>()
                 .firstOrNull()?.file?.readText()
 
-        // Name der Lizenz aus der POM-Datei, notfalls aus der Eltern-POM.
-        fun pomLizenz(gruppe: String, artefakt: String, version: String, tiefe: Int = 0): String? {
-            val text = pom(gruppe, artefakt, version) ?: return null
-            Regex("""<license>\s*<name>(.*?)</name>""", RegexOption.DOT_MATCHES_ALL).find(text)
-                ?.let { return it.groupValues[1].trim() }
+        // Alle Lizenzen aus der POM-Datei, notfalls aus der Eltern-POM.
+        fun pomLizenzen(gruppe: String, artefakt: String, version: String, tiefe: Int = 0): List<String> {
+            val text = pom(gruppe, artefakt, version) ?: return emptyList()
+            val namen = Regex("""<license>\s*<name>(.*?)</name>""", RegexOption.DOT_MATCHES_ALL)
+                .findAll(text).map { it.groupValues[1].trim() }.toList()
+            if (namen.isNotEmpty()) return namen
             val eltern = Regex(
                 """<parent>.*?<groupId>(.*?)</groupId>.*?<artifactId>(.*?)</artifactId>.*?<version>(.*?)</version>""",
                 RegexOption.DOT_MATCHES_ALL,
-            ).find(text) ?: return null
-            if (tiefe >= 4) return null
+            ).find(text) ?: return emptyList()
+            if (tiefe >= 4) return emptyList()
             val (g, a, v) = eltern.destructured
-            return pomLizenz(g.trim(), a.trim(), v.trim(), tiefe + 1)
+            return pomLizenzen(g.trim(), a.trim(), v.trim(), tiefe + 1)
         }
 
-        // Fasst die Schreibweisen derselben Lizenz zusammen.
-        fun einheitlich(name: String?): String? = when {
-            name == null -> null
-            "Apache" in name -> "Apache License 2.0"
-            name.trim() in setOf("The MIT License", "MIT", "MIT License") -> "MIT License"
-            "BSD-3" in name || "BSD 3" in name -> "BSD 3-Clause License"
-            else -> name.trim()
+        // Genau eine bekannte Lizenz, sonst Abbruch. Zwei verschiedene (eine
+        // Wahl zwischen Lizenzen) entscheidet ebenfalls ein Mensch.
+        fun einheitlich(k: String, namen: List<String>): String {
+            if (namen.isEmpty()) throw GradleException("Keine Lizenz gefunden fuer $k")
+            val unbekannt = namen.filter { it !in bekannt }
+            if (unbekannt.isNotEmpty()) {
+                throw GradleException(
+                    "Unbekannte Lizenz fuer $k: $unbekannt. Pruefen und in gradle/lizenzen.gradle.kts eintragen.",
+                )
+            }
+            val gleich = namen.map { bekannt.getValue(it) }.distinct()
+            if (gleich.size > 1) throw GradleException("Mehrere Lizenzen fuer $k: $gleich. Von Hand entscheiden.")
+            return gleich.single()
         }
 
         val lizenzdatei = Regex("""(^|/)LICENSE(\.txt)?$""")
+        val hinweisdatei = Regex("""(^|/)NOTICE(\.txt|\.md)?$""")
 
-        // Ein mitgelieferter Lizenztext (MIT, BSD), falls das Paket einen hat.
-        fun lizenztextImPaket(datei: File): String? = ZipFile(datei).use { zip ->
+        // Die erste Datei im Paket, deren Name passt, auch in einem inneren JAR.
+        fun dateiImPaket(datei: File, muster: Regex): String? = ZipFile(datei).use { zip ->
             for (eintrag in zip.entries()) {
-                if (lizenzdatei.containsMatchIn(eintrag.name)) {
+                if (muster.containsMatchIn(eintrag.name)) {
                     return zip.getInputStream(eintrag).readBytes().toString(Charsets.UTF_8)
                 }
                 if (eintrag.name.endsWith(".jar")) {
                     java.util.zip.ZipInputStream(zip.getInputStream(eintrag)).use { innen ->
                         generateSequence { innen.nextEntry }.forEach { n ->
-                            if (lizenzdatei.containsMatchIn(n.name)) return innen.readBytes().toString(Charsets.UTF_8)
+                            if (muster.containsMatchIn(n.name)) return innen.readBytes().toString(Charsets.UTF_8)
                         }
                     }
                 }
@@ -145,17 +177,18 @@ tasks.register("lizenzen") {
         for (k in namen) {
             val (gruppe, artefakt) = k.split(":")
             val version = versionen.getValue(k)
-            val lizenz = einheitlich(pomLizenz(gruppe, artefakt, version))
-                ?: throw GradleException("Keine Lizenz gefunden fuer $k")
+            val lizenz = einheitlich(k, pomLizenzen(gruppe, artefakt, version))
             val eintrag = mutableMapOf<String, Any>("name" to k, "version" to version, "lizenz" to lizenz)
             val paket = pakete[k]
             when {
                 lizenz == "Apache License 2.0" -> eintrag["text"] = apache
                 lizenz in verweise -> eintrag["url"] = verweise.getValue(lizenz)
                 else -> eintrag["text"] = textnummer(
-                    paket?.let(::lizenztextImPaket) ?: throw GradleException("Kein Lizenztext fuer $k ($lizenz)"),
+                    paket?.let { dateiImPaket(it, lizenzdatei) }
+                        ?: throw GradleException("Kein Lizenztext fuer $k ($lizenz)"),
                 )
             }
+            paket?.let { dateiImPaket(it, hinweisdatei) }?.let { eintrag["hinweis"] = textnummer(it) }
             bibliotheken += eintrag
             paket?.let(::drittsoftware)?.forEach { (name, text) ->
                 enthalten.getOrPut(name) { sortedSetOf() } += textnummer(text)
@@ -168,7 +201,17 @@ tasks.register("lizenzen") {
             "text" to textnummer(File(textordner, "ofl-1.1.txt").readText()),
         )
 
+        // Die eigene Lizenz. Aus der Zusatzerlaubnis fallen die Zeichen der
+        // Markdown-Auszeichnung weg; in der App steht sie als schlichter Text.
+        val zusatz = rootProject.file("ZUSATZERLAUBNIS.md").readLines()
+            .joinToString("\n") { it.removePrefix("# ").removePrefix("> ").removePrefix(">") }
+        val app = mapOf(
+            "lizenz" to textnummer(rootProject.file("LICENSE").readText()),
+            "zusatz" to textnummer(zusatz),
+        )
+
         val daten = mapOf(
+            "app" to app,
             "bibliotheken" to bibliotheken,
             "enthalten" to enthalten.entries.sortedBy { it.key.lowercase() }
                 .map { (name, t) -> mapOf("name" to name, "texte" to t.toList()) },

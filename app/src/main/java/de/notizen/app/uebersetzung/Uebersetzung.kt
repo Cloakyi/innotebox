@@ -36,8 +36,13 @@ class Uebersetzung @Inject constructor(
     suspend fun wegstaende(): Map<Uebersetzungsweg, Wegstand> {
         val systemLage = runCatching { uebersetzungspruefung.lage() }
             .getOrDefault(Uebersetzungslage.NichtErreichbar)
-        val kiZustand = runCatching { titelKi.zustand() }.getOrDefault(KiZustand.FEHLER)
         val kiAn = einstellungen.kiAktiv().first()
+        // Ohne eingeschaltete KI wird die Prompt API nicht gefragt (Zustimmung, seit Alpha 9).
+        val kiZustand = if (kiAn) {
+            runCatching { titelKi.zustand() }.getOrDefault(KiZustand.FEHLER)
+        } else {
+            KiZustand.FEHLER
+        }
         val netz = einstellungen.netzErlaubt().first()
 
         return mapOf(
@@ -96,7 +101,14 @@ class Uebersetzung @Inject constructor(
         val gefuellt = texte.mapIndexedNotNull { i, t -> if (t.isBlank()) null else i to t }
         if (gefuellt.isEmpty()) return Uebersetzungsergebnis.Erfolg(texte.map { "" })
 
-        val uebersetzer: Uebersetzer = when (weg()) {
+        // Ein Weg, der gerade nicht geht (KI aus, Netz aus), wird gar nicht
+        // erst angesprochen. Sonst fragte etwa der Weg ueber ML Kit bei Google
+        // nach, obwohl der Schalter dafuer aus ist.
+        val gewaehlt = weg()
+        wegstaende()[gewaehlt]?.takeIf { !it.verfuegbar }?.let {
+            return Uebersetzungsergebnis.Fehler(it.hinweis + ".")
+        }
+        val uebersetzer: Uebersetzer = when (gewaehlt) {
             Uebersetzungsweg.SYSTEM -> system
             Uebersetzungsweg.GERAETE_KI -> ki
             Uebersetzungsweg.MLKIT -> mlkit

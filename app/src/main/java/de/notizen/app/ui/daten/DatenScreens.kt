@@ -430,7 +430,7 @@ fun SyncScreen(
                     "Einmal am Tag, beim ersten Öffnen, prüft die App den ganzen " +
                     "Bestand und schreibt eine Sicherung in den Backup-Ordner."
             } else {
-                "Es geht nichts von selbst zu Google. Auch nach dem Speichern nicht."
+                "Deine Notizen gehen nicht von selbst zu Google. Auch nach dem Speichern nicht."
             },
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

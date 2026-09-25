@@ -1,8 +1,25 @@
 # Änderungen
 
+## Alpha 9 (2026-09-25)
+
+Datenschutz und Lizenzen nachgeschärft.
+
+- Die KI auf dem Gerät fragt vor dem ersten Einsatz um Zustimmung: Die Schnittstelle ML Kit
+  schickt Google Kennzahlen über ihre Nutzung. Ohne Zustimmung ruft die App ML Kit gar nicht
+  erst auf, auch nicht zum Prüfen, was das Gerät kann. Wer die KI schon benutzt hat, wird
+  einmal beim Start gefragt.
+- Der Schalter „Verarbeitung im Netz" erklärt jetzt, was er erlaubt und was dabei an Google
+  geht, statt eines Platzhalters.
+- Android nimmt die Daten der App nicht mehr in seine Cloud-Sicherung mit; der Umzug von
+  Gerät zu Gerät bleibt.
+- Unter „Über die App" stehen Hinweise zur Testfassung, die Datenschutzerklärung und das
+  Impressum; die Seite „Lizenzen" zeigt die GPL, die zusätzliche Erlaubnis und die
+  NOTICE-Dateien der Bibliotheken.
+- Die Schrift ist jetzt die unveränderte Datei aus Google Fonts.
+
 ## Alpha 8 (2026-09-25)
 
-Erste öffentliche Fassung, geschlossene Testphase.
+Erste öffentliche Fassung, als Testfassung auf GitHub.
 
 - Drei Stufen (Eingang, Workspace, Archiv) mit Wischgesten, nächtliches Auto-Archiv mit
   Rückgängig, Papierkorb mit Frist

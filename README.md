@@ -14,12 +14,13 @@ Webseite: [innotebox.de](https://innotebox.de)
   Ordnermodus mit eigenem Archiv und Papierkorb
 - Text mit Auszeichnung, Listen zum Abhaken mit Bearbeitungszustand, Bilder auch als
   Hintergrund einer Karte
-- Sprachnotizen: aufnehmen, später auf dem Gerät in Text umwandeln, Wellenform, Stille
-  überspringen
+- Sprachnotizen: aufnehmen, später auf dem Gerät in Text umwandeln, Wellenform, Pausen beim
+  Abhören überspringen
 - Volltextsuche über Titel, Text, Listen und Transkripte, mit Filtern nach Stufe, Tag,
   Farbe, Ordner und Papierkorb
 - Tags, Farben, Favoriten, Erinnerungen auf die Minute (auch im Kalender des Geräts)
-- KI nur auf dem Gerät (Titelvorschlag, Aufbereiten von Transkripten), abschaltbar
+- KI nur auf dem Gerät (Titelvorschlag, Umwandeln in Text, Aufbereiten von Transkripten),
+  erst nach Zustimmung und jederzeit abschaltbar
 - Übersetzung über das System, die KI auf dem Gerät oder ML Kit; letzteres nur nach
   ausdrücklicher Zustimmung, weil es Sprachpakete aus dem Netz lädt
 - Abgleich zwischen Geräten ausschließlich in das eigene Google Drive, in einen Ordner, den
@@ -36,6 +37,10 @@ ML Kit und der Drive-Abgleich weg; alles andere funktioniert unverändert.
 Alpha, für Android ab Version 12. Die fertige App gibt es als signierte APK unter
 [Releases](https://github.com/Cloakyi/innotebox/releases); was sich je Fassung geändert hat,
 steht in [CHANGELOG.md](CHANGELOG.md). Offen ist noch die Verschlüsselung der Datenbank.
+
+Impressum und Datenschutzerklärung stehen auf der Webseite:
+[innotebox.de/impressum](https://innotebox.de/impressum),
+[innotebox.de/datenschutz](https://innotebox.de/datenschutz).
 
 ## Selbst bauen
 
@@ -74,15 +79,37 @@ Die Entscheidungen hinter dem Code stehen in [docs/ENTSCHEIDUNGEN.md](docs/ENTSC
 das Datenformat für Abgleich und Sicherung in [SYNC.md](SYNC.md). Beides ist auch der
 Vertrag für einen zweiten Client, der denselben Drive-Ordner liest und schreibt.
 
+## Beitragen
+
+Fehlerberichte und Vorschläge sind als Issue willkommen. Wie Beiträge lizenziert werden und
+was vor einem Pull Request zu prüfen ist, steht in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Lizenz
 
-Der Code von InNoteBox steht unter der GNU General Public License, Version 3 (siehe
-[LICENSE](LICENSE)). Copyright 2026 Cloak Studio.
+Der Code von InNoteBox steht unter der GNU General Public License, Version 3, und nur unter
+dieser Fassung (SPDX: `GPL-3.0-only`), siehe [LICENSE](LICENSE). Copyright 2026 Cloak Studio.
+
+Die App enthält Bibliotheken von Google, die keine freie Software sind: die Play-Dienste für
+die Anmeldung bei Google Drive und ML Kit für Spracherkennung, KI und Übersetzung. Die GPL
+allein erlaubt es nicht, GPL-Code zusammen mit solchen Bibliotheken weiterzugeben. Deshalb
+gilt eine zusätzliche Erlaubnis nach Abschnitt 7 der GPL; der Wortlaut steht in
+[ZUSATZERLAUBNIS.md](ZUSATZERLAUBNIS.md).
+
+### Was im Repo nicht unter der GPL steht
+
+| Datei | Was | Lizenz |
+|---|---|---|
+| `gradlew`, `gradlew.bat`, `gradle/wrapper/gradle-wrapper.jar` | Gradle Wrapper | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
+| `app/src/main/res/font/google_sans_flex.ttf` | Schrift Google Sans Flex, unverändert aus [Google Fonts](https://github.com/google/fonts/tree/main/ofl/googlesansflex) | [SIL Open Font License 1.1](gradle/lizenztexte/ofl-1.1.txt) |
+| `gradle/lizenztexte/` | die Lizenztexte selbst (Apache 2.0, OFL 1.1) | unverändert, wie von den Herausgebern |
+
+Google, Google Sans und Google Sans Flex sind Marken der Google LLC; InNoteBox steht in
+keiner Verbindung zu Google.
 
 ### Bibliotheken und Dienste anderer
 
-Die fertige App enthält Bibliotheken anderer Hersteller. Für sie gelten deren eigene
-Lizenzen, nicht die GPL. Im Repo selbst liegt davon nichts; Gradle lädt sie beim Bauen.
+Die fertige App enthält Bibliotheken anderer Hersteller. Sie liegen nicht im Repo; Gradle lädt
+sie beim Bauen. Für sie gelten ihre eigenen Lizenzen:
 
 | Teil | Wofür | Lizenz |
 |---|---|---|
@@ -91,37 +118,19 @@ Lizenzen, nicht die GPL. Im Repo selbst liegt davon nichts; Gradle lädt sie bei
 | Google Play-Dienste (Anmeldung) | Anmeldung bei Google Drive | [Android Software Development Kit License](https://developer.android.com/studio/terms) |
 | ML Kit (Spracherkennung, Prompt API, Übersetzung) | Umwandlung in Text, KI auf dem Gerät, Übersetzung | [ML Kit Terms of Service](https://developers.google.com/ml-kit/terms) und [ML Kit GenAI Additional Terms](https://developers.google.com/ml-kit/genai-terms) |
 | Google Drive API | Abgleich zwischen Geräten | [Google APIs Terms of Service](https://developers.google.com/terms) |
-| Google Sans Flex | Schrift | [SIL Open Font License 1.1](https://openfontlicense.org) |
 
 Drei kleine Hilfsbibliotheken, die AndroidX mitbringt, stehen unter MIT, BSD und CC0.
 
-Die vollständige Liste mit jeder einzelnen Bibliothek, ihrer Version und ihrem Lizenztext,
-dazu die Software, die Google in ML Kit und den Play-Diensten mitliefert, steht in der App
-unter **Einstellungen, Über die App, Lizenzen**.
-
-### Zusätzliche Erlaubnis für die Bibliotheken von Google
-
-Die Play-Dienste und ML Kit sind keine freie Software. Die GPL erlaubt es eigentlich nicht,
-GPL-Code zusammen mit solchen Bibliotheken weiterzugeben. Damit die fertige App trotzdem
-weitergegeben werden darf, gilt diese zusätzliche Erlaubnis. Sie steht auf Englisch, weil
-die GPL selbst englisch ist und nur der englische Wortlaut verbindlich ist:
-
-> Additional permission under GNU GPL version 3 section 7
->
-> If you modify this Program, or any covered work, by linking or combining it with Google
-> Play services or ML Kit libraries published by Google LLC (or modified versions of those
-> libraries), containing parts covered by the terms of the Android Software Development Kit
-> License or the ML Kit Terms of Service, the licensors of this Program grant you additional
-> permission to convey the resulting work.
-
-Sinngemäß auf Deutsch, nicht verbindlich: Wer dieses Programm verändert oder mit den
-Bibliotheken der Google Play-Dienste oder von ML Kit verbindet, darf das Ergebnis
-weitergeben, obwohl diese Bibliotheken unter den Bedingungen von Google stehen und nicht
-unter der GPL.
+Die vollständige Liste mit jeder einzelnen Bibliothek, ihrer Version, ihrem Lizenztext und
+gegebenenfalls ihrer NOTICE-Datei, dazu die Software, die Google in ML Kit und den
+Play-Diensten mitliefert, steht in der App unter **Einstellungen, Über die App, Lizenzen**.
+Dort stehen auch die GPL und die zusätzliche Erlaubnis im Wortlaut.
 
 ### Daten an Google
 
-ML Kit arbeitet auf dem Gerät, sendet aber nach Angaben von Google Kennzahlen über die
-Nutzung der Schnittstellen an Google (Geräte- und App-Angaben, Leistung, Fehlercodes,
-eingestellte Sprachen), nie die Inhalte der Notizen. Einzelheiten stehen unter
+ML Kit arbeitet auf dem Gerät, schickt Google nach dessen Angaben aber Kennzahlen über die
+Nutzung der Schnittstellen (Geräte- und App-Angaben, eine Kennung der Installation,
+Leistung, Fehlercodes, eingestellte Sprachen), nie die Inhalte der Notizen. Deshalb ist die
+KI zunächst aus, und die App fragt, bevor sie ML Kit zum ersten Mal aufruft. Einzelheiten
+stehen in der [Datenschutzerklärung](https://innotebox.de/datenschutz) und in Googles
 [ML Kit Data Disclosure](https://developers.google.com/ml-kit/android-data-disclosure).
