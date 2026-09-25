@@ -11,7 +11,7 @@ title: "Testbericht: "
 ### Schnelltest
 
 - [ ] Die APK installieren und öffnen. Die App startet ohne Absturz.
-- [ ] Die Frage zur KI mit „Ohne KI“ oder „Einschalten“ beantworten. Danach ist der Eingang zu sehen.
+- [ ] Die Fragen beim ersten Start beantworten. Danach ist der Eingang zu sehen.
 - [ ] Über das Plus unten rechts eine Textnotiz anlegen, etwas schreiben und zurückgehen. Die Notiz steht im Eingang, ohne dass du speichern musstest.
 - [ ] Die App ganz schließen und wieder öffnen. Die Notiz ist noch da.
 - [ ] Eine Liste anlegen, drei Einträge hinzufügen und einen abhaken. Er wird durchgestrichen.
