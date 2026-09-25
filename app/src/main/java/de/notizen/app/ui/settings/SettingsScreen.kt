@@ -428,6 +428,12 @@ fun SettingsScreen(
                 onAendern = { an -> if (an) kiDialog = true else kiViewModel.kiAusschalten() },
             )
         }
+        ki.zustimmungAm?.let { am ->
+            Hinweiszeile(
+                "Zugestimmt am ${zustimmungsdatum(am)}. Die Zustimmung ist mit einem Schlüssel " +
+                    "versiegelt, den es nur auf diesem Gerät gibt.",
+            )
+        }
         if (kiDialog) {
             KiZustimmungDialog(
                 ablehnenText = "Abbrechen",
@@ -687,6 +693,11 @@ private fun UeberDieApp(onLizenzen: () -> Unit) {
 }
 
 private const val WEBSEITE = "https://innotebox.de"
+
+/** „25. September 2026", in der Zeitzone des Geräts. */
+private fun zustimmungsdatum(ms: Long): String =
+    java.time.format.DateTimeFormatter.ofPattern("d. MMMM yyyy", java.util.Locale.GERMAN)
+        .format(java.time.Instant.ofEpochMilli(ms).atZone(java.time.ZoneId.systemDefault()))
 private const val IMPRESSUM = "https://innotebox.de/impressum"
 
 /** Eine Zeile mit Titel und Wert, ohne Handlung dahinter. */

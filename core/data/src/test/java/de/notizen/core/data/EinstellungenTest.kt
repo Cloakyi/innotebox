@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -48,7 +49,12 @@ class EinstellungenTest {
     fun aufbauen() {
         val datei = dateiordner.newFile("test.preferences_pb")
         datei.delete()
-        einstellungen = Einstellungen(PreferenceDataStoreFactory.create { datei })
+        // Ein Siegel für die Tests: gültig ist, was mit "echt" gesiegelt ist.
+        // Das echte Siegel (Android Keystore) prüft ZustimmungssiegelTest in :app.
+        einstellungen = Einstellungen(
+            PreferenceDataStoreFactory.create { datei },
+            kiSiegel = { _, siegel -> siegel == "echt" },
+        )
     }
 
     @Test
@@ -191,21 +197,31 @@ class EinstellungenTest {
     }
 
     @Test
-    fun `mit Zustimmung ist die KI an und die Frage erledigt`() = runTest {
-        einstellungen.kiEinschalten(zugestimmtAm = 1_700_000_000_000L)
+    fun `mit gueltig versiegelter Zustimmung ist die KI an und die Frage erledigt`() = runTest {
+        einstellungen.kiEinschalten("aufzeichnung", "echt")
         assertTrue(einstellungen.kiAktiv().first())
         assertFalse(einstellungen.kiFrageOffen().first())
+        assertEquals("aufzeichnung", einstellungen.kiZustimmung().first())
     }
 
     @Test
-    fun `Ausschalten nimmt die Zustimmung zurueck und fragt nicht wieder`() = runTest {
-        einstellungen.kiEinschalten(zugestimmtAm = 1_700_000_000_000L)
+    fun `ein Siegel, das nicht passt, zaehlt nicht und die App fragt neu`() = runTest {
+        // Verändert, kopiert oder erfunden: Die KI bleibt aus, die Frage kommt wieder.
+        einstellungen.kiEinschalten("aufzeichnung", "gefaelscht")
+        assertFalse(einstellungen.kiAktiv().first())
+        assertTrue(einstellungen.kiFrageOffen().first())
+    }
+
+    @Test
+    fun `Ausschalten loescht die Zustimmung restlos und fragt nicht wieder`() = runTest {
+        einstellungen.kiEinschalten("aufzeichnung", "echt")
         einstellungen.kiAusschalten()
         assertFalse(einstellungen.kiAktiv().first())
         assertFalse(einstellungen.kiFrageOffen().first())
+        assertNull(einstellungen.kiZustimmung().first())
 
         // Wer wieder einschaltet, stimmt neu zu; ohne das bleibt sie aus.
-        einstellungen.kiEinschalten(zugestimmtAm = 1_800_000_000_000L)
+        einstellungen.kiEinschalten("neue aufzeichnung", "echt")
         assertTrue(einstellungen.kiAktiv().first())
     }
 

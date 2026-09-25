@@ -119,6 +119,14 @@ nachladbar sein (`DOWNLOADABLE`). Deshalb:
   Schalter; er verlangt die Bestätigung der Volljährigkeit, weil die GenAI-Bedingungen von
   Google die Schnittstellen nur für Anwendungen erlauben, die sich nicht an Minderjährige
   richten. Ausschalten nimmt die Zustimmung zurück.
+- **Die Zustimmung ist versiegelt.** Sie ist eine kurze Aufzeichnung (Zweck, Prüfsumme des
+  Dialogtextes, Volljährigkeit, Zeitpunkt, App-Version), signiert mit einem EC-Schlüssel im
+  Android Keystore (StrongBox, wo vorhanden), der nur für diese Installation existiert und
+  nicht exportierbar ist (`Zustimmungssiegel`, `AndroidSchluesselbund`). Gültig ist sie nur,
+  wenn die Signatur mit diesem Schlüssel aufgeht und die Prüfsumme zum heutigen Text passt;
+  sonst fragt die App neu. Jede Zustimmung bekommt einen neuen Schlüssel, Ausschalten löscht
+  Aufzeichnung und Schlüssel. Beim Deinstallieren löscht Android den Schlüssel selbst; auf
+  ein anderes Gerät lässt er sich nicht mitnehmen, dort wird also neu gefragt.
 
 Alles, was ins Netz ginge, kommt erst nach einer ausdrücklichen Zustimmung (Schalter
 „Verarbeitung im Netz", Zustimmen erst nach dem Lesen bis unten und nach zehn Sekunden). Der

@@ -28,11 +28,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.notizen.app.ai.Geraetepruefung
+import de.notizen.app.ai.KiZustimmung
 import de.notizen.core.data.model.Faehigkeit
 import de.notizen.core.data.model.Geraetestand
 import de.notizen.app.ui.components.KiZustimmungDialog
 import de.notizen.core.data.prefs.Einstellungen
-import de.notizen.core.data.util.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,7 +77,7 @@ sealed interface Geraetefrage {
 class GeraetestandViewModel @Inject constructor(
     private val pruefung: Geraetepruefung,
     private val einstellungen: Einstellungen,
-    private val clock: Clock,
+    private val kiZustimmung: KiZustimmung,
 ) : ViewModel() {
 
     private val _frage = MutableStateFlow<Geraetefrage>(Geraetefrage.Nichts)
@@ -110,12 +110,15 @@ class GeraetestandViewModel @Inject constructor(
         }
     }
 
-    /** „Einschalten" im Dialog zur KI: Zustimmung merken, dann wie gewohnt messen. */
+    /**
+     * „Einschalten" im Dialog zur KI: Zustimmung mit neuem Schlüssel versiegeln,
+     * dann wie gewohnt messen. Streikt der Schlüsselspeicher, bleibt die KI aus,
+     * und die App fragt beim nächsten Start wieder.
+     */
     fun kiZustimmen() {
         viewModelScope.launch {
-            einstellungen.kiEinschalten(clock.now())
             _frage.value = Geraetefrage.Nichts
-            messen()
+            if (kiZustimmung.erteilen()) messen()
         }
     }
 
@@ -124,10 +127,10 @@ class GeraetestandViewModel @Inject constructor(
         _frage.value = Geraetefrage.Nichts
     }
 
-    /** „Ohne KI": ausschalten und nicht wieder fragen. Gemessen wird nichts. */
+    /** „Ohne KI": ausschalten, Zustimmung und Schlüssel löschen, nicht wieder fragen. */
     fun kiAblehnen() {
         viewModelScope.launch {
-            einstellungen.kiAusschalten()
+            kiZustimmung.widerrufen()
             _frage.value = Geraetefrage.Nichts
         }
     }

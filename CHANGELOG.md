@@ -8,6 +8,10 @@ Datenschutz und Lizenzen nachgeschärft.
   schickt Google Kennzahlen über ihre Nutzung. Ohne Zustimmung ruft die App ML Kit gar nicht
   erst auf, auch nicht zum Prüfen, was das Gerät kann. Wer die KI schon benutzt hat, wird
   einmal beim Start gefragt.
+- Die Zustimmung samt Angabe zur Volljährigkeit wird mit einem Schlüssel aus dem
+  Sicherheitschip des Geräts versiegelt. Passt das Siegel nicht (verändert, von einem anderen
+  Gerät, zu einem anderen Text), fragt die App neu; Ausschalten löscht Zustimmung und
+  Schlüssel.
 - Der Schalter „Verarbeitung im Netz" erklärt jetzt, was er erlaubt und was dabei an Google
   geht, statt eines Platzhalters.
 - Android nimmt die Daten der App nicht mehr in seine Cloud-Sicherung mit; der Umzug von

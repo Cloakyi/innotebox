@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import de.notizen.app.ai.KiZustimmungstext
 
 /**
  * Die Frage, bevor die KI auf dem Gerät arbeiten darf (seit Alpha 9).
@@ -38,6 +39,10 @@ import androidx.core.net.toUri
  * **Das Häkchen zum Alter** kommt aus den Zusatzbedingungen für ML Kit GenAI:
  * Die Schnittstellen sind nur für Anwendungen, die sich nicht an Menschen
  * unter 18 richten. Ohne Häkchen bleibt „Einschalten" aus.
+ *
+ * **Die Zustimmung wird versiegelt** (`Zustimmungssiegel`): Sie gilt nur mit
+ * einem Schlüssel dieses Geräts und nur für genau den Text aus
+ * [KiZustimmungstext]. Ausschalten löscht Zustimmung und Schlüssel.
  *
  * Derselbe Dialog steht beim Start (einmal, solange nicht entschieden ist) und
  * hinter dem KI-Schalter in den Einstellungen. [onSchliessen] ist das Tippen
@@ -56,28 +61,14 @@ fun KiZustimmungDialog(
 
     AlertDialog(
         onDismissRequest = onSchliessen,
-        title = { Text("KI auf dem Gerät") },
+        title = { Text(KiZustimmungstext.TITEL) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.verticalScroll(rememberScrollState()),
             ) {
-                Absatz(
-                    "InNoteBox kann dir Titel vorschlagen, Aufnahmen in Text umwandeln und " +
-                        "Transkripte aufbereiten. Beim nächtlichen Archivieren vergibt sie " +
-                        "außerdem Titel und einen passenden Tag aus deinen vorhandenen. Das " +
-                        "rechnet die KI deines Geräts; deine Notizen verlassen es dabei nicht.",
-                )
-                Absatz(
-                    "Die Schnittstelle dafür heißt ML Kit und stammt von Google. Sie schickt " +
-                        "Google Angaben über ihre Nutzung: Gerät und App, Leistung, Fehlercodes " +
-                        "und die eingestellten Sprachen. Inhalte deiner Notizen sind nicht dabei.",
-                )
-                Absatz(
-                    "Vorschläge der KI können falsch sein. Nach den Bedingungen von Google ist " +
-                        "die KI nur für Volljährige. Ausschalten kannst du sie jederzeit in den " +
-                        "Einstellungen.",
-                )
+                // Genau diese Sätze hält das Siegel über ihre Prüfsumme fest.
+                KiZustimmungstext.ABSAETZE.forEach { Absatz(it) }
                 TextButton(
                     onClick = {
                         runCatching {
@@ -97,7 +88,7 @@ fun KiZustimmungDialog(
                 ) {
                     Checkbox(checked = volljaehrig, onCheckedChange = null)
                     Text(
-                        text = "Ich bin mindestens 18 Jahre alt.",
+                        text = KiZustimmungstext.ALTER,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

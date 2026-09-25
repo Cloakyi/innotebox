@@ -18,8 +18,11 @@ import de.notizen.core.data.model.Transkriptsprache
 import de.notizen.core.data.model.Uebersetzungsweg
 import de.notizen.core.data.model.WischZiel
 import de.notizen.core.data.repository.NoteSort
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,6 +50,7 @@ import javax.inject.Singleton
 @Singleton
 class Einstellungen @Inject constructor(
     private val store: DataStore<Preferences>,
+    private val kiSiegel: KiSiegel = KiSiegel.KEINES,
 ) {
 
     // ------------------------------------------------------------ Darstellung
@@ -167,38 +171,68 @@ class Einstellungen @Inject constructor(
      * Schaltet die Bedienelemente ab, nicht bloß den Aufruf: Ein Knopf, der da
      * ist und nichts tut, wäre schlechter als keiner.
      *
-     * **Wirksam nur mit Zustimmung** (seit Alpha 9). Die KI läuft über ML Kit,
-     * und ML Kit schickt Google Kennzahlen über die Nutzung (Gerät, App,
-     * Leistung, Fehler, Sprachen). Das Auslesen dafür braucht nach § 25 TDDDG
-     * eine Einwilligung. Solange keine vorliegt, gilt die KI als aus, und die
-     * App ruft ML Kit gar nicht erst auf, auch kein `checkStatus`.
+     * **Wirksam nur mit gültiger, versiegelter Zustimmung** (seit Alpha 9). Die
+     * KI läuft über ML Kit, und ML Kit schickt Google Kennzahlen über die
+     * Nutzung. Das Auslesen dafür braucht nach § 25 TDDDG eine Einwilligung.
+     * Die Zustimmung ist eine Aufzeichnung mit Siegel ([KiSiegel]); fehlt sie,
+     * ist sie verändert oder gilt sie für einen anderen Text, ist die KI aus,
+     * und die App ruft ML Kit gar nicht erst auf, auch kein `checkStatus`.
      */
-    fun kiAktiv(): Flow<Boolean> =
-        store.data.map { (it[KI_AKTIV] ?: true) && it[KI_ZUGESTIMMT_AM] != null }
+    fun kiAktiv(): Flow<Boolean> = kiLage().map { it == KiLage.AN }
 
     /**
-     * Ob beim Start nach der KI gefragt wird: nicht ausgeschaltet und noch
-     * ohne Zustimmung. Trifft den ersten Start und jede Installation aus der
-     * Zeit vor der Zustimmung; wer ablehnt, wird nicht wieder gefragt.
+     * Ob beim Start nach der KI gefragt wird: nicht ausgeschaltet, aber ohne
+     * gültige Zustimmung. Trifft den ersten Start, Installationen aus der Zeit
+     * vor der Zustimmung und jede Zustimmung, deren Siegel nicht mehr passt.
+     * Wer mit „Ohne KI" ablehnt, wird nicht wieder gefragt.
      */
-    fun kiFrageOffen(): Flow<Boolean> =
-        store.data.map { (it[KI_AKTIV] ?: true) && it[KI_ZUGESTIMMT_AM] == null }
+    fun kiFrageOffen(): Flow<Boolean> = kiLage().map { it == KiLage.OFFEN }
 
-    /** Einschalten gibt es nur zusammen mit dem Zeitpunkt der Zustimmung. */
-    suspend fun kiEinschalten(zugestimmtAm: Long) {
+    /** Die gespeicherte Aufzeichnung der Zustimmung, oder `null`. Gilt nur zusammen mit [kiAktiv]. */
+    fun kiZustimmung(): Flow<String?> = store.data.map { it[KI_ZUSTIMMUNG] }
+
+    /**
+     * Einschalten gibt es nur mit einer versiegelten Zustimmung. Beides wird
+     * zusammen geschrieben; eine halbe Zustimmung kann nicht entstehen.
+     */
+    suspend fun kiEinschalten(aufzeichnung: String, siegel: String) {
         store.edit {
             it[KI_AKTIV] = true
-            it[KI_ZUGESTIMMT_AM] = zugestimmtAm
+            it[KI_ZUSTIMMUNG] = aufzeichnung
+            it[KI_SIEGEL] = siegel
         }
     }
 
-    /** Ausschalten nimmt die Zustimmung zurück; wer wieder einschaltet, stimmt neu zu. */
+    /**
+     * Ausschalten nimmt die Zustimmung restlos zurück: Aufzeichnung und Siegel
+     * verschwinden. Den Schlüssel dazu löscht die App-Schicht. Wer wieder
+     * einschaltet, stimmt neu zu, und dabei entsteht ein neuer Schlüssel.
+     */
     suspend fun kiAusschalten() {
         store.edit {
             it[KI_AKTIV] = false
-            it.remove(KI_ZUGESTIMMT_AM)
+            it.remove(KI_ZUSTIMMUNG)
+            it.remove(KI_SIEGEL)
         }
     }
+
+    private enum class KiLage { AN, AUS, OFFEN }
+
+    // Geprüft wird nur, wenn sich eines der drei Felder ändert, nicht bei jeder
+    // anderen Einstellung. Die Prüfung spricht mit dem Schlüsselspeicher des
+    // Systems und läuft deshalb nicht auf dem Hauptthread.
+    private fun kiLage(): Flow<KiLage> = store.data
+        .map { Triple(it[KI_AKTIV] ?: true, it[KI_ZUSTIMMUNG], it[KI_SIEGEL]) }
+        .distinctUntilChanged()
+        .map { (an, aufzeichnung, siegel) ->
+            when {
+                !an -> KiLage.AUS
+                aufzeichnung != null && siegel != null &&
+                    runCatching { kiSiegel.gueltig(aufzeichnung, siegel) }.getOrDefault(false) -> KiLage.AN
+                else -> KiLage.OFFEN
+            }
+        }
+        .flowOn(Dispatchers.IO)
 
     /**
      * Ob beim Verschieben ab dem Workspace ein Titel verlangt wird (Phase 15).
@@ -626,7 +660,8 @@ class Einstellungen @Inject constructor(
         val WISCH_PAPIERKORB_LINKS = stringPreferencesKey("wisch_papierkorb_links")
         val TRANSKRIPTSPRACHE = stringPreferencesKey("transkriptsprache")
         val KI_AKTIV = booleanPreferencesKey("ki_aktiv")
-        val KI_ZUGESTIMMT_AM = longPreferencesKey("ki_zugestimmt_am")
+        val KI_ZUSTIMMUNG = stringPreferencesKey("ki_zustimmung")
+        val KI_SIEGEL = stringPreferencesKey("ki_siegel")
         val TITELPFLICHT = booleanPreferencesKey("titelpflicht")
         val GERAET_SPRACHE = stringPreferencesKey("geraet_sprache")
         val GERAET_TEXTKI = stringPreferencesKey("geraet_textki")

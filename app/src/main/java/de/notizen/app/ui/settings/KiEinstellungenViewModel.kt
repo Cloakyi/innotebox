@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.notizen.app.ai.Aufraeumen
 import de.notizen.app.ai.Geraetepruefung
+import de.notizen.app.ai.KiZustimmung
 import de.notizen.app.audio.Modellzustand
 import de.notizen.app.audio.Transkription
 import de.notizen.app.uebersetzung.Uebersetzung
@@ -47,6 +48,9 @@ data class KiEinstellung(
     /** Der gemerkte Geraetestand (Phase 15). `null` = noch nie gemessen. */
     val geraetestand: Geraetestand? = null,
 
+    /** Wann der gültigen, versiegelten Zustimmung zugestimmt wurde; `null` ohne. */
+    val zustimmungAm: Long? = null,
+
     /** Ob beim Verschieben ein Titel verlangt wird (Phase 15). */
     val titelpflicht: Boolean = true,
 
@@ -74,6 +78,7 @@ class KiEinstellungenViewModel @Inject constructor(
     private val uebersetzungspruefung: Uebersetzungspruefung,
     private val uebersetzung: Uebersetzung,
     private val geraetepruefung: Geraetepruefung,
+    private val kiZustimmung: KiZustimmung,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -99,13 +104,16 @@ class KiEinstellungenViewModel @Inject constructor(
         gespeichert,
         geraet,
         einstellungen.netzErlaubt(),
-    ) { fest, koennen, netz ->
+        einstellungen.kiZustimmung(),
+    ) { fest, koennen, netz, zustimmung ->
         fest.copy(
             textkiDa = koennen.textkiDa,
             spracherkennungDa = koennen.spracherkennungDa,
             uebersetzung = koennen.uebersetzung,
             wege = koennen.wege,
             netzErlaubt = netz,
+            // Nur eine gültige Zustimmung hat ein Datum; `aktiv` sagt, ob sie gilt.
+            zustimmungAm = if (fest.aktiv) kiZustimmung.zeitpunkt(zustimmung) else null,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, KiEinstellung())
 
@@ -185,16 +193,17 @@ class KiEinstellungenViewModel @Inject constructor(
      */
     fun kiEinschalten() {
         viewModelScope.launch {
-            einstellungen.kiEinschalten(clock.now())
-            runCatching { geraetepruefung.messen() }.getOrNull()?.let { einstellungen.setGeraetestand(it) }
+            if (kiZustimmung.erteilen()) {
+                runCatching { geraetepruefung.messen() }.getOrNull()?.let { einstellungen.setGeraetestand(it) }
+            }
             geraetPruefen()
         }
     }
 
-    /** Ausschalten geht sofort und nimmt die Zustimmung zurueck. */
+    /** Ausschalten geht sofort und löscht Zustimmung und Schlüssel restlos. */
     fun kiAusschalten() {
         viewModelScope.launch {
-            einstellungen.kiAusschalten()
+            kiZustimmung.widerrufen()
             geraetPruefen()
         }
     }
