@@ -42,9 +42,9 @@ import org.json.JSONObject
  * Hinweise ebenfalls weitergegeben werden muessen. Beim Packen der APK fallen
  * diese Dateien sonst weg.
  *
- * Die Daten stehen in `assets/lizenzen.json`, erzeugt von
- * `werkzeug/lizenzen.py` aus dem tatsaechlichen Release-Build. Wer eine
- * Abhaengigkeit aendert, laesst das Skript neu laufen.
+ * Die Daten stehen in `assets/lizenzen.json`, erzeugt von `./gradlew
+ * :app:lizenzen` (gradle/lizenzen.gradle.kts) aus dem tatsaechlichen
+ * Release-Build. Wer eine Abhaengigkeit aendert, laesst die Aufgabe neu laufen.
  */
 @Composable
 fun LizenzenScreen(innerPadding: PaddingValues) {

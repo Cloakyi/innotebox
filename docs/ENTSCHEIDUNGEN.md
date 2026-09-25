@@ -180,10 +180,10 @@ beanspruchte, finge jeden Link auf die Webseite ab.
 
 **Lizenzhinweise gehören in die App.** Beim Packen der APK fallen die Lizenzdateien der
 Bibliotheken weg, und die Pakete von ML Kit und den Play-Diensten bringen eine eigene Liste
-mitgelieferter Drittsoftware mit. `werkzeug/lizenzen.py` liest den tatsächlichen
-Release-Build aus und schreibt alles nach `app/src/main/assets/lizenzen.json`; die Seite
+mitgelieferter Drittsoftware mit. Die Gradle-Aufgabe `./gradlew :app:lizenzen`
+(`gradle/lizenzen.gradle.kts`) liest den tatsächlichen Release-Build aus und schreibt alles nach `app/src/main/assets/lizenzen.json`; die Seite
 „Lizenzen" unter „Über die App" zeigt es an. Nach jeder Änderung an den Abhängigkeiten läuft
-das Skript neu. Für die unfreien Google-Bibliotheken gilt eine zusätzliche Erlaubnis nach
+die Aufgabe neu. Für die unfreien Google-Bibliotheken gilt eine zusätzliche Erlaubnis nach
 Abschnitt 7 der GPL, im Wortlaut in der README.
 
 ## 12. Sperre

@@ -137,3 +137,6 @@ dependencies {
     // Fakes, damit der Test dieselbe Klasse liest wie die App.
     testImplementation(libs.androidx.datastore.preferences)
 }
+
+// ./gradlew :app:lizenzen schreibt die Liste fuer die Seite Lizenzen (siehe dort).
+apply(from = rootProject.file("gradle/lizenzen.gradle.kts"))
