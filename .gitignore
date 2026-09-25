@@ -1,0 +1,22 @@
+*.iml
+.gradle/
+.idea/
+build/
+local.properties
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.keystore
+keystore.properties
+*.jks
+.kotlin/
+
+# Arbeitsunterlagen bleiben lokal; ins Repo gehen nur die Dateien darunter.
+*.md
+!README.md
+!CHANGELOG.md
+!SYNC.md
+!docs/*.md

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Leere Vordergrundebene.
+
+    Ein adaptives Icon verlangt beide Ebenen. Unser Logo ist randlos gestaltet
+    und gehoert damit vollstaendig in den HINTERGRUND — genau dafuer ist diese
+    Ebene da. Waere es der Vordergrund, verschoeben manche Launcher es beim
+    Antippen gegen den Hintergrund (Parallaxe), und an den Raendern blitzte die
+    Flaeche darunter auf.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+</shape>

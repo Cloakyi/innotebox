@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InNoteBox</string>
+
+    <!--
+        Steht in der Auswahl des Dateimanagers unter dem App-Namen. Ohne diese
+        Beschriftung steht dort nur "InNoteBox", und man muss raten, was beim
+        Antippen geschieht.
+    -->
+    <string name="sicherung_einlesen">Sicherung einlesen</string>
+</resources>

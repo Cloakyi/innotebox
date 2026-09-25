@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Bewusst minimal. Die eigentliche Farbgebung macht Compose in Theme.kt.
+      Dieses XML-Theme deckt nur das Fenster ab, bevor Compose uebernimmt.
+    -->
+    <style name="Theme.Notizen" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

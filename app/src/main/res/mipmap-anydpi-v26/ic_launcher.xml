@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Adaptives Launcher-Icon.
+
+    Android beschneidet Icons je nach Hersteller zu Kreis, Squircle oder
+    abgerundetem Quadrat; garantiert sichtbar ist nur der mittlere Bereich.
+    Die drei Ringe des Logos liegen darin und ueberleben jeden Zuschnitt — die
+    Farbflaechen an den Raendern duerfen angeschnitten werden, dafuer sind sie
+    da.
+
+    `minSdk` ist 31, deshalb greift diese Fassung auf JEDEM Geraet. Eine alte
+    Ersatzgrafik fuer Android unter 8 braucht es nicht.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_grafik" />
+    <foreground android:drawable="@drawable/ic_launcher_leer" />
+</adaptive-icon>

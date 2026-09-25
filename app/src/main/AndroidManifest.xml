@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+        Exakte Alarme: der regulaere Weg, den der Nutzer in den
+        Systemeinstellungen gewaehrt. USE_EXACT_ALARM waere bei der Installation
+        automatisch gewaehrt, ist laut Google aber Kalender- und Weckerprogrammen
+        vorbehalten.
+    -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Phase 19: die Sperre der App ueber den Systemdialog (Biometrie, Bildschirmsperre) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- Damit Abgleich und Sicherung im Hintergrund nicht vom Energiesparen angehalten
+         werden. Der Nutzer entscheidet im Dialog beim Start, die App fragt nur. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Ohne das waeren nach jedem Neustart alle Erinnerungen still weg. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!--
+        Aufnahme. Der Vordergrunddienst ist Pflicht, nicht Vorsicht: ohne ihn
+        nimmt Android der App das Mikrofon, sobald der Bildschirm ausgeht.
+        Typ und Berechtigung gehoeren zusammen: fehlt eines, startet der
+        Dienst gar nicht erst.
+    -->
+    <!--
+        Kalender. Bewusst der Anbieter auf dem Geraet und NICHT Googles
+        Kalender-API ueber OAuth: Der Bereich calendar.events gilt bei Google als
+        sensibel und wuerde die Verifizierung der ganzen App erzwingen. Der
+        Drive-Bereich drive.file ist nicht sensibel, und genau darauf beruht,
+        dass diese App ohne Googles Pruefung veroeffentlicht werden darf.
+
+        Geschrieben wird in den Google-Kalender, der ohnehin auf dem Geraet
+        eingerichtet ist; das System traegt ihn zu Google. Gelesen wird, damit
+        der Kalender in der App die echten Termine zeigen kann. Beides wird zur
+        Laufzeit erfragt und erst, wenn der Nutzer den Schalter umlegt.
+    -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <!--
+        Sichtbarkeit der Kamera-App. Seit Android 11 sieht eine App fremde
+        Pakete nicht mehr von sich aus. Das Starten eines impliziten Intents
+        funktioniert zwar trotzdem, die vorherige PRUEFUNG aber nicht: ohne
+        diesen Eintrag meldet resolveActivity() immer null, und der Knopf
+        "Foto aufnehmen" waere dauerhaft ausgeblendet.
+
+        Bewusst KEINE CAMERA-Berechtigung: Das Foto macht die Kamera-App, nicht
+        diese hier. Wer android.permission.CAMERA eintraegt, macht sie fuer
+        ACTION_IMAGE_CAPTURE sogar zur Pflicht und muss sie dann auch erfragen —
+        fuer nichts.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".NotizenApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Notizen">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Notizen"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!--
+                Eine Sicherungsdatei aus dem Dateimanager oeffnen.
+
+                ZWEI FILTER, WEIL EIN DATEIMANAGER DEN DATEINAMEN NICHT IMMER
+                WEITERGIBT. Der erste ist der genaue: Er greift, wenn in der
+                Adresse wirklich ".notesbak" steht. Der zweite faengt den Fall
+                ab, dass die Adresse eine blosse Nummer ist. So geben es die
+                Anbieter fuer "Downloads" und die Mediathek heraus, und dann ist
+                der Dateiname darin nirgends zu sehen. Ohne den zweiten Filter
+                erschiene die App ausgerechnet dort nicht, wo die Datei meistens
+                liegt.
+
+                android:pathSuffix statt android:pathPattern: Der Mustervergleich
+                von PATTERN_SIMPLE_GLOB setzt beim Zurueckgehen aus, sobald das
+                Gesuchte auch frueher im Pfad vorkommt. PATTERN_SUFFIX gibt es
+                seit API 31, also genau ab unserem minSdk.
+
+                Zu ".notesbak" kennt Android keinen Typ, also liefert es
+                application/octet-stream. Deshalb steht der im zweiten Filter,
+                und NICHT application/zip, obwohl die Datei eines ist: Sonst
+                stuende InNoteBox bei jedem gewoehnlichen ZIP-Archiv in der
+                Auswahl.
+
+                Ist die gewaehlte Datei doch keine Sicherung, sagt die App das.
+                Ein Filter, der ab und zu zu viel anbietet, ist besser als einer,
+                der die eigene Datei nicht erkennt.
+
+                KEIN scheme="file". Seit Android 7 darf eine App eine
+                file-Adresse gar nicht mehr herausgeben, und selbst wenn eine es
+                doch tut, kaeme diese hier ohne Speicherberechtigung nicht an die
+                Datei. In der Auswahl zu stehen und danach nicht lesen zu
+                koennen waere schlechter, als nicht dazustehen.
+            -->
+            <intent-filter android:label="@string/sicherung_einlesen">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:scheme="content"
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathSuffix=".notesbak" />
+            </intent-filter>
+
+            <intent-filter android:label="@string/sicherung_einlesen">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:scheme="content"
+                    android:mimeType="application/octet-stream" />
+            </intent-filter>
+
+            <!--
+                Die eigene Domain innotebox.de, damit sie in Androids App-Info
+                unter "Standardmaessig oeffnen" steht und ein Link auf
+                https://innotebox.de/app die App oeffnet (seit 2026-09-19).
+
+                NUR der Pfad /app, nicht die ganze Domain. Wer die Domain ohne
+                Pfad beansprucht, faengt nach der Pruefung jeden Link auf die
+                Webseite ab, auch Impressum und Datenschutz, und der Leser landet
+                in der App statt auf der Seite.
+
+                autoVerify verlangt auf dem Server die Datei
+                /.well-known/assetlinks.json mit dem SHA-256 der Signatur. Sie
+                liegt im Projekt der Webseite. Solange die Domain noch nicht auf
+                Firebase zeigt, scheitert die Pruefung still; der Eintrag in der
+                App-Info erscheint trotzdem, nur unbestaetigt.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="innotebox.de"
+                    android:pathPrefix="/app" />
+            </intent-filter>
+
+            <!--
+                Der Rueckweg aus Google Kalender.
+
+                Ein Termin, den diese App eintraegt, traegt CUSTOM_APP_PACKAGE
+                und CUSTOM_APP_URI. Google Kalender zeigt daraufhin einen Knopf,
+                der genau diese Absicht schickt. Ohne den Filter fuehrt der
+                Termin in eine Sackgasse: Man sieht die Erinnerung, kommt aber
+                nicht zu der Notiz, um die es geht.
+
+                Der Typ ist der des Kalendereintrags, nicht der unserer Adresse.
+                Unsere eigene Adresse steht als Extra darin, nicht als Daten.
+            -->
+            <intent-filter>
+                <action android:name="android.provider.calendar.action.HANDLE_CUSTOM_EVENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/event" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            Reicht Anhaenge nach draussen. Seit Android 7 loest eine
+            file://-Adresse in einer fremden App eine FileUriExposedException
+            aus; ueber den Provider bekommt die Gegenstelle eine Adresse, die
+            sie oeffnen darf.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.dateien"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/geteilte_dateien" />
+        </provider>
+
+        <service
+            android:name=".audio.AufnahmeDienst"
+            android:exported="false"
+            android:foregroundServiceType="microphone|dataSync" />
+
+        <receiver
+            android:name=".erinnerung.ErinnerungEmpfaenger"
+            android:exported="false" />
+
+        <receiver
+            android:name=".archiv.ArchivZuruecknehmen"
+            android:exported="false" />
+
+        <!--
+            WorkManager bringt seinen eigenen Initialisierer mit und wuerde ihn
+            starten, BEVOR die Application ihre Konfiguration setzen kann. Dann
+            gaebe es keine Hilt-Werkbank, und der Aufraeumlauf scheiterte beim
+            Erzeugen. Der Eintrag entfernt genau diesen Initialisierer; die
+            Application meldet WorkManager stattdessen selbst an.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <receiver
+            android:name=".erinnerung.NeustartEmpfaenger"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

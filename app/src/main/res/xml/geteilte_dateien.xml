@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Welche Ordner der FileProvider nach draussen reichen darf.
+
+    Bewusst NUR der Audio-Ordner und nicht das ganze Datenverzeichnis: Ein
+    Provider, der alles freigibt, gibt auch die Datenbank frei. Jede weitere
+    Anhangsart bekommt hier einen eigenen Eintrag.
+-->
+<paths>
+    <files-path name="aufnahmen" path="audio/" />
+    <files-path name="bilder" path="bilder/" />
+    <!--
+        Zwischenablage der Kamera. Liegt im Cache und nicht bei den Bildern,
+        damit ein abgebrochenes Foto keine Datei zwischen echten Anhaengen
+        hinterlaesst. Die Kamera-App braucht Schreibzugriff hierauf.
+    -->
+    <cache-path name="kamera" path="kamera/" />
+</paths>
