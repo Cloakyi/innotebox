@@ -81,8 +81,10 @@ Vertrag für einen zweiten Client, der denselben Drive-Ordner liest und schreibt
 
 ## Beitragen
 
-Fehlerberichte und Vorschläge sind als Issue willkommen. Wie Beiträge lizenziert werden und
-was vor einem Pull Request zu prüfen ist, steht in [CONTRIBUTING.md](CONTRIBUTING.md).
+Fehlerberichte und Vorschläge sind als Issue willkommen. Wer mittesten möchte, findet in
+[TESTEN.md](TESTEN.md) eine Liste zum Abhaken, vom Schnelltest in zehn Minuten bis zu jedem
+Bereich der App. Wie Beiträge lizenziert werden und was vor einem Pull Request zu prüfen ist,
+steht in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Lizenz
 

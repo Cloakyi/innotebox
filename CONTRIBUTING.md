@@ -2,7 +2,8 @@
 
 Fehlerberichte und Vorschläge sind willkommen, am besten als Issue mit einer kurzen
 Beschreibung, was du getan hast, was du erwartet hast und was stattdessen passiert ist.
-Gerät und Android-Version helfen fast immer.
+Gerät und Android-Version helfen fast immer. Zum Testen gibt es die Liste in
+[TESTEN.md](TESTEN.md) und beim Anlegen eines Issues die Vorlage **Testbericht**.
 
 ## Lizenz deiner Beiträge
 

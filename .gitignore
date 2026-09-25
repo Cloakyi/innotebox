@@ -22,3 +22,5 @@ keystore.properties
 !docs/*.md
 !CONTRIBUTING.md
 !ZUSATZERLAUBNIS.md
+!TESTEN.md
+!.github/ISSUE_TEMPLATE/*.md
