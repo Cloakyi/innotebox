@@ -12,8 +12,8 @@ Sicherheit und Datenschutz nachgebessert, nach einer gründlichen Prüfung von a
   Entsperren. Eine zu große oder präparierte Datei bricht das Einlesen ab, ohne Reste zu
   hinterlassen.
 - Die Sperre misst die Zeit im Hintergrund unabhängig von der Uhrzeit des Handys. Bis
-  feststeht, ob gesperrt wird, liegt eine Abdeckung über der App. Mit eingeschalteter Sperre
-  zeigt die Übersicht der letzten Apps kein Vorschaubild mehr.
+  feststeht, ob gesperrt wird, liegt eine Abdeckung über der App. Hat man die App verlassen,
+  zeigt die Übersicht der letzten Apps mit eingeschalteter Sperre kein Vorschaubild mehr.
 - Erinnerungen zeigen auf dem Sperrbildschirm des Handys keinen Inhalt der Notiz. Ist die
   Sperre der App an, steht auch in der Benachrichtigung selbst nur „Erinnerung“.
 - Die App fragt erst bei Google an, wenn du Drive zum ersten Mal verbindest.

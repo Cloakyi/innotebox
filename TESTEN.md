@@ -65,6 +65,7 @@ Ohne GitHub-Konto geht es auch per Mail an owner@cloaki.de.
 - [ ] „Datenschutzerklärung lesen“ öffnet die Seite im Browser.
 - [ ] Neben das Fenster tippen. Es schließt sich und kommt beim nächsten Start wieder.
 - [ ] „Ohne KI“ wählen. Beim nächsten Start fragt die App nicht mehr, und die KI steht in den Einstellungen auf aus.
+- [ ] Optional, mit einer App wie PCAPdroid: frisch installieren, „Ohne KI“ wählen und Drive nicht verbinden. Beim Start baut InNoteBox keine Verbindung zu Google auf.
 
 ## Notizen schreiben
 
@@ -97,6 +98,7 @@ Listen:
 - [ ] Unter Einstellungen, „Ordnung“ „Titel beim Verschieben verlangen“ ausschalten. Die App fragt vorher nach, ob du dir sicher bist.
 - [ ] Unter Einstellungen „Automatisch archivieren“ einstellen und das Handy über Nacht laden. Notizen wandern ins Archiv, Favoriten und Notizen mit offener Erinnerung bleiben stehen.
 - [ ] Am Morgen danach steht unter „Protokoll der Läufe“, was verschoben wurde. Jeder Lauf lässt sich dort zurücknehmen.
+- [ ] Ist die KI an, bekommen Notizen, die nachts ohne Titel ins Archiv gewandert sind, beim nächsten Öffnen der App einen Titel von der KI und, wenn es Tags gibt, einen passenden Tag dazu.
 
 ## Suchen
 
@@ -179,10 +181,12 @@ Pixel.
 
 - [ ] Unter Einstellungen, „Sichern und Wiederherstellen“ „Jetzt sichern“ und einen Speicherort wählen. Die Datei endet auf `.notesbak` und ist ein ZIP, das sich am PC öffnen lässt.
 - [ ] Während einer großen Sicherung mit vielen Bildern steht „Bleib so lange auf dieser Seite.“ da.
-- [ ] Sichern, dann eine Notiz ändern, eine löschen und eine neue anlegen. Die Sicherung über „Datei auswählen“ einlesen. Die geänderte Notiz behält die neue Fassung, die gelöschte kommt als neue Notiz in den Eingang zurück, und die neue bleibt.
+- [ ] Über „Datei auswählen“ eine Sicherung wählen. Bevor etwas passiert, fragt ein Fenster „Sicherung einlesen?“ und nennt Datum, Herkunft und Anzahl der Notizen. „Abbrechen“ liest nichts ein.
+- [ ] Statt einer Sicherung ein Foto wählen. Die App sagt, dass die Datei keine Sicherung von InNoteBox ist, und liest nichts ein.
+- [ ] Sichern, dann eine Notiz ändern, eine löschen und eine neue anlegen. Die Sicherung über „Datei auswählen“ wählen und „Einlesen“ antippen. Die geänderte Notiz behält die neue Fassung, die gelöschte kommt als neue Notiz in den Eingang zurück, und die neue bleibt.
 - [ ] Dieselbe Sicherung noch einmal einlesen. Es wird nichts übernommen.
 - [ ] Eine Notiz mit Bild und eine mit Aufnahme sichern und wieder einlesen. Bild und Aufnahme sind da.
-- [ ] Die `.notesbak` im Dateimanager antippen. InNoteBox öffnet den Sicherungsbildschirm, und in den letzten Apps gibt es nur eine InNoteBox.
+- [ ] Die `.notesbak` im Dateimanager antippen. InNoteBox öffnet den Sicherungsbildschirm und fragt vor dem Einlesen nach. In den letzten Apps gibt es nur eine InNoteBox.
 - [ ] Im Flugmodus sichern und einlesen. Beides klappt ohne Netz.
 
 ## Abgleich über Google Drive
@@ -194,6 +198,7 @@ und sieht nur die Dateien, die sie selbst angelegt hat.
 - [ ] „Jetzt sichern“ neben „Jetzt abgleichen“ antippen. Im Drive-Ordner `InNoteBox-Backup` liegt danach eine Sicherung, die sich unter „Sichern und Wiederherstellen“ wieder einlesen lässt.
 - [ ] Unter den Knöpfen steht „Letzte Prüfung ohne Befund“.
 - [ ] „Abgleich von selbst“ ausschalten. Danach gleicht nur noch „Jetzt abgleichen“ ab.
+- [ ] Eine Testnotiz über die drei Punkte auf „Nicht mehr synchronisieren“ stellen, „Jetzt sichern“ antippen und die Notiz danach endgültig löschen. Die neue Sicherung aus `InNoteBox-Backup` herunterladen und einlesen. Die Testnotiz kommt nicht zurück.
 
 Mit zwei Geräten und demselben Konto:
 
@@ -209,6 +214,11 @@ Alles unter Einstellungen, „Sicherheit“.
 - [ ] „App entsperren“ einschalten. Android fragt nach Fingerabdruck, Gesicht oder Bildschirmsperre; erst danach steht der Schalter auf an.
 - [ ] Die App aus den letzten Apps wischen und neu öffnen. „InNoteBox ist gesperrt“ erscheint, nach dem Entsperren ist alles wie vorher.
 - [ ] „Sperren nach“ auf „Sofort“ stellen, die App in den Hintergrund legen und zurückholen. Sie ist gesperrt. Drehen sperrt nie.
+- [ ] „Sperren nach“ auf eine Minute stellen, die App kurz verlassen und nach zehn Sekunden zurückholen. Einen Augenblick ist das Logo zu sehen, dann die App. Beim Start mit Sperre blitzt kein Inhalt auf.
+- [ ] Mit Sperre und ohne Aufnahmeschutz die App über die Startseite verlassen und dann die Übersicht der letzten Apps öffnen. Von InNoteBox ist kein Bild zu sehen. Ein Bildschirmfoto in der App geht trotzdem.
+- [ ] „Sperren nach“ auf eine Minute stellen und die App verlassen. In den Android-Einstellungen die automatische Uhrzeit ausschalten und die Uhr eine Stunde zurückstellen. Nach zwei Minuten ist die App gesperrt. Danach die automatische Uhrzeit wieder einschalten.
+- [ ] Mit Sperre die App schließen und eine `.notesbak` im Dateimanager antippen. Zuerst kommt die Sperre, erst nach dem Entsperren die Frage, ob die Sicherung eingelesen werden soll.
+- [ ] Mit Sperre eine Erinnerung in zwei Minuten stellen. Die Benachrichtigung sagt nur „Erinnerung“ und „Tippe, um die Notiz in InNoteBox zu öffnen.“ Auf dem Sperrbildschirm des Handys steht auch ohne Sperre der App kein Inhalt der Notiz.
 - [ ] Ein Menü offen lassen und nach der Sperrzeit zurückkommen. Die Sperre liegt darüber, nichts ist bedienbar.
 - [ ] Die Sperre ausschalten. Auch dafür fragt Android nach dem Entsperren.
 - [ ] Den Aufnahmeschutz einschalten und ein Bildschirmfoto versuchen. Android verweigert es, und in den letzten Apps ist die Vorschau leer.
