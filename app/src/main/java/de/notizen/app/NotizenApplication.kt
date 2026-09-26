@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import de.notizen.app.ai.MlKitStart
 import de.notizen.app.archiv.AufraeumArbeit
 import de.notizen.app.archiv.aufraeumKanalAnlegen
 import de.notizen.app.audio.aufnahmeKanalAnlegen
@@ -52,6 +53,8 @@ class NotizenApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // Nur anmelden, nicht starten: ML Kit laeuft erst nach der Zustimmung.
+        MlKitStart.anmelden(this)
         // Beim Start und nicht erst beim ersten Klingeln: ohne Kanal verschluckt
         // Android die Benachrichtigung wortlos, und der Nutzer soll ihn in den
         // Systemeinstellungen schon vorher finden.

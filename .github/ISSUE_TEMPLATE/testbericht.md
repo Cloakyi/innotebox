@@ -29,4 +29,4 @@ Kopier die Abschnitte, die du prüfst, einfach hierher.
 ### Was nicht gepasst hat
 
 Welcher Punkt, was du getan hast und was stattdessen passiert ist. Bildschirmfotos kannst du
-hier hineinziehen.
+hier hineinziehen; zeig darauf nur Testnotizen, denn dieses Issue ist öffentlich.

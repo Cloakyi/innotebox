@@ -4,7 +4,10 @@ import de.notizen.core.data.model.Bereich
 import de.notizen.core.data.model.NoteColor
 import de.notizen.core.data.model.NoteType
 import de.notizen.core.data.model.Stage
+import de.notizen.core.sync.sicherung.EINTRAG_KOPF
 import de.notizen.core.sync.sicherung.EINTRAG_NOTIZEN
+import de.notizen.core.sync.sicherung.Grenzen
+import de.notizen.core.sync.sicherung.SicherungZuGross
 import de.notizen.core.sync.sicherung.ORDNER_ANHAENGE
 import de.notizen.core.sync.sicherung.SICHERUNG_VERSION
 import de.notizen.core.sync.sicherung.Sicherungskopf
@@ -12,6 +15,7 @@ import de.notizen.core.sync.sicherung.Sicherungsnotiz
 import de.notizen.core.sync.sicherung.Sicherungspaket
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -281,7 +285,81 @@ class SicherungspaketTest {
         assertNull(inhalt.ordner.single().ehemaligerElternId)
     }
 
+    // ---------------------------------------------------------- Grenzen
+
+    @Test
+    fun `der Kopf laesst sich lesen, ohne etwas auszupacken`() = runTest {
+        val puffer = ByteArrayOutputStream()
+        paket.packen(
+            ziel = puffer,
+            kopf = kopf(notizen = 2, tags = 1),
+            tags = emptyList(),
+            ordner = emptyList(),
+            notizIds = emptyList(),
+            notizFuer = { null },
+            dateiFuer = { null },
+        )
+        val kopf = paket.kopfLesen(ByteArrayInputStream(puffer.toByteArray()))
+        assertNotNull(kopf)
+        assertEquals(2, kopf!!.notizen)
+        assertEquals("Test", kopf.erzeugtVon)
+        assertNull(paket.kopfLesen(ByteArrayInputStream("kein zip".toByteArray())))
+    }
+
+    @Test
+    fun `zu viele Eintraege brechen ab und hinterlassen keine Dateien`() {
+        val roh = zipMitAnhaengen(anzahl = 5, groesse = 10)
+        val eng = Sicherungspaket(Grenzen(eintraege = 3))
+        val ziele = ArrayList<File>()
+        val fehler = runCatching {
+            eng.entpacken(ByteArrayInputStream(roh)) { name -> File(ordner.root, name).also { ziele += it } }
+        }.exceptionOrNull()
+        assertTrue(fehler is SicherungZuGross)
+        assertTrue(ziele.isNotEmpty())
+        assertTrue("Ausgepacktes muss wieder weg sein", ziele.none { it.exists() })
+    }
+
+    @Test
+    fun `eine zu grosse Datei bricht ab`() {
+        val roh = zipMitAnhaengen(anzahl = 1, groesse = 100)
+        val eng = Sicherungspaket(Grenzen(dateiBytes = 50))
+        val ziel = File(ordner.root, "a0.jpg")
+        val fehler = runCatching { eng.entpacken(ByteArrayInputStream(roh)) { ziel } }.exceptionOrNull()
+        assertTrue(fehler is SicherungZuGross)
+        assertFalse(ziel.exists())
+    }
+
+    @Test
+    fun `ein zu grosser JSON-Teil bricht ab`() {
+        val roh = ByteArrayOutputStream()
+        ZipOutputStream(roh).use { zip ->
+            zip.putNextEntry(ZipEntry(EINTRAG_NOTIZEN))
+            zip.write(ByteArray(1_000) { 'x'.code.toByte() })
+            zip.closeEntry()
+        }
+        val eng = Sicherungspaket(Grenzen(jsonBytes = 100))
+        val fehler = runCatching { eng.entpacken(ByteArrayInputStream(roh.toByteArray())) { null } }
+            .exceptionOrNull()
+        assertTrue(fehler is SicherungZuGross)
+    }
+
     // ---------------------------------------------------------------- Hilfen
+
+    /** Ein Archiv mit Kopf und [anzahl] Anhaengen zu je [groesse] Bytes. */
+    private fun zipMitAnhaengen(anzahl: Int, groesse: Int): ByteArray {
+        val roh = ByteArrayOutputStream()
+        ZipOutputStream(roh).use { zip ->
+            zip.putNextEntry(ZipEntry(EINTRAG_KOPF))
+            zip.write(de.notizen.core.sync.Sync.encodeToString(Sicherungskopf.serializer(), kopf(0, 0)).toByteArray())
+            zip.closeEntry()
+            repeat(anzahl) { i ->
+                zip.putNextEntry(ZipEntry(ORDNER_ANHAENGE + "a$i.jpg"))
+                zip.write(ByteArray(groesse) { 7 })
+                zip.closeEntry()
+            }
+        }
+        return roh.toByteArray()
+    }
 
     private fun kopf(notizen: Int, tags: Int) = Sicherungskopf(
         erzeugtAm = 1_787_486_400_000L,

@@ -92,18 +92,25 @@ class AufraeumArbeit @AssistedInject constructor(
         val plan = auto.planen()
         if (plan.leer) return Ergebnis()
 
-        val kiErlaubt = einstellungen.kiAktiv().first()
+        val kiAn = einstellungen.kiAktiv().first()
         val vorhandeneTags = tags.getAll()
+        val nachholen = ArrayList<String>()
 
         plan.alle.forEach { notiz ->
             val voll = notes.get(notiz.id) ?: return@forEach
 
-            beschriftung.titelFuer(voll, kiErlaubt)?.let { notes.setTitle(notiz.id, it) }
-
-            beschriftung.tagFuer(voll, vorhandeneTags, kiErlaubt)?.let { tag ->
-                notes.setTags(notiz.id, listOf(tag.id))
+            // Die KI darf hier nicht arbeiten: Google laesst sie nur zu, solange
+            // die App im Vordergrund ist, und dieser Lauf kommt nachts im
+            // Leerlauf. Deshalb jetzt der Titel aus dem Text, und mit
+            // eingeschalteter KI holt das naechste Oeffnen der App den Rest
+            // nach ([Nachbeschriftung]).
+            val titel = beschriftung.titelFuer(voll, kiErlaubt = false)
+            titel?.let { notes.setTitle(notiz.id, it) }
+            if (kiAn && (titel != null || (voll.tags.isEmpty() && vorhandeneTags.isNotEmpty()))) {
+                nachholen += notiz.id
             }
         }
+        einstellungen.beschriftungVormerken(nachholen)
 
         val batchId = auto.ausfuehren(plan) ?: return Ergebnis()
         return Ergebnis(batchId, plan.alle.size)

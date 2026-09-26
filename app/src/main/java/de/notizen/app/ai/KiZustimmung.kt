@@ -34,9 +34,9 @@ object KiZustimmungstext {
 
     val ABSAETZE = listOf(
         "InNoteBox kann dir Titel vorschlagen, Aufnahmen in Text umwandeln und Transkripte " +
-            "aufbereiten. Beim nächtlichen Archivieren vergibt sie außerdem Titel und einen " +
-            "passenden Tag aus deinen vorhandenen. Das rechnet die KI deines Geräts; deine " +
-            "Notizen verlassen es dabei nicht.",
+            "aufbereiten. Für Notizen, die nachts ins Archiv gewandert sind, holt sie beim " +
+            "nächsten Öffnen der App Titel und einen passenden Tag aus deinen vorhandenen nach. " +
+            "Das rechnet die KI deines Geräts; deine Notizen verlassen es dabei nicht.",
         "Die Schnittstelle dafür heißt ML Kit und stammt von Google. Sie schickt Google Angaben " +
             "über ihre Nutzung: Gerät und App, Leistung, Fehlercodes und die eingestellten " +
             "Sprachen. Inhalte deiner Notizen sind nicht dabei.",

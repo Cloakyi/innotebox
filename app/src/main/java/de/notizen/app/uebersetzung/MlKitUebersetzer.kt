@@ -1,5 +1,7 @@
 package de.notizen.app.uebersetzung
 
+import de.notizen.app.ai.MlKitStart
+
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.translate.TranslateLanguage
@@ -42,6 +44,7 @@ class MlKitUebersetzer @Inject constructor(
         val quelle = TranslateLanguage.fromLanguageTag(von) ?: return@withContext null
         val ziel = TranslateLanguage.fromLanguageTag(nach) ?: return@withContext null
         runCatching {
+            MlKitStart.sicherstellen()
             val manager = RemoteModelManager.getInstance()
             manager.isModelDownloaded(TranslateRemoteModel.Builder(quelle).build()).warten() &&
                 manager.isModelDownloaded(TranslateRemoteModel.Builder(ziel).build()).warten()
@@ -70,6 +73,7 @@ class MlKitUebersetzer @Inject constructor(
         }
 
         val uebersetzer = try {
+            MlKitStart.sicherstellen()
             Translation.getClient(
                 TranslatorOptions.Builder()
                     .setSourceLanguage(quelle)

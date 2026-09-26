@@ -62,6 +62,7 @@ class Aufraeumen @Inject constructor() {
         beiFehler: (Throwable) -> T,
         block: suspend (GenerativeModel) -> T,
     ): T = try {
+        MlKitStart.sicherstellen()
         val modell = Generation.getClient()
         try {
             block(modell)

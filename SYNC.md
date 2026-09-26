@@ -8,7 +8,9 @@ macht, ist ein Fehler im Code.
 Abschnitte 1 bis 13 beschreiben den Abgleich über Google Drive und die Sicherung. Abschnitt
 14 führt jedes Feld jeder Tabelle auf, Abschnitt 15 die Sicherungsdatei.
 
-**Jede Änderung an diesem Dokument hebt `schemaVersion` an**, auch eine additive.
+**Jede Änderung am Format hebt `schemaVersion` an**, auch eine additive: ein neues Feld, ein
+neuer Wert, ein anderer Ordner oder eine andere Bedeutung. Klarstellungen im Text, die am
+Format nichts ändern, lassen die Nummer stehen.
 
 ---
 
@@ -273,11 +275,23 @@ nicht abgeglichen hat, bleibt der Grabstein liegen und belehrt es beim nächsten
 
 `SCHEMA.md` liegt selbstbeschreibend im Ordner und wiederholt diesen Abschnitt.
 
+**Die Grenze von `drive.file`:** Die Android-App hat nur die Berechtigung `drive.file`. Sie
+sieht damit ausschließlich Dateien, die sie selbst angelegt hat. Eine Datei, die ein anderes
+Programm im Ordner neu anlegt, ein Assistent ebenso wie ein Client mit eigener
+Google-Anmeldung, erscheint in der App nie. Ändern lassen sich nur die Dateien, die die App
+angelegt hat; solche Änderungen übernimmt sie beim nächsten Abgleich.
+
 **Erlaubt:**
-- eine neue Notiz anlegen (neue UUID, `rev: 1`, `origin: EXTERNAL`, `lastEditor:
-  assistant`, `state: ACTIVE`),
-- `payload` einer bestehenden Notiz ändern und dabei `rev` um 1 erhöhen,
-- `state` auf `TRASHED` setzen (mit `rev + 1` und `stateChangedAt`).
+- `payload` einer bestehenden Notiz ändern und dabei `rev` um 1 erhöhen, mit `origin:
+  EXTERNAL` und `lastEditor: assistant`,
+- `state` auf `TRASHED` setzen (mit `rev + 1` und `stateChangedAt`),
+- nur Werte verwenden, die in diesem Dokument stehen. Ein unbekannter Wert macht die Datei
+  für die App unlesbar; der Prüfbericht meldet sie, und der Snapshot fällt aus, bis sie
+  wieder stimmt.
+
+Eine neue Notiz legt ein Assistent nach denselben Regeln an (neue UUID, `rev: 1`, `origin:
+EXTERNAL`, `lastEditor: assistant`, `state: ACTIVE`). Sehen kann die Android-App sie wegen
+`drive.file` erst, wenn ein späterer Client mit derselben Google-Anmeldung sie anlegt.
 
 **Verboten:**
 - `state` auf `DELETED` setzen: ein Assistent löscht nie endgültig,
@@ -313,7 +327,7 @@ dieser Reihenfolge:
 - Ablage: `/InNoteBox-Backup/YYYY-MM-DD.notesbak`, ein ZIP-Container. Auf Knopfdruck am
   selben Tag: `YYYY-MM-DD_HHMM.notesbak`.
 - Inhalt: die Sicherungsdatei aus Abschnitt 15 in **Fassung 4**. Auch `TRASHED` und
-  `DELETED` sind dabei.
+  `DELETED` sind dabei, nicht aber Notizen, die vom Abgleich ausgenommen sind (14.2a).
 - **Aufbewahrung**: die letzten 7 Tage, dazu 4 Wochenstände (je Montag) und 12 Monatsstände
   (je Monatserster). Was darüber hinaus alt ist, wird beim Schreiben des nächsten Snapshots
   entfernt. Das ist die einzige Löschung im Backup-Ordner, und sie trifft nur Snapshots.
@@ -356,7 +370,9 @@ laufen:
 3. Papierkorb auf A leeren, B meldet sich 30 Tage später -> nichts kommt zurück.
 4. App während des Uploads beenden -> der Eintrag steht noch an und geht beim nächsten Lauf.
 5. Eine Notizdatei in Drive kaputtmachen -> Prüfbericht meldet es, kein Snapshot.
-6. Assistent legt über Drive eine Notiz an -> erscheint mit Hinweis auf externe Herkunft.
+6. Assistent ändert eine von der App angelegte Notiz -> erscheint mit Hinweis auf externe
+   Herkunft. Eine Datei, die er neu anlegt, sieht die Android-App wegen `drive.file` nicht
+   (Abschnitt 8); der Test prüft das Format gegen einen Speicher ohne diese Grenze.
 7. Snapshot auf leerem Gerät wiederherstellen -> identischer Bestand, Spiegel wird
    überschrieben statt überstimmt.
 
@@ -464,6 +480,10 @@ sich selbst. Beim Ausschalten entfernt der nächste Abgleich die Notizdatei und 
 Anhangsdateien aus dem Spiegel und setzt `remoteId` der Anhänge zurück; es wird **kein
 Grabstein** geschrieben (Abschnitt 6.4). Beim Wiedereinschalten wird die Notiz als `DIRTY`
 markiert, sonst läge sie für immer nur hier.
+
+Auch die Snapshots im Backup-Ordner (Abschnitt 10) lassen eine ausgenommene Notiz samt ihren
+Anhängen weg; sie liegen ebenfalls in Drive. Die Sicherungsdatei, die der Nutzer selbst
+ablegt, enthält sie dagegen (Abschnitt 15).
 
 #### 14.2b `calendarEnabled` und `calendarEventId`
 
@@ -694,7 +714,7 @@ auf Wunsch des Nutzers in einen Ordner seiner Wahl und der tägliche Durchlauf a
 (Abschnitt 10).
 
 ```
-manifest.json       formatVersion, schemaVersion, Datum, Herkunft, Zählwerte, SHA-256 über den Inhalt
+manifest.json       formatVersion, schemaVersion, Datum, Herkunft, Zählwerte
 tags.json           Array von Tagdokumenten
 folders.json        Array von Ordnerdokumenten
 notes.json          Array von Sicherungsnotizen (15.1)

@@ -281,4 +281,36 @@ class EinstellungenTest {
         assertEquals(Uebersetzungsweg.MLKIT, einstellungen.uebersetzungsweg().first())
         assertEquals("en" to "fr", einstellungen.uebersetzungSprachen().first())
     }
+
+    @Test
+    fun `ohne je verbunden zu sein fragt der Abgleich nicht bei Google`() = runTest {
+        // Frisch installiert: nie verbunden, also kein Aufruf der Play-Dienste.
+        assertFalse(einstellungen.syncJeVerbunden().first())
+        einstellungen.setSyncJeVerbunden(true)
+        assertTrue(einstellungen.syncJeVerbunden().first())
+    }
+
+    @Test
+    fun `ein frueherer Abgleich zaehlt als verbunden`() = runTest {
+        // Geraete, die schon vor diesem Wert abgeglichen haben, bleiben verbunden.
+        einstellungen.setLetzterAbgleich(1_000L)
+        assertTrue(einstellungen.syncJeVerbunden().first())
+    }
+
+    @Test
+    fun `vorgemerkte Beschriftungen kommen und gehen`() = runTest {
+        assertTrue(einstellungen.beschriftungOffen().first().isEmpty())
+        einstellungen.beschriftungVormerken(listOf("a", "b"))
+        einstellungen.beschriftungVormerken(listOf("b", "c"))
+        assertEquals(setOf("a", "b", "c"), einstellungen.beschriftungOffen().first())
+        einstellungen.beschriftungErledigt("b")
+        assertEquals(setOf("a", "c"), einstellungen.beschriftungOffen().first())
+    }
+
+    @Test
+    fun `KI aus leert die vorgemerkten Beschriftungen`() = runTest {
+        einstellungen.beschriftungVormerken(listOf("a"))
+        einstellungen.kiAusschalten()
+        assertTrue(einstellungen.beschriftungOffen().first().isEmpty())
+    }
 }

@@ -15,10 +15,10 @@ import javax.inject.Singleton
  * Notiz, die unbetitelt automatisch wegwandert, ist praktisch verloren, sie
  * steht dann in einer Liste aus lauter „(ohne Titel)".
  *
- * ABWEICHUNG VOM URSPRÜNGLICHEN PLAN, bewusst und begründet: Dort stand
- * „Structured Output mit KSP-Setup". Stattdessen läuft das über dieselbe
- * Prompt-API-Anbindung, die schon für die Titel auf dem Gerät funktioniert
- * ([TitelKi]), plus strenge Nachprüfung der Antwort. Gründe:
+ * WARUM KEIN STRUCTURED OUTPUT: Naheliegend wäre „Structured Output" mit
+ * KSP-Setup gewesen. Stattdessen läuft das über dieselbe Prompt-API-Anbindung,
+ * die schon für die Titel auf dem Gerät funktioniert ([TitelKi]), plus strenge
+ * Nachprüfung der Antwort. Gründe:
  *
  *  1. Der Tag muss ohnehin gegen die Liste der vorhandenen Tags geprüft werden:
  *     Ein erfundener Tag ist auch dann falsch, wenn er in einem sauberen
@@ -100,6 +100,37 @@ class Beschriftung @Inject constructor(
     }
 
     /** Was die KI zu lesen bekommt: Text, sonst Checkliste. */
+    /** Was [nachholen] fuer eine Notiz gefunden hat. `null` heisst: nichts zu tun. */
+    data class Nachgeholt(val titel: String?, val tag: TagEntity?)
+
+    /** Ob die KI gerade arbeiten kann. */
+    suspend fun kiZustand(): KiZustand =
+        runCatching { titelKi.zustand() }.getOrDefault(KiZustand.FEHLER)
+
+    /**
+     * Holt fuer eine nachts archivierte Notiz nach, was die KI dort nicht durfte.
+     *
+     * Google laesst die KI nur arbeiten, solange die App im Vordergrund ist. Der
+     * naechtliche Lauf gibt deshalb nur den Titel aus dem Text; beim naechsten
+     * Oeffnen der App kommt die KI dazu.
+     *
+     * Der Titel wird nur ersetzt, solange er noch der aus dem Text abgeleitete
+     * ist. Hat jemand ihn inzwischen geaendert, oder den Text, bleibt er. Einen
+     * Tag bekommt nur, wer noch keinen hat.
+     */
+    suspend fun nachholen(notiz: NoteWithRelations, vorhandene: List<TagEntity>): Nachgeholt {
+        val quelle = quelltext(notiz)
+        val rueckfall = fallbackTitel(quelle, notiz.orderedItems.map { it.text })
+        val nochAbgeleitet = quelle.isNotBlank() && rueckfall.isNotBlank() && notiz.note.title == rueckfall
+        val titel = if (nochAbgeleitet) {
+            brauchbar(runCatching { titelKi.vorschlag(quelle) }.getOrNull())
+                ?.takeIf { it != notiz.note.title }
+        } else {
+            null
+        }
+        return Nachgeholt(titel, tagFuer(notiz, vorhandene, kiErlaubt = true))
+    }
+
     private fun quelltext(notiz: NoteWithRelations): String =
         notiz.note.body.ifBlank {
             notiz.orderedItems.filter { it.text.isNotBlank() }.joinToString("\n") { it.text }

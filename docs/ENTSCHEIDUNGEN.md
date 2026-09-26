@@ -114,7 +114,9 @@ nachladbar sein (`DOWNLOADABLE`). Deshalb:
   Leistung, Fehlercodes, Sprachen). Das Auslesen dafür braucht nach § 25 TDDDG eine
   Einwilligung, und die Bedingungen von Google verlangen, dass die Nutzer davon erfahren.
   `Einstellungen.kiAktiv()` ist deshalb nur wahr, wenn eingeschaltet **und** zugestimmt ist;
-  ohne das ruft die App ML Kit nicht auf, auch kein `checkStatus()`. Der Dialog
+  ohne das ruft die App ML Kit nicht auf, auch kein `checkStatus()`. Seit Alpha 10 startet
+  ML Kit auch nicht mehr von selbst: Der `MlKitInitProvider` ist im Manifest entfernt, und
+  `MlKitStart` startet ML Kit erst unmittelbar vor dem ersten Aufruf. Der Dialog
   (`KiZustimmungDialog`) kommt beim Start, solange nicht entschieden ist, und hinter dem
   Schalter; er verlangt die Bestätigung der Volljährigkeit, weil die GenAI-Bedingungen von
   Google die Schnittstellen nur für Anwendungen erlauben, die sich nicht an Minderjährige
@@ -127,6 +129,11 @@ nachladbar sein (`DOWNLOADABLE`). Deshalb:
   sonst fragt die App neu. Jede Zustimmung bekommt einen neuen Schlüssel, Ausschalten löscht
   Aufzeichnung und Schlüssel. Beim Deinstallieren löscht Android den Schlüssel selbst; auf
   ein anderes Gerät lässt er sich nicht mitnehmen, dort wird also neu gefragt.
+- **Die KI arbeitet nur im Vordergrund.** Google lässt die GenAI-Schnittstellen nur zu,
+  solange die App vorn ist; sonst antworten sie mit `BACKGROUND_USE_BLOCKED`. Der nächtliche
+  Lauf gibt deshalb nur den Titel aus dem Text und merkt die Notizen vor.
+  `Nachbeschriftung` holt Titel und Tag beim nächsten Öffnen nach, aber nur, solange der
+  Titel noch der abgeleitete ist; einen inzwischen geänderten Titel fasst sie nicht an.
 
 Alles, was ins Netz ginge, kommt erst nach einer ausdrücklichen Zustimmung (Schalter
 „Verarbeitung im Netz", Zustimmen erst nach dem Lesen bis unten und nach zehn Sekunden). Der
@@ -175,7 +182,9 @@ Kalender, den der Nutzer wählt.
 Angemeldet wird über `AuthorizationClient` der Play-Dienste, nicht über Credential Manager
 und nicht über das abgelöste `GoogleSignIn`. Es gibt kein Refresh-Token; `authorize()` liefert
 still ein frisches, wenn der Zugriff erteilt ist. `hasResolution()` schlägt alles, die
-erteilten Bereiche werden geprüft, der Hintergrundlauf zeigt nie einen Dialog. „Trennen"
+erteilten Bereiche werden geprüft, der Hintergrundlauf zeigt nie einen Dialog. Aufgerufen
+wird `authorize()` erst, wenn Drive auf dem Gerät einmal bewusst verbunden wurde
+(`Einstellungen.syncJeVerbunden()`); vorher fragt die App gar nicht bei Google an. „Trennen"
 ist ein lokaler Schalter plus ein Widerruf bei Google, der scheitern darf. Fehlercodes der
 Play-Dienste werden nie roh angezeigt.
 
@@ -216,7 +225,18 @@ Abbrechen-Knopf, weil das mit `DEVICE_CREDENTIAL` verboten ist), nicht über
 `androidx.biometric`, das eine `FragmentActivity` verlangt. Der Sperrbildschirm ist ein
 bildschirmfüllender Dialog, damit er auch über den Blättern und Dialogen der App liegt.
 Ein- und Ausschalten nur nach erfolgreicher Entsperrung. `FLAG_SECURE` (Aufnahmeschutz) hängt
-an einer Einstellung. Es wird nichts verschlüsselt; eine Verschlüsselung der Datenbank und
+an einer Einstellung.
+
+Seit Alpha 10: Die Zeit im Hintergrund misst `SystemClock.elapsedRealtime()`, nicht die
+Uhrzeit, damit ein Zurückstellen der Uhr die Sperre nicht umgeht. Bis feststeht, ob gesperrt
+wird, liegt eine Abdeckung über der App (`Sperre.entschieden`). Mit eingeschalteter Sperre
+zeigt die Übersicht der letzten Apps kein Vorschaubild (ab Android 13
+`setRecentsScreenshotEnabled`, davor `FLAG_SECURE`). Erinnerungen zeigen dann keinen Inhalt
+der Notiz, und auf dem Sperrbildschirm des Geräts steht immer nur die neutrale Fassung
+(`VISIBILITY_PRIVATE` mit `publicVersion`). Eine Sicherungsdatei, die eine andere App
+hereinreicht, kommt erst nach dem Entsperren zur Rückfrage.
+
+Es wird nichts verschlüsselt; eine Verschlüsselung der Datenbank und
 der Anhänge ist offen und wird vor dem Bau einzeln geplant.
 
 ## 13. Oberfläche
@@ -255,3 +275,9 @@ hat ihre eigenen Wege, die der Mensch in der Hand hat: die Sicherungsdatei und d
 über das eigene Drive. Eine stille Kopie der ganzen Datenbank in der Gerätesicherung bei
 Google nähme auch Notizen mit, die ausdrücklich auf dem Gerät bleiben sollen. Der Umzug von
 Gerät zu Gerät beim Einrichten bleibt erlaubt.
+
+**Sicherungen** (seit Alpha 10): Die täglichen Snapshots in Drive lassen Notizen weg, die vom
+Abgleich ausgenommen sind; die Sicherungsdatei für die eigene Ablage enthält alles. Eingelesen
+wird nur nach einer Rückfrage, die den Kopf der Datei zeigt. Beim Auspacken gelten
+Obergrenzen (`Grenzen`: Größe je JSON-Teil und je Datei, Zahl der Einträge, freier Platz);
+wird eine überschritten, bricht das Einlesen ab und räumt Ausgepacktes wieder weg.

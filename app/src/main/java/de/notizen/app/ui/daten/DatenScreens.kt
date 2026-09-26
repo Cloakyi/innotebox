@@ -42,6 +42,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -143,12 +144,34 @@ fun BackupScreen(
     val lage by backupViewModel.lage.collectAsStateWithLifecycle()
 
     // Aus dem Dateimanager hereingereicht. Sofort quittiert, sonst liefe es bei
-    // jeder Drehung des Geraets erneut.
+    // jeder Drehung des Geraets erneut. Eingelesen wird erst nach der
+    // Rueckfrage, und hierher kommt die Datei erst nach dem Entsperren.
     LaunchedEffect(lieseSicherung) {
         lieseSicherung?.let {
-            backupViewModel.wiederherstellen(it)
+            backupViewModel.pruefen(it)
             onSicherungGelesen()
         }
+    }
+
+    lage.rueckfrage?.let { frage ->
+        AlertDialog(
+            onDismissRequest = backupViewModel::einlesenVerworfen,
+            title = { Text("Sicherung einlesen?") },
+            text = {
+                Column {
+                    frage.zeilen.forEachIndexed { i, zeile ->
+                        if (i > 0) Spacer(Modifier.height(8.dp))
+                        Text(zeile, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = backupViewModel::einlesenBestaetigt) { Text("Einlesen") }
+            },
+            dismissButton = {
+                TextButton(onClick = backupViewModel::einlesenVerworfen) { Text("Abbrechen") }
+            },
+        )
     }
 
     val zielWaehlen = rememberLauncherForActivityResult(
@@ -157,7 +180,7 @@ fun BackupScreen(
 
     val quelleWaehlen = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
-    ) { quelle -> quelle?.let(backupViewModel::wiederherstellen) }
+    ) { quelle -> quelle?.let(backupViewModel::pruefen) }
 
     lage.meldung?.let { text ->
         LaunchedEffect(text) {

@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.notizen.core.sync.sicherung.SICHERUNG_VERSION
 import de.notizen.core.sync.sicherung.Sicherung
 import de.notizen.core.sync.sicherung.Sicherungsergebnis
+import de.notizen.core.sync.sicherung.Sicherungskopf
 import de.notizen.core.sync.sicherung.dateiname
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +18,27 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 /** Was gerade läuft, wenn etwas läuft. */
 enum class Vorgang { NICHTS, SICHERN, WIEDERHERSTELLEN }
 
+/**
+ * Die Rückfrage vor dem Einlesen.
+ *
+ * [zeilen] sagen, was in der Datei steckt: wann und von wem sie stammt und wie
+ * viel darin ist. Eingelesen wird erst, wenn der Nutzer das bestätigt.
+ */
+data class Rueckfrage(val quelle: Uri, val zeilen: List<String>)
+
 data class Sicherungslage(
     val vorgang: Vorgang = Vorgang.NICHTS,
     val meldung: String? = null,
+    val rueckfrage: Rueckfrage? = null,
 ) {
     val laeuft: Boolean get() = vorgang != Vorgang.NICHTS
 }
@@ -74,7 +89,54 @@ class BackupViewModel @Inject constructor(
         }
     }
 
-    fun wiederherstellen(quelle: Uri) {
+    /**
+     * Sieht in eine Datei, bevor sie eingelesen wird.
+     *
+     * Eingelesen wird nie ungefragt. Eine Datei kann auch von einer anderen App
+     * kommen, die sie InNoteBox hinreicht, und neuere Einträge darin ersetzen
+     * vorhandene Notizen. Deshalb steht vorher da, was in der Datei steckt, und
+     * erst ein Tippen auf „Einlesen" liest sie ein.
+     */
+    fun pruefen(quelle: Uri) {
+        if (_lage.value.laeuft) return
+        viewModelScope.launch {
+            val kopf = withContext(Dispatchers.IO) {
+                runCatching { context.contentResolver.openInputStream(quelle) }.getOrNull()
+                    ?.use { sicherung.vorschau(it) }
+            }
+            _lage.update {
+                when {
+                    kopf == null -> it.copy(meldung = text(Sicherungsergebnis.KeineSicherung))
+                    kopf.formatVersion > SICHERUNG_VERSION ->
+                        it.copy(meldung = text(Sicherungsergebnis.ZuNeu(kopf.formatVersion)))
+                    else -> it.copy(rueckfrage = Rueckfrage(quelle, beschreibung(kopf)))
+                }
+            }
+        }
+    }
+
+    /** Der Nutzer hat „Einlesen" angetippt. */
+    fun einlesenBestaetigt() {
+        val frage = _lage.value.rueckfrage ?: return
+        _lage.update { it.copy(rueckfrage = null) }
+        wiederherstellen(frage.quelle)
+    }
+
+    fun einlesenVerworfen() = _lage.update { it.copy(rueckfrage = null) }
+
+    private fun beschreibung(kopf: Sicherungskopf): List<String> {
+        val datum = DATUM.format(Instant.ofEpochMilli(kopf.erzeugtAm).atZone(ZoneId.systemDefault()))
+        return listOf(
+            "Erstellt am $datum von ${kopf.erzeugtVon.take(80)}.",
+            "Darin sind " + mengen(kopf.notizen, "Notiz", "Notizen") + ", " +
+                mengen(kopf.tags, "Tag", "Tags") + " und " +
+                mengen(kopf.ordner, "Ordner", "Ordner") + ".",
+            "Neuere Notizen aus der Datei ersetzen hier die mit derselben Kennung. " +
+                "Gelöscht wird nichts.",
+        )
+    }
+
+    private fun wiederherstellen(quelle: Uri) {
         if (_lage.value.laeuft) return
         _lage.value = Sicherungslage(Vorgang.WIEDERHERSTELLEN)
 
@@ -91,6 +153,10 @@ class BackupViewModel @Inject constructor(
     }
 
     fun meldungGelesen() = _lage.update { it.copy(meldung = null) }
+
+    private companion object {
+        val DATUM: DateTimeFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy 'um' HH:mm", Locale.GERMAN)
+    }
 
     /** Wer die Datei geschrieben hat. Steht in ihrem Kopf. */
     private fun kennung(): String {

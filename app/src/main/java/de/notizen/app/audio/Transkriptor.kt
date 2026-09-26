@@ -1,5 +1,7 @@
 package de.notizen.app.audio
 
+import de.notizen.app.ai.MlKitStart
+
 import android.content.Context
 import android.os.ParcelFileDescriptor
 import com.google.mlkit.genai.common.audio.AudioSource
@@ -94,6 +96,7 @@ class Transkriptor @Inject constructor(
             return@flow
         }
 
+        MlKitStart.sicherstellen()
         SpeechRecognition.getClient(optionen(modus, sprache)).use { client ->
             abschnitte.forEachIndexed { i, abschnitt ->
                 val text = runCatching { erkenneNotfallsGeteilt(client, datei, abschnitt) }

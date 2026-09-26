@@ -13,7 +13,7 @@ Webseite: [innotebox.de](https://innotebox.de)
 - Drei Stufen (Eingang, Workspace, Archiv) mit Wischgesten, dazu ein umschaltbarer
   Ordnermodus mit eigenem Archiv und Papierkorb
 - Text mit Auszeichnung, Listen zum Abhaken mit Bearbeitungszustand, Bilder auch als
-  Hintergrund einer Karte
+  Hintergrund einer Karte; Fotos verlieren beim Einfügen ihre Metadaten samt Standort
 - Sprachnotizen: aufnehmen, später auf dem Gerät in Text umwandeln, Wellenform, Pausen beim
   Abhören überspringen
 - Volltextsuche über Titel, Text, Listen und Transkripte, mit Filtern nach Stufe, Tag,
@@ -133,6 +133,7 @@ Dort stehen auch die GPL und die zusätzliche Erlaubnis im Wortlaut.
 ML Kit arbeitet auf dem Gerät, schickt Google nach dessen Angaben aber Kennzahlen über die
 Nutzung der Schnittstellen (Geräte- und App-Angaben, eine Kennung der Installation,
 Leistung, Fehlercodes, eingestellte Sprachen), nie die Inhalte der Notizen. Deshalb ist die
-KI zunächst aus, und die App fragt, bevor sie ML Kit zum ersten Mal aufruft. Einzelheiten
+KI zunächst aus, und die App fragt, bevor sie ML Kit zum ersten Mal startet. Mit Google Drive
+spricht die App erst, wenn du den Abgleich selbst verbindest. Einzelheiten
 stehen in der [Datenschutzerklärung](https://innotebox.de/datenschutz) und in Googles
 [ML Kit Data Disclosure](https://developers.google.com/ml-kit/android-data-disclosure).

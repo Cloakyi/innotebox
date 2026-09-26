@@ -1130,10 +1130,23 @@ class Abgleich @Inject constructor(
         return neu.purgeWatermark
     }
 
-    /** `SCHEMA.md` liegt selbstbeschreibend im Ordner, einmal geschrieben. */
+    /**
+     * `SCHEMA.md` liegt selbstbeschreibend im Ordner.
+     *
+     * Geschrieben wird sie beim ersten Lauf und danach nur, wenn sich ihr Text
+     * in einer neuen Fassung der App geaendert hat. Sonst kaeme eine Korrektur
+     * nie in einem Ordner an, den es schon gibt.
+     */
     private suspend fun schemaSchreiben(token: String, wurzel: String, imWurzelordner: List<Drivedatei>) {
-        if (imWurzelordner.any { it.name == SCHEMA_DATEI }) return
-        runCatching { drive.anlegen(token, wurzel, SCHEMA_DATEI, SCHEMA_TEXT) }
+        val stand = SCHEMA_TEXT.hashCode().toString()
+        val vorhanden = imWurzelordner.firstOrNull { it.name == SCHEMA_DATEI }
+        val geschrieben = if (vorhanden == null) {
+            runCatching { drive.anlegen(token, wurzel, SCHEMA_DATEI, SCHEMA_TEXT) }.isSuccess
+        } else {
+            if (einstellungen.schemaTextStand().first() == stand) return
+            runCatching { drive.ersetzen(token, vorhanden.id, SCHEMA_TEXT) }.isSuccess
+        }
+        if (geschrieben) einstellungen.setSchemaTextStand(stand)
     }
 
     // ------------------------------------------------------------ Purge

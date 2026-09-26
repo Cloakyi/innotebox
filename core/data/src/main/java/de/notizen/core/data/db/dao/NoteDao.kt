@@ -236,6 +236,16 @@ interface NoteDao {
     suspend fun alleIds(): List<String>
 
     /**
+     * Wie [alleIds], aber nur Notizen, die am Abgleich teilnehmen.
+     *
+     * Fuer die Snapshots in Drive. Eine Notiz, die vom Abgleich ausgenommen
+     * ist, bleibt auf dem Geraet; sie darf auch nicht auf dem Umweg ueber die
+     * taegliche Sicherung in Drive landen.
+     */
+    @Query("SELECT id FROM notes WHERE syncEnabled = 1 ORDER BY createdAt ASC")
+    suspend fun abgleichbareIds(): List<String>
+
+    /**
      * Welche dieser Notizen es hier gibt und am Abgleich teilnehmen.
      *
      * Fuer die Grabsteine: Ein Grabstein fuer eine Notiz, die es gibt, ist ein

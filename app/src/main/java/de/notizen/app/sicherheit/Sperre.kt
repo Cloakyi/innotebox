@@ -1,13 +1,35 @@
 package de.notizen.app.sicherheit
 
+import android.os.SystemClock
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import de.notizen.core.data.prefs.Einstellungen
-import de.notizen.core.data.util.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
+
+/**
+ * Die Zeit seit dem Start des Geräts, in Millisekunden.
+ *
+ * Für die Sperrzeit und nicht die Uhrzeit: Wer die Uhr des Handys
+ * zurückstellt, soll die Sperre damit nicht umgehen können. Diese Zeit läuft
+ * unabhängig von der Einstellung weiter und lässt sich nicht verstellen.
+ */
+fun interface Laufuhr {
+    fun jetzt(): Long
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object LaufuhrModule {
+    @Provides
+    fun laufuhr(): Laufuhr = Laufuhr { SystemClock.elapsedRealtime() }
+}
 
 /**
  * Ob die App gerade gesperrt ist.
@@ -23,6 +45,11 @@ import javax.inject.Singleton
  * jeder Drehung neu fragte. Eine Drehung ist kein Hintergrund
  * (`beimStopp(konfigurationswechsel = true)`).
  *
+ * [entschieden] ist falsch, solange noch nicht feststeht, ob gesperrt wird:
+ * beim Start, bevor die Einstellung gelesen ist, und nach jeder Rückkehr aus
+ * dem Hintergrund. So lange liegt eine Abdeckung über der App, damit der
+ * Inhalt nicht kurz aufblitzt, bevor die Sperre greift.
+ *
  * Was hier NICHT ist: eine Verschlüsselung. Die Datenbank liegt weiter
  * unverschlüsselt in der Sandbox der App; die Sperre ist eine Sperre der
  * Oberfläche. Die Verschlüsselung ist der eigene Posten in docs/ENTSCHEIDUNGEN.md, Abschnitt 12,
@@ -31,10 +58,13 @@ import javax.inject.Singleton
 @Singleton
 class Sperre @Inject constructor(
     private val einstellungen: Einstellungen,
-    private val clock: Clock,
+    private val laufuhr: Laufuhr,
 ) {
     private val _gesperrt = MutableStateFlow(false)
     val gesperrt: StateFlow<Boolean> = _gesperrt.asStateFlow()
+
+    private val _entschieden = MutableStateFlow(false)
+    val entschieden: StateFlow<Boolean> = _entschieden.asStateFlow()
 
     private var hintergrundSeit: Long? = null
     private var jeGeprueft = false
@@ -46,20 +76,24 @@ class Sperre @Inject constructor(
     suspend fun beimStart() {
         if (!einstellungen.sperreAn().first()) {
             jeGeprueft = true
+            hintergrundSeit = null
+            _entschieden.value = true
             return
         }
         val seit = hintergrundSeit
         val grenzeMs = einstellungen.sperrverzoegerung().first().minuten * 60_000L
-        val sperren = !jeGeprueft || (seit != null && clock.now() - seit >= grenzeMs)
+        val sperren = !jeGeprueft || (seit != null && laufuhr.jetzt() - seit >= grenzeMs)
         jeGeprueft = true
         hintergrundSeit = null
         if (sperren) _gesperrt.value = true
+        _entschieden.value = true
     }
 
     /** Beim Verschwinden der Activity. Eine Drehung zaehlt nicht als Hintergrund. */
     fun beimStopp(konfigurationswechsel: Boolean) {
         if (konfigurationswechsel) return
-        if (hintergrundSeit == null) hintergrundSeit = clock.now()
+        if (hintergrundSeit == null) hintergrundSeit = laufuhr.jetzt()
+        _entschieden.value = false
     }
 
     fun entsperrt() {

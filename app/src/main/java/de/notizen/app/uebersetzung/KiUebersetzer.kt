@@ -1,5 +1,7 @@
 package de.notizen.app.uebersetzung
 
+import de.notizen.app.ai.MlKitStart
+
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +31,7 @@ class KiUebersetzer @Inject constructor() : Uebersetzer {
         laden: Boolean,
     ): Uebersetzungsergebnis = withContext(Dispatchers.IO) {
         val modell = try {
+            MlKitStart.sicherstellen()
             Generation.getClient()
         } catch (t: Throwable) {
             return@withContext Uebersetzungsergebnis.NichtVerfuegbar(

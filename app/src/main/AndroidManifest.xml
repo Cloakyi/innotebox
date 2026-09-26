@@ -234,6 +234,17 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <!--
+            ML Kit startet sonst beim Start der App von selbst, ueber diesen
+            Provider. InNoteBox startet es erst, wenn es gebraucht wird, und das
+            ist nur nach der Zustimmung zur KI oder mit "Verarbeitung im Netz"
+            (MlKitStart).
+        -->
+        <provider
+            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
+            android:authorities="${applicationId}.mlkitinitprovider"
+            tools:node="remove" />
+
     </application>
 
 </manifest>

@@ -13,10 +13,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import de.notizen.app.MainActivity
+import de.notizen.core.data.prefs.Einstellungen
 import de.notizen.core.data.repository.NoteRepository
 import de.notizen.core.data.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -67,6 +69,8 @@ class ErinnerungEmpfaenger : BroadcastReceiver() {
 
     @Inject lateinit var erinnerungen: ReminderRepository
 
+    @Inject lateinit var einstellungen: Einstellungen
+
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getStringExtra(ErinnerungPlaner.SCHLUESSEL_ID) ?: return
         val notizId = intent.getStringExtra(ErinnerungPlaner.SCHLUESSEL_NOTIZ) ?: return
@@ -81,7 +85,8 @@ class ErinnerungEmpfaenger : BroadcastReceiver() {
                 // nicht mehr gibt.
                 if (notiz != null && notiz.note.deletedAt == null) {
                     val titel = notiz.note.title.ifBlank { mitgegeben.ifBlank { "Notiz" } }
-                    zeigen(context, notizId, titel, vorschau(notiz.note.body))
+                    val verbergen = einstellungen.sperreAn().first()
+                    zeigen(context, notizId, titel, vorschau(notiz.note.body), verbergen)
                 }
                 erinnerungen.abhaken(id)
             } finally {
@@ -93,7 +98,14 @@ class ErinnerungEmpfaenger : BroadcastReceiver() {
     private fun vorschau(body: String): String =
         body.lineSequence().firstOrNull { it.isNotBlank() }?.take(120).orEmpty()
 
-    private fun zeigen(context: Context, notizId: String, titel: String, text: String) {
+    /**
+     * [verbergen]: Mit eingeschalteter Sperre steht in der Benachrichtigung
+     * nichts aus der Notiz, weder Titel noch erste Zeile. Wer die App sperrt,
+     * will ihren Inhalt auch nicht in der Benachrichtigungsleiste sehen. Auf
+     * dem Sperrbildschirm des Handys steht in jedem Fall nur die neutrale
+     * Fassung, auch ohne Sperre der App.
+     */
+    private fun zeigen(context: Context, notizId: String, titel: String, text: String, verbergen: Boolean) {
         val erlaubt = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.POST_NOTIFICATIONS,
@@ -110,11 +122,22 @@ class ErinnerungEmpfaenger : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
+        val neutral = NotificationCompat.Builder(context, KANAL_ERINNERUNGEN)
+            .setSmallIcon(android.R.drawable.ic_menu_edit)
+            .setContentTitle(NEUTRALER_TITEL)
+            .setContentText(NEUTRALER_TEXT)
+            .build()
+
+        val sichtbarerTitel = if (verbergen) NEUTRALER_TITEL else titel
+        val sichtbarerText = if (verbergen) NEUTRALER_TEXT else text
+
         val meldung = NotificationCompat.Builder(context, KANAL_ERINNERUNGEN)
             .setSmallIcon(android.R.drawable.ic_menu_edit)
-            .setContentTitle(titel)
-            .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentTitle(sichtbarerTitel)
+            .setContentText(sichtbarerText)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(sichtbarerText))
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(neutral)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(oeffnen)
             .setAutoCancel(true)
@@ -126,6 +149,9 @@ class ErinnerungEmpfaenger : BroadcastReceiver() {
     companion object {
         /** Sagt der Activity, welche Notiz sie öffnen soll. */
         const val EXTRA_NOTIZ_OEFFNEN = "notizOeffnen"
+
+        private const val NEUTRALER_TITEL = "Erinnerung"
+        private const val NEUTRALER_TEXT = "Tippe, um die Notiz in InNoteBox zu öffnen."
     }
 }
 

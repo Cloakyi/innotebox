@@ -47,6 +47,14 @@ sealed interface Zugang {
      * die App hielte sich wieder für verbunden.
      */
     data object Getrennt : Zugang
+
+    /**
+     * Drive wurde auf diesem Gerät noch nie verbunden.
+     *
+     * Dann fragt die App gar nicht erst bei Google nach, auch nicht lautlos.
+     * Erst wer „Verbinden" antippt, spricht mit Google ([Anmeldung.verbinden]).
+     */
+    data object NieVerbunden : Zugang
 }
 
 /**
@@ -90,33 +98,45 @@ class Anmeldung @Inject constructor(
      * ist der vorgesehene Weg, ein Token zu erneuern.
      */
     suspend fun zugang(): Zugang = try {
-        if (einstellungen.syncGetrennt().first()) {
-            Zugang.Getrennt
-        } else {
-            deuten(klient.authorize(anfrage).warten())
+        when {
+            einstellungen.syncGetrennt().first() -> Zugang.Getrennt
+            !einstellungen.syncJeVerbunden().first() -> Zugang.NieVerbunden
+            else -> deuten(klient.authorize(anfrage).warten())
         }
     } catch (fehler: Throwable) {
         Zugang.Fehler(lesbar(fehler))
     }
 
     /**
-     * Hebt ein früheres Trennen auf.
+     * Verbindet, weil der Nutzer „Verbinden" angetippt hat.
      *
-     * Wird vor dem Verbinden gerufen. Ohne das bliebe der Ausschalter stehen und
-     * das Verbinden führte sichtbar zu nichts.
+     * Hebt ein früheres Trennen auf und fragt Google auch dann, wenn noch nie
+     * verbunden war. Ohne das Aufheben bliebe der Ausschalter stehen, und das
+     * Verbinden führte sichtbar zu nichts.
      */
-    suspend fun wiederEinschalten() = einstellungen.setSyncGetrennt(false)
+    suspend fun verbinden(): Zugang = try {
+        einstellungen.setSyncGetrennt(false)
+        merken(deuten(klient.authorize(anfrage).warten()))
+    } catch (fehler: Throwable) {
+        Zugang.Fehler(lesbar(fehler))
+    }
+
+    /** Ab dem ersten erteilten Zugang gilt Drive auf diesem Gerät als verbunden. */
+    private suspend fun merken(zugang: Zugang): Zugang {
+        if (zugang is Zugang.Erteilt) einstellungen.setSyncJeVerbunden(true)
+        return zugang
+    }
 
     /**
      * Das Ergebnis, nachdem der Nutzer Googles Dialog durchlaufen hat.
      *
      * Die Activity reicht das zurückkommende [Intent] hier herein.
      */
-    fun ausDialog(daten: Intent?): Zugang = try {
+    suspend fun ausDialog(daten: Intent?): Zugang = try {
         if (daten == null) {
             Zugang.Fehler("Der Anmeldedialog kam ohne Ergebnis zurück.")
         } else {
-            deuten(klient.getAuthorizationResultFromIntent(daten))
+            merken(deuten(klient.getAuthorizationResultFromIntent(daten)))
         }
     } catch (fehler: Throwable) {
         Zugang.Fehler(lesbar(fehler))

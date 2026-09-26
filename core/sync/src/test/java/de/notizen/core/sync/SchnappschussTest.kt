@@ -106,6 +106,43 @@ class SchnappschussTest {
         assertTrue(tagesdurchlauf(a).heuteSchonGelaufen())
     }
 
+    /**
+     * SYNC.md 14.2a: Eine vom Abgleich ausgenommene Notiz bleibt auf dem
+     * Geraet. Der Snapshot liegt in Drive und laesst sie deshalb weg; die
+     * Sicherungsdatei, die man selbst ablegt, nimmt sie weiter mit.
+     */
+    @Test
+    fun `ausgenommene Notizen fehlen im Snapshot, die eigene Sicherung hat sie`() = runTest {
+        val mit = a.neueNotiz("Geht nach Drive")
+        val ohne = a.neueNotiz("Bleibt hier")
+        a.notes.setAbgleich(ohne, false)
+
+        val fertig = tagesdurchlauf(a).ausfuehren("t") as Tagesergebnis.Fertig
+        val ordner = drive.ordner("t", "InNoteBox-Backup")
+        val datei = drive.inhalt("t", ordner).first { it.name == fertig.snapshot }
+        val snapshot = dateiordner.newFile("snapshot.notesbak")
+        drive.herunterladen("t", datei.id, snapshot)
+
+        val c = Testclient("c", drive, uhr, dateiordner.root)
+        try {
+            assertTrue(c.sicherung().wiederherstellen(snapshot.inputStream()) is Sicherungsergebnis.Eingelesen)
+            assertEquals("Geht nach Drive", c.titel(mit))
+            assertNull(c.titel(ohne))
+        } finally {
+            c.schliessen()
+        }
+
+        val puffer = ByteArrayOutputStream()
+        assertTrue(a.sicherung().sichern(puffer, "Test") is Sicherungsergebnis.Gesichert)
+        val d = Testclient("d", drive, uhr, dateiordner.root)
+        try {
+            d.sicherung().wiederherstellen(ByteArrayInputStream(puffer.toByteArray()))
+            assertEquals("Bleibt hier", d.titel(ohne))
+        } finally {
+            d.schliessen()
+        }
+    }
+
     /** Szenario 5, zweite Haelfte: mit Befund kein Snapshot. */
     @Test
     fun `mit Befund gibt es keinen Snapshot`() = runTest {

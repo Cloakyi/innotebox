@@ -1,5 +1,7 @@
 package de.notizen.app.audio
 
+import de.notizen.app.ai.MlKitStart
+
 import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.speechrecognition.SpeechRecognition
@@ -68,6 +70,7 @@ class Transkription @Inject constructor(
         val sprache = sprache()
         Erkennungsmodus.entries.forEach { modus ->
             val ergebnis = runCatching {
+                MlKitStart.sicherstellen()
                 SpeechRecognition.getClient(optionen(modus, sprache)).use { it.checkStatus() }
             }
             val zustand = ergebnis.fold(
@@ -97,6 +100,7 @@ class Transkription @Inject constructor(
      * Byte-Zahl. Nicht versuchen, das anders hinzubiegen.
      */
     fun laden(modus: Erkennungsmodus): Flow<Modellzustand> = flow {
+        MlKitStart.sicherstellen()
         SpeechRecognition.getClient(optionen(modus, sprache())).use { client ->
             client.download().collect { status ->
                 when (status) {

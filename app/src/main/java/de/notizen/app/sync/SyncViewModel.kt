@@ -171,11 +171,9 @@ class SyncViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(laeuft = true, meldung = null) }
 
-            // Ein frueheres Trennen zuerst aufheben. Sonst antwortet `zugang()`
-            // weiter mit „getrennt", und der Knopf taete sichtbar nichts.
-            anmeldung.wiederEinschalten()
-
-            when (val zugang = anmeldung.zugang()) {
+            // `verbinden` hebt ein frueheres Trennen auf und fragt Google auch
+            // dann, wenn auf diesem Geraet noch nie verbunden war.
+            when (val zugang = anmeldung.verbinden()) {
                 is Zugang.Erteilt -> {
                     _state.update { it.copy(laeuft = false, verbunden = true) }
                     dann(null)
@@ -191,10 +189,10 @@ class SyncViewModel @Inject constructor(
                     dann(null)
                 }
 
-                // Kann nach `wiederEinschalten` nicht mehr vorkommen. Der Zweig
-                // steht trotzdem da, damit ein neuer Zustand im `when` auffaellt
-                // und nicht stillschweigend durchrutscht.
-                Zugang.Getrennt -> {
+                // Kann nach `verbinden` nicht vorkommen. Die Zweige stehen
+                // trotzdem da, damit ein neuer Zustand im `when` auffaellt und
+                // nicht stillschweigend durchrutscht.
+                Zugang.Getrennt, Zugang.NieVerbunden -> {
                     _state.update { it.copy(laeuft = false) }
                     dann(null)
                 }
@@ -204,20 +202,22 @@ class SyncViewModel @Inject constructor(
 
     /** Verarbeitet, was aus Googles Dialog zurückkommt. */
     fun ausDialog(daten: Intent?) {
-        when (val zugang = anmeldung.ausDialog(daten)) {
-            is Zugang.Erteilt ->
-                _state.update { it.copy(verbunden = true, meldung = null) }
+        viewModelScope.launch {
+            when (val zugang = anmeldung.ausDialog(daten)) {
+                is Zugang.Erteilt ->
+                    _state.update { it.copy(verbunden = true, meldung = null) }
 
-            is Zugang.Fehler ->
-                _state.update { it.copy(verbunden = false, meldung = zugang.grund) }
+                is Zugang.Fehler ->
+                    _state.update { it.copy(verbunden = false, meldung = zugang.grund) }
 
-            // Zweimal hintereinander eine Anmeldung zu verlangen hiesse, den
-            // Nutzer im Kreis zu schicken. Wir behandeln es als Abbruch.
-            is Zugang.AnmeldungNoetig ->
-                _state.update { it.copy(verbunden = false, meldung = "Abgebrochen.") }
+                // Zweimal hintereinander eine Anmeldung zu verlangen hiesse, den
+                // Nutzer im Kreis zu schicken. Wir behandeln es als Abbruch.
+                is Zugang.AnmeldungNoetig ->
+                    _state.update { it.copy(verbunden = false, meldung = "Abgebrochen.") }
 
-            Zugang.Getrennt ->
-                _state.update { it.copy(verbunden = false) }
+                Zugang.Getrennt, Zugang.NieVerbunden ->
+                    _state.update { it.copy(verbunden = false) }
+            }
         }
     }
 

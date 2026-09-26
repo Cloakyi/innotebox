@@ -116,9 +116,19 @@ class Sicherung @Inject constructor(
      * [erzeugtVon] steht im Kopf der Datei und sagt spaeteren Lesern, wer sie
      * geschrieben hat. Bei einer Datei, die Jahre liegen kann, ist das die
      * Angabe, nach der man am ehesten sucht.
+     *
+     * [nurAbgleichbare] laesst Notizen weg, die vom Abgleich ausgenommen sind,
+     * samt ihren Dateien und Zaehlerstaenden. So schreibt der Snapshot fuer
+     * Drive: Was auf dem Geraet bleiben soll, geht auch dort nicht hin. Die
+     * Sicherungsdatei, die man selbst ablegt, nimmt dagegen alles mit.
      */
-    suspend fun sichern(ziel: OutputStream, erzeugtVon: String): Sicherungsergebnis = try {
-        val ids = noteDao.alleIds()
+    suspend fun sichern(
+        ziel: OutputStream,
+        erzeugtVon: String,
+        nurAbgleichbare: Boolean = false,
+    ): Sicherungsergebnis = try {
+        val ids = if (nurAbgleichbare) noteDao.abgleichbareIds() else noteDao.alleIds()
+        val enthalten = ids.toHashSet()
         val tags = tagDao.getAllIncludingDeleted().map { it.alsDokument() }
 
         // Auch die geloeschten Ordner gehen mit, aus demselben Grund wie bei
@@ -133,6 +143,7 @@ class Sicherung @Inject constructor(
         val zaehler = syncDao.alleStaende()
             .filter { it.entityType == EntityType.NOTE || it.entityType == EntityType.FOLDER || it.entityType == EntityType.TAG }
             .filter { it.baseRev > 0 }
+            .filter { !nurAbgleichbare || it.entityType != EntityType.NOTE || it.entityId in enthalten }
             .map { Zaehlerstand(it.entityType.name, it.entityId, it.baseRev) }
         val grabsteine = syncDao.allTombstones()
             .filter { it.entityType == EntityType.NOTE || it.entityType == EntityType.FOLDER || it.entityType == EntityType.TAG }
@@ -181,6 +192,14 @@ class Sicherung @Inject constructor(
     } catch (fehler: Throwable) {
         Sicherungsergebnis.Fehler(fehler.message ?: fehler::class.java.simpleName)
     }
+
+    /**
+     * Was in einer Sicherungsdatei steckt, ohne sie einzulesen.
+     *
+     * Fuer die Rueckfrage vor dem Einlesen. `null`, wenn die Datei keine
+     * Sicherung von InNoteBox ist.
+     */
+    fun vorschau(quelle: InputStream): Sicherungskopf? = paket.kopfLesen(quelle)
 
     /**
      * Liest eine Sicherung ein.

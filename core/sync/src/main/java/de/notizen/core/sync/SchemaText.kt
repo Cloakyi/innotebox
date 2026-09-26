@@ -45,7 +45,7 @@ Jede Datei hat dieselbe aeussere Form:
 
 ## payload einer Notiz (NOTE)
 
-`stage` (INBOX, WORKSPACE, ARCHIVE), `type` (TEXT, CHECKLIST, AUDIO, IMAGE, DRAWING),
+`stage` (INBOX, WORKSPACE, ARCHIVE), `type` (TEXT, LIST, AUDIO, IMAGE, DRAWING),
 `title`, `body` (Markdown), `colorId`, `isFavorite`, `favoritedAt`, `folderId`, `sortIndex`,
 `backgroundAttachmentId`, `createdAt`, `stageChangedAt`, `tagIds` (Liste von Tag-uuids),
 `items` (Checkliste: id, text, isChecked, position), `attachments` (id, mimeType,
@@ -73,11 +73,15 @@ anfassen.
 
 ## Was ein Assistent darf
 
-- Eine neue Notiz anlegen: neue uuid als Dateiname, `rev: 1`, `origin: "EXTERNAL"`,
-  `lastEditor: "assistant"`, `state: "ACTIVE"`, vollstaendiger payload.
+Die App sieht in Drive nur Dateien, die sie selbst angelegt hat (die Berechtigung heisst
+`drive.file`). Eine Datei, die ein anderes Programm hier neu anlegt, erscheint in der App
+deshalb nie. Aendern lassen sich die vorhandenen Dateien:
+
 - Den payload einer bestehenden Notiz aendern und dabei `rev` um eins erhoehen,
-  `updatedAt` und `lastEditor` setzen.
+  `updatedAt` setzen, `lastEditor: "assistant"` und `origin: "EXTERNAL"`.
 - `state` auf TRASHED setzen (mit `rev` plus eins und neuem `stateChangedAt`).
+- Nur die Werte verwenden, die hier stehen. Ein unbekannter Wert macht die Datei fuer die
+  App unlesbar, und der Pruefbericht meldet sie.
 
 ## Was ein Assistent nicht darf
 

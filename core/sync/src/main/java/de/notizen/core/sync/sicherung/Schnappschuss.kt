@@ -28,7 +28,8 @@ sealed interface Schnappschussergebnis {
  * Fehler im Spiegel kann damit konstruktionsbedingt kein Backup beschaedigen.
  *
  * Ein Snapshot ist die normale Sicherungsdatei (Fassung 3, mit
- * Zaehlerstaenden und Grabsteinen), einmal geschrieben und nie veraendert. Die
+ * Zaehlerstaenden und Grabsteinen), aber ohne die Notizen, die vom Abgleich
+ * ausgenommen sind. Er wird einmal geschrieben und nie veraendert. Die
  * einzige Loeschung hier ist die Aufbewahrungsregel, und sie trifft nur
  * Snapshots.
  */
@@ -53,7 +54,11 @@ class Schnappschuss @Inject constructor(
         val zwischen = ablage.ziel("schnappschuss.$ENDUNG")
         try {
             val label = einstellungen.geraeteLabel().first()
-            val ergebnis = zwischen.outputStream().use { sicherung.sichern(it, "InNoteBox auf $label") }
+            // Nur was auch abgeglichen wird. Eine vom Abgleich ausgenommene
+            // Notiz bleibt auf dem Geraet, und der Snapshot liegt in Drive.
+            val ergebnis = zwischen.outputStream().use {
+                sicherung.sichern(it, "InNoteBox auf $label", nurAbgleichbare = true)
+            }
             if (ergebnis is Sicherungsergebnis.Fehler) return Schnappschussergebnis.Fehler(ergebnis.grund)
 
             val ordner = drive.ordner(token, BACKUP_ORDNERNAME)

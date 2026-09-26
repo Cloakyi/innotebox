@@ -38,6 +38,47 @@ import de.notizen.app.sicherheit.Entsperrung
 import de.notizen.app.sicherheit.alsActivity
 
 /**
+ * Die Abdeckung, solange noch nicht feststeht, ob gesperrt wird.
+ *
+ * Nur das Logo auf der Grundfarbe, ohne Frage nach der Entsperrung. Sie liegt
+ * für die paar Millisekunden über der App, die das Lesen der Einstellung
+ * dauert, beim Start und nach jeder Rückkehr aus dem Hintergrund. Ein eigenes
+ * Fenster aus demselben Grund wie beim Sperrbildschirm: Offene Dialoge der
+ * App lägen sonst darüber.
+ */
+@Composable
+fun Abdeckung() {
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Image(
+                    painter = painterResource(R.mipmap.ic_launcher_grafik),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(RoundedCornerShape(26.dp)),
+                )
+            }
+        }
+    }
+}
+
+/**
  * Der Sperrbildschirm: Logo, ein Satz, ein Knopf.
  *
  * Ein bildschirmfüllender Dialog, kein Overlay im Inhalt. Dialoge und

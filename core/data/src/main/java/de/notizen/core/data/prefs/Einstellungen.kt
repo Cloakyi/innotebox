@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import de.notizen.core.data.model.Darstellung
 import de.notizen.core.data.model.Faehigkeit
 import de.notizen.core.data.model.Geraetestand
@@ -213,7 +214,46 @@ class Einstellungen @Inject constructor(
             it[KI_AKTIV] = false
             it.remove(KI_ZUSTIMMUNG)
             it.remove(KI_SIEGEL)
+            it.remove(BESCHRIFTUNG_OFFEN)
         }
+    }
+
+    /**
+     * Notizen, deren Beschriftung durch die KI noch aussteht.
+     *
+     * Der naechtliche Lauf darf die KI nicht benutzen: Google laesst sie nur
+     * arbeiten, solange die App im Vordergrund ist. Er merkt die Notizen deshalb
+     * hier vor, und beim naechsten Oeffnen holt die App Titel und Tag nach.
+     */
+    fun beschriftungOffen(): Flow<Set<String>> = store.data.map { it[BESCHRIFTUNG_OFFEN] ?: emptySet() }
+
+    suspend fun beschriftungVormerken(ids: Collection<String>) {
+        if (ids.isEmpty()) return
+        store.edit {
+            val alle = (it[BESCHRIFTUNG_OFFEN] ?: emptySet()) + ids
+            // Eine Obergrenze, falls die KI lange nicht bereit ist. Was darueber
+            // hinausgeht, behaelt den Titel aus dem Text, und das ist kein Verlust.
+            it[BESCHRIFTUNG_OFFEN] = if (alle.size > MAX_BESCHRIFTUNG_OFFEN) {
+                alle.take(MAX_BESCHRIFTUNG_OFFEN).toSet()
+            } else {
+                alle
+            }
+        }
+    }
+
+    suspend fun beschriftungErledigt(id: String) {
+        store.edit { it[BESCHRIFTUNG_OFFEN] = (it[BESCHRIFTUNG_OFFEN] ?: emptySet()) - id }
+    }
+
+    suspend fun beschriftungLeeren() {
+        store.edit { it.remove(BESCHRIFTUNG_OFFEN) }
+    }
+
+    /** Welche Fassung von `SCHEMA.md` zuletzt nach Drive geschrieben wurde. */
+    fun schemaTextStand(): Flow<String> = store.data.map { it[SCHEMA_TEXT_STAND] ?: "" }
+
+    suspend fun setSchemaTextStand(stand: String) {
+        store.edit { it[SCHEMA_TEXT_STAND] = stand }
     }
 
     private enum class KiLage { AN, AUS, OFFEN }
@@ -432,6 +472,21 @@ class Einstellungen @Inject constructor(
      * ja ist.
      */
     fun syncGetrennt(): Flow<Boolean> = store.data.map { it[SYNC_GETRENNT] ?: false }
+
+    /**
+     * Ob Drive auf diesem Geraet je verbunden war.
+     *
+     * Solange nicht, fragt die App gar nicht bei Google nach, auch nicht
+     * lautlos (siehe `Anmeldung`). Ein frueherer erfolgreicher Abgleich zaehlt
+     * mit, damit Geraete verbunden bleiben, die es schon vor diesem Wert waren.
+     */
+    fun syncJeVerbunden(): Flow<Boolean> = store.data.map {
+        (it[SYNC_JE_VERBUNDEN] ?: false) || (it[LETZTER_ABGLEICH] ?: 0L) > 0L
+    }
+
+    suspend fun setSyncJeVerbunden(verbunden: Boolean) {
+        store.edit { it[SYNC_JE_VERBUNDEN] = verbunden }
+    }
 
     suspend fun setSyncGetrennt(getrennt: Boolean) {
         store.edit { it[SYNC_GETRENNT] = getrennt }
@@ -653,6 +708,10 @@ class Einstellungen @Inject constructor(
         val SYNC_INTERVALL = intPreferencesKey("sync_intervall")
         val LETZTER_ABGLEICH = longPreferencesKey("letzter_abgleich")
         val SYNC_GETRENNT = booleanPreferencesKey("sync_getrennt")
+        val SYNC_JE_VERBUNDEN = booleanPreferencesKey("sync_je_verbunden")
+        val BESCHRIFTUNG_OFFEN = stringSetPreferencesKey("beschriftung_offen")
+        val SCHEMA_TEXT_STAND = stringPreferencesKey("schema_text_stand")
+        const val MAX_BESCHRIFTUNG_OFFEN = 500
         val SYNC_NUR_WLAN = booleanPreferencesKey("sync_nur_wlan")
         val WISCH_RECHTS = stringPreferencesKey("wisch_rechts")
         val WISCH_LINKS = stringPreferencesKey("wisch_links")

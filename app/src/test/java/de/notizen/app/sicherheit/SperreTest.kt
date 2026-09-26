@@ -3,7 +3,6 @@ package de.notizen.app.sicherheit
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import de.notizen.core.data.model.Sperrverzoegerung
 import de.notizen.core.data.prefs.Einstellungen
-import de.notizen.core.data.util.Clock
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -26,7 +25,7 @@ class SperreTest {
 
     private lateinit var einstellungen: Einstellungen
     private var jetzt = 1_000_000L
-    private val uhr = Clock { jetzt }
+    private val uhr = Laufuhr { jetzt }
     private lateinit var sperre: Sperre
 
     @Before
@@ -114,5 +113,31 @@ class SperreTest {
         jetzt += 2 * 60_000L
         sperre.beimStart()
         assertTrue(sperre.gesperrt.value)
+    }
+
+    @Test
+    fun `bis zur Entscheidung liegt eine Abdeckung ueber der App`() = runBlocking {
+        einstellungen.setSperreAn(true)
+        assertFalse("Vor dem ersten Lesen steht nichts fest", sperre.entschieden.value)
+        sperre.beimStart()
+        assertTrue(sperre.entschieden.value)
+        sperre.entsperrt()
+
+        // Nach dem Hintergrund wieder offen, bis die Sperrzeit geprueft ist.
+        sperre.beimStopp(konfigurationswechsel = false)
+        assertFalse(sperre.entschieden.value)
+        sperre.beimStart()
+        assertTrue(sperre.entschieden.value)
+
+        // Eine Drehung aendert daran nichts.
+        sperre.beimStopp(konfigurationswechsel = true)
+        assertTrue(sperre.entschieden.value)
+    }
+
+    @Test
+    fun `ohne Sperre ist sofort entschieden`() = runBlocking {
+        sperre.beimStart()
+        assertTrue(sperre.entschieden.value)
+        assertFalse(sperre.gesperrt.value)
     }
 }
