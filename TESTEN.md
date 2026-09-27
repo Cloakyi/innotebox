@@ -24,7 +24,7 @@ helfen diese Angaben:
 - ein Bildschirmfoto. Ist in der App der Aufnahmeschutz an, schalte ihn dafür kurz aus.
   Zeig darauf nur Testnotizen, denn Issues sind öffentlich.
 
-Ohne GitHub-Konto geht es auch per Mail an owner@cloaki.de.
+Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 
 ## Inhalt
 
