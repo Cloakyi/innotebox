@@ -18,8 +18,12 @@ unter diesen Bedingungen weitergeben darf.
 
 ## Bevor du etwas einreichst
 
-- `./gradlew testDebugUnitTest` läuft grün.
+- `./gradlew testDebugUnitTest lintDebug` läuft grün. Dasselbe prüft GitHub bei jedem Pull
+  Request automatisch, dazu, ob die Lizenzliste zu den Abhängigkeiten passt.
 - Die Entscheidungen hinter dem Code stehen in [docs/ENTSCHEIDUNGEN.md](docs/ENTSCHEIDUNGEN.md);
   manches, was ungewöhnlich aussieht, ist dort begründet.
 - Ändert sich eine Abhängigkeit, erzeugt `./gradlew :app:lizenzen` die Lizenzliste der App neu.
+- ML Kit läuft nur nach einer Zustimmung und wird nur über `MlKitStart.sicherstellen()`
+  gestartet. Braucht eine neue Datei ML Kit, schlägt `MlKitZugangTest` an; eintragen erst, wenn
+  ihr Weg an der Zustimmung hängt (docs/ENTSCHEIDUNGEN.md, Abschnitt 7).
 - Texte in der App stehen in ganzen Sätzen und ohne Gedankenstrich.

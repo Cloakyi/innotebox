@@ -1,5 +1,29 @@
 # Änderungen
 
+## Alpha 11 (noch nicht veröffentlicht)
+
+Teilen aus anderen Apps, Bedienung mit TalkBack und ein zuverlässigerer Abgleich.
+
+- Aus anderen Apps lassen sich Text, Links und Bilder mit InNoteBox teilen. Daraus wird eine
+  neue Notiz im Eingang, die gleich im Editor aufgeht. Der Titel einer Webseite steht im Text,
+  den Titel der Notiz vergibst du weiter selbst. Ist die Sperre an, entsteht die Notiz erst
+  nach dem Entsperren.
+- Mit TalkBack lassen sich Notizen ohne Wischen verschieben, in den Papierkorb legen,
+  zurückholen und endgültig löschen, über die Aktionen der Karte. Überschriften sagt TalkBack
+  als solche an.
+- Auf Android 12 bis 15 bricht das Umwandeln von Aufnahmen in Text nicht mehr ab. Auf
+  Android 12 erscheinen jetzt auch Wellenform und Pausensprung.
+- Der Abgleich lädt viele Änderungen in einem Zug hoch statt in vielen einzelnen Läufen.
+  Drosselt Google Drive oder ist es gestört, versucht die App es im Hintergrund später noch
+  einmal, statt aufzugeben.
+- Jede Änderung am Quelltext wird auf GitHub automatisch gebaut und geprüft: Tests, Lint und
+  die Liste der Lizenzen.
+- Die APK baut und signiert GitHub jetzt selbst aus dem Quelltext dieses Stands und
+  bescheinigt ihre Herkunft. Wie man das nachprüft, steht in der README.
+- Automatische Prüfungen stellen bei jeder Änderung fest, dass ML Kit nur in den dafür
+  vorgesehenen Teilen der App vorkommt, nur über eine Stelle gestartet wird und beim Start der
+  App nicht von selbst anläuft. Ohne bestandene Prüfungen baut GitHub keine APK.
+
 ## Alpha 10 (2026-09-26)
 
 Sicherheit und Datenschutz nachgebessert, nach einer gründlichen Prüfung von außen.

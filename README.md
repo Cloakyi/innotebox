@@ -10,8 +10,9 @@ Webseite: [innotebox.de](https://innotebox.de)
 
 ## Was drin ist
 
-- Drei Stufen (Eingang, Workspace, Archiv) mit Wischgesten, dazu ein umschaltbarer
-  Ordnermodus mit eigenem Archiv und Papierkorb
+- Drei Stufen (Eingang, Workspace, Archiv) mit Wischgesten, die auch mit TalkBack
+  erreichbar sind, dazu ein umschaltbarer Ordnermodus mit eigenem Archiv und Papierkorb
+- Teilen aus anderen Apps: Text, Links und Bilder werden eine neue Notiz im Eingang
 - Text mit Auszeichnung, Listen zum Abhaken mit Bearbeitungszustand, Bilder auch als
   Hintergrund einer Karte; Fotos verlieren beim Einfügen ihre Metadaten samt Standort
 - Sprachnotizen: aufnehmen, später auf dem Gerät in Text umwandeln, Wellenform, Pausen beim
@@ -37,6 +38,17 @@ ML Kit und der Drive-Abgleich weg; alles andere funktioniert unverändert.
 Alpha, für Android ab Version 12. Die fertige App gibt es als signierte APK unter
 [Releases](https://github.com/Cloakyi/innotebox/releases); was sich je Fassung geändert hat,
 steht in [CHANGELOG.md](CHANGELOG.md). Offen ist noch die Verschlüsselung der Datenbank.
+
+Ab Alpha 11 baut und signiert GitHub jede APK selbst aus dem Quelltext des jeweiligen Stands
+und bescheinigt ihre Herkunft. Gebaut wird nur, wenn alle Prüfungen bestehen, auch die, die
+prüfen, dass ML Kit nur über eine Stelle und nie beim Start der App von selbst startet. Ob eine
+APK genau aus diesem Quelltext stammt, lässt sich mit der Befehlszeile von GitHub nachprüfen:
+
+```
+gh attestation verify InNoteBox-Alpha-11.apk --repo Cloakyi/innotebox
+```
+
+Angeboten wird nur die jeweils neueste Fassung.
 
 Impressum und Datenschutzerklärung stehen auf der Webseite:
 [innotebox.de/impressum](https://innotebox.de/impressum),

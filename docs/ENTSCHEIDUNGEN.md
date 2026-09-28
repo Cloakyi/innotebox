@@ -141,6 +141,23 @@ Dialog sagt, was der Schalter heute erlaubt: Sprachpakete von ML Kit Translate l
 30 MB je Sprache, und was dabei an Google geht. Kommt später etwas dazu, etwa eine KI im Netz,
 deckt die alte Zustimmung das nicht; dann ändert sich der Text, und der Schalter fragt neu.
 
+**Dass ML Kit nur nach Zustimmung läuft, prüft der Build.** ML Kit bringt einen eigenen
+ContentProvider mit, der es beim Start jeder App startet; das Manifest nimmt ihn heraus
+(`tools:node="remove"`), gestartet wird nur über `MlKitStart.sicherstellen()`. Zwei Prüfungen
+halten das fest, ohne an der App etwas zu ändern:
+
+- `MlKitZugangTest` liest den Quelltext: ML Kit kommt nur in einer festen Liste von Dateien
+  vor, jede davon ruft `MlKitStart.sicherstellen()`, und `MlKit.initialize` steht nur in
+  `MlKitStart`. Braucht eine neue Datei ML Kit, schlägt der Test an; in die Liste kommt sie
+  erst, wenn ihr Weg an der Zustimmung hängt.
+- `manifestPruefen` läuft bei jedem Bauen und liest das fertig zusammengeführte Manifest. Steht
+  dort ein Provider oder ein Initializer von androidx.startup von ML Kit oder Firebase, bricht
+  der Build ab. Anlass: Bis Alpha 9 startete ML Kit über seinen Provider bei jedem Start der
+  App, obwohl alle Knöpfe richtig gesperrt waren.
+
+Der Workflow „Veröffentlichen“ baut, signiert und bescheinigt nur, wenn beide Prüfungen
+bestehen (Abschnitt 11).
+
 ## 8. Audio
 
 Erst aufnehmen, dann erkennen, zwei getrennte Schritte. Die Aufnahme hängt an nichts (kein
@@ -192,6 +209,18 @@ Die OAuth-Client-ID steht nicht im Code: Android findet den passenden Eintrag ü
 und Signatur. `applicationId` (`de.innotebox.app`) und Code-Paket (`de.notizen.app`) sind mit
 Absicht verschieden.
 
+Antworten von Drive werden in vier Arten sortiert (`drivefehlerZu`): 401 und ein 403 ohne
+Kontingentgrund heißen neu anmelden, fehlendes Netz heißt später, 429, alles ab 500 und ein
+403 wegen überschrittener Quote heißen überlastet, alles andere heißt abgelehnt. Nur
+Überlastung und fehlendes Netz wiederholt der Hintergrundlauf mit wachsendem Abstand, eine
+Überlastung höchstens achtmal; ein abgelehnter Lauf käme beim nächsten Versuch nur wieder an
+dieselbe Stelle.
+
+Anlass für einen Abgleich ist nur eine **steigende** Zahl ungesicherter Einträge. Eine sinkende
+ist der Abgleich selbst, der gerade hochlädt. Und ein neuer Anstoß bestellt nie einen
+laufenden Abgleich ab, sondern nur die Wartezeit davor; der neue Lauf wartet am Schloss von
+`Abgleich`.
+
 ## 11. Versionen und Signatur
 
 `versionCode` ist mindestens die Room-Schemaversion und steigt mit jeder Schemaänderung.
@@ -204,7 +233,16 @@ Webseite, gelesen aus dem Paket.
 Release ist nur arm64 (`ndk.abiFilters`), weil ML Kit sonst Bibliotheken für vier
 Prozessorarten mitbringt. Der Signaturschlüssel liegt außerhalb des Projekts; `keystore.properties`
 im Projektstamm nennt ihn. Die App aktualisiert sich nicht selbst; Updates kommen über die
-Veröffentlichungen auf GitHub. Die Domain `innotebox.de` steht in Androids
+Veröffentlichungen auf GitHub.
+
+Ab Alpha 11 baut der Workflow „Veröffentlichen“ die Release-APK aus einem Tag wie
+`alpha-11`. Der Schlüssel liegt dafür zusätzlich als Geheimnis in der Umgebung `release`, und
+dieselben vier Angaben wie in `keystore.properties` kommen als Umgebungsvariablen herein.
+Vorher laufen Tests und Lint; danach prüft der Workflow, dass die APK den Fingerabdruck des
+Release-Schlüssels trägt, bescheinigt ihre Herkunft (`actions/attest`) und legt sie als
+Entwurf eines Releases ab. Die Bescheinigung verbindet die APK mit dem Commit, aus dem sie
+stammt, und damit auch mit dem Zustimmungstext, der in diesem Stand gilt. Ohne Zwischenspeicher,
+damit eine signierte Fassung immer aus einem frischen Stand entsteht. Die Domain `innotebox.de` steht in Androids
 App-Info über einen App-Links-Filter nur für den Pfad `/app`; wer die ganze Domain
 beanspruchte, finge jeden Link auf die Webseite ab.
 
@@ -248,6 +286,13 @@ der Anhänge ist offen und wird vor dem Bau einzeln geplant.
   `onEnd` kommt); `WindowInsets.imeAnimationTarget` stimmt dagegen immer.
 - Die Wischgeste auf Karten ist selbst gebaut: Widerstand, Auslösen beim Loslassen, keine
   Tempo-Auslösung, zwei Ausgänge (Verschieben reißt ab, Löschen rastet ein), Federphysik.
+- Für TalkBack stehen dieselben Wege als Aktionen an der Karte (`wischAktionen`), und zwar
+  am antippbaren Knoten: An der äußeren Karte fände TalkBack sie nicht. Überschriften tragen
+  `heading()`.
+- Teilen aus anderen Apps nimmt nur `text/plain` und Bilder an; ein offener Typ setzte
+  InNoteBox in das Teilen-Menü jeder Datei. Übernommen wird erst nach dem Entsperren, als
+  neue Notiz im Eingang, deren Editor aufgeht. Der Betreff wird kein Titel, den vergibt man
+  selbst. Bilder nur von `content`-Adressen und nicht aus dem eigenen Provider.
 - Das Umordnen per Ziehen ist einmal gebaut (`Ziehen.kt`) und für Ordner und Listeneinträge
   benutzt. Die Lambdas der Geste lesen über `rememberUpdatedState`, weil `pointerInput`
   seinen Block nur beim Wechsel der Kennung neu startet.
