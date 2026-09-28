@@ -43,8 +43,8 @@ android {
         //   "1.0"      die Vollversion, danach 1.1, 1.2 ...
         // Innerhalb der Alpha zaehlt n wie der versionCode. Beginnt die Beta,
         // faengt n wieder bei 1 an, der versionCode laeuft weiter.
-        versionCode = 10
-        versionName = "Alpha 10"
+        versionCode = 11
+        versionName = "Alpha 11"
     }
 
     // DER RELEASE-SCHLUESSEL liegt ausserhalb des Projekts, nie im Repo.
