@@ -136,6 +136,27 @@
             </intent-filter>
 
             <!--
+                Teilen aus anderen Apps (seit 2026-09-28): Text, Links und Bilder
+                werden eine neue Notiz im Eingang.
+
+                Nur text/plain und Bilder. Mit einem offenen Typ stuende InNoteBox
+                im Teilen-Menue jeder beliebigen Datei, und genau deshalb geht eine
+                Sicherung weiter nur ueber VIEW und nicht ueber SEND.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+
+            <!--
                 Die eigene Domain innotebox.de, damit sie in Androids App-Info
                 unter "Standardmaessig oeffnen" steht und ein Link auf
                 https://innotebox.de/app die App oeffnet (seit 2026-09-19).

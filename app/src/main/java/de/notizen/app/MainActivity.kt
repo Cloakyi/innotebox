@@ -23,6 +23,8 @@ import de.notizen.app.ui.start.Geraetestanddialog
 import de.notizen.app.ui.start.Abdeckung
 import de.notizen.app.ui.start.Sperrbildschirm
 import de.notizen.app.sicherheit.Sperre
+import de.notizen.app.teilen.Geteilt
+import de.notizen.app.teilen.geteiltAus
 import de.notizen.core.data.prefs.Einstellungen
 import android.view.WindowManager
 import androidx.lifecycle.Lifecycle
@@ -66,6 +68,14 @@ class MainActivity : ComponentActivity() {
      * eingelesen.
      */
     private val zuLesen = mutableStateOf<Uri?>(null)
+
+    /**
+     * Was eine andere App über „Teilen“ hereingereicht hat.
+     *
+     * Wie die Sicherung nur so lange lesbar, wie diese Aufgabe lebt, und
+     * deshalb gleich nach dem Entsperren übernommen.
+     */
+    private val zuTeilen = mutableStateOf<Geteilt?>(null)
 
     /** Die Sperre der App, ein Singleton, damit eine Drehung sie nicht vergisst. */
     @Inject lateinit var sperre: Sperre
@@ -137,6 +147,10 @@ class MainActivity : ComponentActivity() {
                     // Sonst laege die Rueckfrage zum Einlesen ueber der Sperre.
                     lieseSicherung = zuLesen.value.takeIf { entschieden && !gesperrt },
                     onSicherungGelesen = { zuLesen.value = null },
+                    // Geteiltes ebenso erst nach dem Entsperren. Sonst könnte
+                    // jede App an der Sperre vorbei Notizen anlegen.
+                    teilen = zuTeilen.value.takeIf { entschieden && !gesperrt },
+                    onGeteiltUebernommen = { zuTeilen.value = null },
                 )
 
                 // DIE SPERRE: ueber allem, als eigenes Fenster. Die
@@ -196,6 +210,14 @@ class MainActivity : ComponentActivity() {
                 if (it.scheme == "content") zuLesen.value = it
                 intent.data = null
             }
+        }
+
+        // Text, ein Link oder Bilder aus einer anderen App. Danach wird die
+        // Aktion aus dem Intent genommen, aus demselben Grund wie oben: Ein
+        // Drehen legte die Notiz sonst ein zweites Mal an.
+        if (intent.action == Intent.ACTION_SEND || intent.action == Intent.ACTION_SEND_MULTIPLE) {
+            zuTeilen.value = geteiltAus(intent, eigeneAutoritaet = "$packageName.dateien")
+            intent.action = Intent.ACTION_MAIN
         }
 
         // Ein Termin, den jemand in Google Kalender angetippt hat. Unsere

@@ -84,6 +84,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import de.notizen.app.sync.Sicherung
 import de.notizen.app.sync.SicherungViewModel
+import de.notizen.app.teilen.Geteilt
+import de.notizen.app.teilen.Teilen
+import de.notizen.app.teilen.Teilergebnis
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -165,6 +168,7 @@ import de.notizen.core.data.repository.TagRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -179,7 +183,26 @@ class AppShellViewModel @Inject constructor(
     tags: TagRepository,
     private val ordner: FolderRepository,
     private val einstellungen: Einstellungen,
+    private val teilen: Teilen,
 ) : ViewModel() {
+
+    /** Wie das letzte Teilen ausging, bis die Oberfläche es abholt. */
+    private val _geteilt = MutableStateFlow<Teilergebnis?>(null)
+    val geteilt: StateFlow<Teilergebnis?> = _geteilt.asStateFlow()
+
+    /**
+     * Legt aus Geteiltem eine Notiz an.
+     *
+     * Im ViewModel und nicht in der Oberfläche: Das Übernehmen der Bilder
+     * dauert einen Moment, und eine Drehung mittendrin bräche es sonst ab.
+     */
+    fun geteiltAnlegen(was: Geteilt) {
+        viewModelScope.launch { _geteilt.value = teilen.anlegen(was) }
+    }
+
+    fun geteiltAbgeholt() {
+        _geteilt.value = null
+    }
 
     /** Der Wechsel-Eintrag in der Seitenspalte (14e). Dasselbe wie der Schalter in den Einstellungen. */
     fun setOrdnermodus(an: Boolean) {
@@ -309,6 +332,8 @@ fun NotizenApp(
     onGeoeffnet: () -> Unit = {},
     lieseSicherung: Uri? = null,
     onSicherungGelesen: () -> Unit = {},
+    teilen: Geteilt? = null,
+    onGeteiltUebernommen: () -> Unit = {},
 ) {
     val shellFuerModus: AppShellViewModel = hiltViewModel()
     val modus by shellFuerModus.ordnermodus.collectAsStateWithLifecycle()
@@ -401,6 +426,24 @@ fun NotizenApp(
     // hinterher, was geschehen ist.
     LaunchedEffect(lieseSicherung) {
         if (lieseSicherung != null) navController.wechsleZu(Routes.BACKUP, false)
+    }
+
+    // Etwas aus einer anderen App geteilt: Es wird eine neue Notiz im Eingang,
+    // und ihr Editor geht auf, damit man gleich etwas dazuschreiben kann. Der
+    // Auftrag wird sofort quittiert, sonst legte eine Drehung ihn ein zweites
+    // Mal an; das Anlegen selbst übernimmt das ViewModel.
+    LaunchedEffect(teilen) {
+        teilen?.let {
+            shell.geteiltAnlegen(it)
+            onGeteiltUebernommen()
+        }
+    }
+    val nachTeilen by shell.geteilt.collectAsStateWithLifecycle()
+    LaunchedEffect(nachTeilen) {
+        val ergebnis = nachTeilen ?: return@LaunchedEffect
+        ergebnis.notizId?.let { navController.navigate(Routes.editor(it)) }
+        ergebnis.hinweis?.let(zeigeHinweis)
+        shell.geteiltAbgeholt()
     }
 
     NavHost(navController = navController, startDestination = startziel) {
