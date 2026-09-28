@@ -164,9 +164,13 @@ tasks.register("lizenzen") {
 
         val texte = mutableListOf<String>()
         val stellen = mutableMapOf<String, Int>()
+        // Zeilenenden werden vereinheitlicht. Git checkt die Lizenztexte unter
+        // Windows mit CRLF aus, anderswo mit LF, und die Datei soll auf jedem
+        // Rechner gleich herauskommen, sonst meldet die Prüfung eine Änderung.
         fun textnummer(text: String): Int {
-            val schluessel = text.replace(Regex("\\s+"), " ").trim()
-            return stellen.getOrPut(schluessel) { texte.add(text.trim()); texte.size - 1 }
+            val einheitlich = text.replace("\r\n", "\n").replace('\r', '\n').trim()
+            val schluessel = einheitlich.replace(Regex("\\s+"), " ")
+            return stellen.getOrPut(schluessel) { texte.add(einheitlich); texte.size - 1 }
         }
 
         val textordner = rootProject.file("gradle/lizenztexte")

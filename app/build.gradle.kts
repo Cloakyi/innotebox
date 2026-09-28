@@ -1,3 +1,4 @@
+import com.android.build.api.artifact.SingleArtifact
 import java.util.Properties
 
 plugins {
@@ -52,24 +53,38 @@ android {
     //   storePassword=...
     //   keyAlias=innotebox
     //   keyPassword=...
-    // Fehlt die Datei, baut `assembleRelease` weiter, nur unsigniert; der
-    // Debug-Build ist davon nie betroffen.
+    // Auf GitHub baut der Workflow "Veröffentlichen" die Release-APK. Dort
+    // kommen dieselben vier Angaben als Umgebungsvariablen RELEASE_STORE_FILE,
+    // RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS und RELEASE_KEY_PASSWORD aus den
+    // Geheimnissen der Umgebung "release"; eine Datei mit Passwörtern entsteht
+    // dort nicht. Fehlt beides, baut `assembleRelease` weiter, nur unsigniert;
+    // der Debug-Build ist davon nie betroffen.
     val schluesseldatei = rootProject.file("keystore.properties")
-    if (schluesseldatei.exists()) {
-        val eigenschaften = Properties().apply { schluesseldatei.inputStream().use { load(it) } }
+    val umgebung = providers.environmentVariable("RELEASE_STORE_FILE")
+    val schluessel: Properties? = when {
+        schluesseldatei.exists() -> Properties().apply { schluesseldatei.inputStream().use { load(it) } }
+        umgebung.isPresent -> Properties().apply {
+            setProperty("storeFile", umgebung.get())
+            setProperty("storePassword", providers.environmentVariable("RELEASE_STORE_PASSWORD").get())
+            setProperty("keyAlias", providers.environmentVariable("RELEASE_KEY_ALIAS").get())
+            setProperty("keyPassword", providers.environmentVariable("RELEASE_KEY_PASSWORD").get())
+        }
+        else -> null
+    }
+    if (schluessel != null) {
         signingConfigs {
             create("release") {
-                storeFile = file(eigenschaften.getProperty("storeFile"))
-                storePassword = eigenschaften.getProperty("storePassword")
-                keyAlias = eigenschaften.getProperty("keyAlias")
-                keyPassword = eigenschaften.getProperty("keyPassword")
+                storeFile = file(schluessel.getProperty("storeFile"))
+                storePassword = schluessel.getProperty("storePassword")
+                keyAlias = schluessel.getProperty("keyAlias")
+                keyPassword = schluessel.getProperty("keyPassword")
             }
         }
     }
 
     buildTypes {
         release {
-            if (schluesseldatei.exists()) signingConfig = signingConfigs.getByName("release")
+            if (schluessel != null) signingConfig = signingConfigs.getByName("release")
             // Nur arm64: ML Kit bringt seine Bibliothek fuer vier
             // Prozessorarten mit, 63 MB, davon braucht ein Handy eine. Jedes
             // Android-Geraet seit Jahren ist arm64; der Debug-Build bleibt
@@ -139,3 +154,56 @@ dependencies {
 
 // ./gradlew :app:lizenzen schreibt die Liste fuer die Seite Lizenzen (siehe dort).
 apply(from = rootProject.file("gradle/lizenzen.gradle.kts"))
+
+/**
+ * Prüft, dass beim Start der App nichts von ML Kit oder Firebase von selbst anläuft.
+ *
+ * ML Kit bringt einen eigenen ContentProvider mit, der es beim Start jeder App
+ * startet; das Manifest nimmt ihn mit tools:node="remove" heraus, damit ML Kit
+ * erst nach einer Zustimmung über `MlKitStart` läuft. Diese Prüfung liest bei
+ * jedem Bauen das fertig zusammengeführte Manifest und bricht ab, sobald dort
+ * wieder ein Provider oder ein Initializer von androidx.startup von ML Kit oder
+ * Firebase steht, etwa nach einem Update einer Bibliothek. Ein Dienst von ML Kit
+ * darf bleiben: Dienste starten nicht von selbst.
+ */
+abstract class ManifestPruefung : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val manifest: RegularFileProperty
+
+    @TaskAction
+    fun pruefen() {
+        val text = manifest.get().asFile.readText()
+        val startetVonSelbst = Regex("""<(?:provider|meta-data)\b[^>]*>""").findAll(text)
+            .map { it.value }
+            .filter { it.startsWith("<provider") || "android:value=\"androidx.startup\"" in it }
+            .mapNotNull { Regex("""android:name="([^"]+)"""").find(it)?.groupValues?.get(1) }
+        val verboten = startetVonSelbst
+            .filter { name -> listOf("mlkit", "firebase").any { it in name.lowercase() } }
+            .toList()
+        if (verboten.isNotEmpty()) {
+            throw GradleException(
+                "Beim Start der App liefe von selbst an: " + verboten.joinToString() +
+                    ". Im Manifest mit tools:node=\"remove\" herausnehmen.",
+            )
+        }
+    }
+}
+
+// MlKitZugangTest liest den Quelltext selbst. Ohne diese Angabe hielte Gradle
+// den Test für unverändert, solange sich nur Text ändert, der keine Klasse
+// ergibt, und ließe ihn aus.
+tasks.withType<Test>().configureEach {
+    inputs.dir("src/main/java").withPathSensitivity(PathSensitivity.RELATIVE)
+}
+
+androidComponents {
+    onVariants { variant ->
+        val name = variant.name.replaceFirstChar { it.uppercase() }
+        val pruefung = tasks.register<ManifestPruefung>("manifestPruefen$name") {
+            manifest.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
+        }
+        // Jedes Bauen der App prüft mit, lokal wie auf GitHub.
+        tasks.matching { it.name == "assemble$name" }.configureEach { dependsOn(pruefung) }
+    }
+}

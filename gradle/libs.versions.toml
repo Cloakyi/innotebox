@@ -24,12 +24,10 @@ kotlinxSerialization = "1.9.0"    # JSON fuer Abgleich und Sicherung
 kotlinxCoroutines = "1.10.2"
 okhttp = "5.1.0"                  # Zugriff auf Google Drive
 playServicesAuth = "21.4.0"       # AuthorizationClient
-retrofit = "3.0.0"
 mlkitSpeech = "1.0.0-alpha1"      # Spracherkennung auf dem Geraet
 mlkitPrompt = "1.0.0-beta2"       # Titel und Aufbereiten auf dem Geraet
 mlkitTranslate = "17.0.3"         # Uebersetzung, laedt Sprachmodelle selbst nach
 junit = "4.13.2"
-androidxTestJunit = "1.3.0"
 androidxTestCore = "1.7.0"        # Migrationstest
 robolectric = "4.16.1"
 # ASM muss neu genug sein, um Klassendateien der laufenden JDK zu lesen.
@@ -66,7 +64,7 @@ mlkit-translate = { group = "com.google.mlkit", name = "translate", version.ref 
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
-# --- noch unreferenziert, siehe Kopf ---
+# Datenbank, Hintergrundarbeit, Abgleich und Tests
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -78,8 +76,6 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 asm = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }

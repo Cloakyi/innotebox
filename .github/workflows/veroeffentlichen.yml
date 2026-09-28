@@ -1,0 +1,131 @@
+# Baut aus einem Tag wie alpha-11 die signierte Release-APK, bescheinigt ihre
+# Herkunft und legt sie als Entwurf eines Releases ab. Veröffentlicht wird von Hand.
+#
+# Der Schlüssel liegt als Geheimnis in der Umgebung "release". Ist dort eine
+# Freigabe eingestellt, wartet jeder Lauf, bis sie erteilt ist.
+name: Veröffentlichen
+
+on:
+  push:
+    tags: ['alpha-*', 'beta-*', 'v*']
+  workflow_dispatch:
+    inputs:
+      stand:
+        description: Tag oder Branch, aus dem gebaut wird
+        required: true
+        default: main
+      probelauf:
+        description: Nur bauen und die Signatur prüfen, ohne Bescheinigung und ohne Release
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+concurrency:
+  group: veroeffentlichen-${{ inputs.stand || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  apk:
+    name: APK bauen, signieren und bescheinigen
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: release
+    env:
+      STAND: ${{ inputs.stand || github.ref_name }}
+      PROBE: ${{ inputs.probelauf && 'ja' || 'nein' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.STAND }}
+
+      # Tag und Fassung in der App müssen zusammenpassen: alpha-11 heißt „Alpha 11“.
+      - name: Fassung prüfen
+        id: fassung
+        run: |
+          NAME=$(echo "$STAND" | sed -E 's/^alpha-/Alpha /; s/^beta-/Beta /; s/^v//')
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          if [ "$PROBE" = "nein" ] && ! grep -q "versionName = \"$NAME\"" app/build.gradle.kts; then
+            echo "::error::In app/build.gradle.kts steht nicht versionName = \"$NAME\"."
+            exit 1
+          fi
+
+      # Ohne Zwischenspeicher: Eine signierte Fassung entsteht immer aus einem frischen Stand.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Schlüssel bereitlegen
+        env:
+          SCHLUESSEL: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$SCHLUESSEL" ]; then
+            echo "::error::Das Geheimnis RELEASE_KEYSTORE_BASE64 fehlt in der Umgebung release."
+            exit 1
+          fi
+          echo "$SCHLUESSEL" | base64 --decode > "$RUNNER_TEMP/release.jks"
+
+      - name: Tests, Lint und Release-Build
+        env:
+          RELEASE_STORE_FILE: ${{ runner.temp }}/release.jks
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew testDebugUnitTest lintDebug assembleRelease --console=plain
+
+      # Sicherheitsnetz: Die APK muss mit dem bekannten Release-Schlüssel signiert
+      # sein. Sonst bricht der Lauf ab, bevor etwas bescheinigt oder hochgeladen wird.
+      - name: Signatur prüfen
+        run: |
+          APKSIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
+          "$APKSIGNER" verify --print-certs app/build/outputs/apk/release/app-release.apk > zertifikat.txt
+          cat zertifikat.txt
+          grep -q "SHA-256 digest: 266b548bb3cec3a2c455dba9f10035d4a24401cef19f85d487e3b1743cd34090" zertifikat.txt
+
+      - name: APK benennen
+        id: apk
+        env:
+          FASSUNG: ${{ steps.fassung.outputs.name }}
+        run: |
+          DATEI="InNoteBox-$(echo "$FASSUNG" | tr ' ' '-').apk"
+          cp app/build/outputs/apk/release/app-release.apk "$DATEI"
+          echo "datei=$DATEI" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "$DATEI" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          sha256sum "$DATEI"
+
+      - name: Herkunft bescheinigen
+        if: env.PROBE == 'nein'
+        uses: actions/attest@v4
+        with:
+          subject-path: ${{ steps.apk.outputs.datei }}
+
+      - name: Entwurf des Releases anlegen
+        if: env.PROBE == 'nein'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DATEI: ${{ steps.apk.outputs.datei }}
+          SHA256: ${{ steps.apk.outputs.sha256 }}
+          TITEL: InNoteBox ${{ steps.fassung.outputs.name }}
+        run: |
+          {
+            printf 'Die Beschreibung folgt vor dem Veröffentlichen.\n\n'
+            printf 'SHA-256 der APK: `%s`\n\n' "$SHA256"
+            printf 'Diese APK hat GitHub aus dem Quelltext dieses Stands gebaut und signiert und ihre Herkunft bescheinigt. Nachprüfen lässt sich das mit der Befehlszeile von GitHub:\n\n'
+            printf '```\ngh attestation verify %s --repo %s\n```\n' "$DATEI" "$GITHUB_REPOSITORY"
+          } > hinweise.md
+          if gh release view "$STAND" > /dev/null 2>&1; then
+            gh release upload "$STAND" "$DATEI" --clobber
+          else
+            VORAB=""
+            case "$STAND" in alpha-*|beta-*) VORAB="--prerelease" ;; esac
+            gh release create "$STAND" "$DATEI" --draft $VORAB --verify-tag --title "$TITEL" --notes-file hinweise.md
+          fi
+
+      - name: Schlüssel entfernen
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"

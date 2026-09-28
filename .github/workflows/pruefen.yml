@@ -1,0 +1,51 @@
+# Baut die App bei jedem Push und jedem Pull Request, lässt die Tests und Lint
+# laufen und prüft, ob die Lizenzliste der App zu den Abhängigkeiten passt.
+name: Prüfen
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pruefen-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruefen:
+    name: Bauen und prüfen
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      # Der Gradle-Daemon verlangt JDK 25, siehe gradle/gradle-daemon-jvm.properties.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Bauen, Tests und Lint
+        run: ./gradlew assembleDebug testDebugUnitTest lintDebug --continue --console=plain
+
+      # Ändert sich eine Abhängigkeit, muss die Lizenzliste neu erzeugt und
+      # eingecheckt werden. Hier fällt auf, wenn das vergessen wurde.
+      - name: Lizenzliste aktuell
+        run: |
+          ./gradlew :app:lizenzen --console=plain
+          git diff --exit-code -- app/src/main/assets/lizenzen.json
+
+      - name: Berichte sichern
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: berichte
+          path: |
+            **/build/reports/
+            **/build/test-results/
+          retention-days: 7
