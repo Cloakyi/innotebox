@@ -106,7 +106,13 @@ sealed interface Abgleichergebnis {
     ) : Abgleichergebnis
     data object AnmeldungNoetig : Abgleichergebnis
     data object KeinNetz : Abgleichergebnis
-    data class Fehler(val grund: String) : Abgleichergebnis
+
+    /**
+     * [voruebergehend]: Google drosselt oder ist gestört ([Drivefehler.Ueberlastet]).
+     * Dann lohnt ein neuer Versuch mit wachsendem Abstand; bei jedem anderen
+     * Fehler liefe er nur wieder in dieselbe Wand.
+     */
+    data class Fehler(val grund: String, val voruebergehend: Boolean = false) : Abgleichergebnis
 }
 
 /**
@@ -187,6 +193,8 @@ class Abgleich @Inject constructor(
             Abgleichergebnis.AnmeldungNoetig
         } catch (fehler: Drivefehler.KeinNetz) {
             Abgleichergebnis.KeinNetz
+        } catch (fehler: Drivefehler.Ueberlastet) {
+            Abgleichergebnis.Fehler(fehler.message ?: "Google ist gerade überlastet.", voruebergehend = true)
         } catch (fehler: Throwable) {
             Abgleichergebnis.Fehler(fehler.message ?: fehler::class.java.simpleName)
         } finally {

@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.hilt.work.HiltWorker
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -27,7 +28,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -57,7 +57,7 @@ class SyncArbeit @AssistedInject constructor(
             return Result.success()
         }
 
-        return when (abgleich.lauf(zugang.token)) {
+        return when (val ergebnis = abgleich.lauf(zugang.token)) {
             is Abgleichergebnis.Fertig -> Result.success()
 
             // Netzprobleme sind vorübergehend -- WorkManager wartet und
@@ -67,13 +67,29 @@ class SyncArbeit @AssistedInject constructor(
             Abgleichergebnis.AnmeldungNoetig -> Result.success()
 
             // Ein echter Fehler wiederholt sich meist. Ein Dauerlauf, der
-            // stündlich in denselben Fehler rennt, kostet nur Akku.
-            is Abgleichergebnis.Fehler -> Result.failure()
+            // stündlich in denselben Fehler rennt, kostet nur Akku. Drosselt
+            // Google oder ist es gestört, geht das dagegen vorüber: Dann wie
+            // bei fehlendem Netz noch einmal, aber nicht endlos.
+            is Abgleichergebnis.Fehler ->
+                if (ergebnis.voruebergehend && runAttemptCount < HOECHSTENS_WIEDERHOLT) {
+                    Result.retry()
+                } else {
+                    Result.failure()
+                }
         }
     }
 
     companion object {
         const val SOFORT = "abgleich-sofort"
+
+        /**
+         * Wie oft ein vorübergehender Fehler von Google wiederholt wird.
+         *
+         * Mit dem wachsenden Abstand ab 30 Sekunden sind acht Versuche gut zwei
+         * Stunden. Hält die Störung länger an, holt es der nächste Anstoß nach,
+         * spätestens das Öffnen der App.
+         */
+        const val HOECHSTENS_WIEDERHOLT = 8
 
         /**
          * Netz, und auf Wunsch ungetaktetes.
@@ -117,6 +133,10 @@ class SyncArbeit @AssistedInject constructor(
                 OneTimeWorkRequestBuilder<SyncArbeit>()
                     .setConstraints(bedingungen(nurWlan))
                     .setInitialDelay(sekunden, TimeUnit.SECONDS)
+                    // Der Abstand bei `Result.retry()`: 30 Sekunden, dann jedes
+                    // Mal doppelt so lang. Das ist auch die Voreinstellung von
+                    // WorkManager, hier steht es, damit man es nicht nachschlagen muss.
+                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
                     .build(),
             )
         }
@@ -133,9 +153,7 @@ class SyncArbeit @AssistedInject constructor(
  * ganz gleich wer sie ausgelöst hat: Editor, Wischgeste, Mehrfachauswahl,
  * Auto-Archiv.
  *
- * `drop(1)` überspringt den ersten Wert. Der kommt beim Start und beschreibt
- * den Bestand, nicht eine Änderung, sonst liefe bei jedem App-Start ein
- * Abgleich los, auch wenn niemand etwas angefasst hat.
+ * Anlass ist nur eine steigende Zahl, siehe [neuerAnlass].
  */
 /**
  * Wie lange nach einer Änderung gewartet wird, bevor abgeglichen wird.
@@ -156,6 +174,19 @@ private const val ENTPRELLUNG_MS = 2_000L
  */
 private const val NACH_EDITOR_MS = 1_200L
 
+/**
+ * Ob die neue Zahl ungesicherter Einträge ein Anlass für einen Abgleich ist.
+ *
+ * Nur wenn sie steigt. Der erste Wert kommt beim Start und beschreibt den
+ * Bestand, nicht eine Änderung; sonst liefe bei jedem App-Start ein Abgleich
+ * los, auch wenn niemand etwas angefasst hat. Und eine sinkende Zahl ist der
+ * Abgleich selbst, der eine Notiz nach der anderen hochlädt. Früher plante
+ * auch sie einen Lauf, und weil ein neuer Plan den laufenden Abgleich
+ * abbestellte, ging jede Notiz in einem eigenen Lauf hoch, jeder mit einer
+ * vollständigen Dateiliste aus Drive.
+ */
+internal fun neuerAnlass(vorher: Int?, jetzt: Int): Boolean = vorher != null && jetzt > vorher
+
 @Singleton
 class Syncwaechter @Inject constructor(
     private val syncDao: SyncDao,
@@ -175,10 +206,13 @@ class Syncwaechter @Inject constructor(
     fun beobachten(context: Context) {
         kontext = context.applicationContext
         bereich.launch {
+            var vorher: Int? = null
             syncDao.observeUnsyncedCount()
                 .distinctUntilChanged()
-                .drop(1)
-                .collect { offen -> if (offen > 0) planen(context, ENTPRELLUNG_MS) }
+                .collect { offen ->
+                    if (neuerAnlass(vorher, offen)) planen(context, ENTPRELLUNG_MS)
+                    vorher = offen
+                }
         }
 
         // Und sobald der letzte Editor zu ist: Was während des Schreibens
@@ -269,7 +303,12 @@ class Syncwaechter @Inject constructor(
             if (!einstellungen.syncAutomatisch().first()) return@launch
 
             delay(verzoegerung)
-            if (imVordergrund) direkt() else {
+            if (imVordergrund) {
+                // In einem eigenen Job. Der nächste Anstoß bestellt dann nur die
+                // Wartezeit ab, nie einen Abgleich, der schon läuft; der neue
+                // wartet am Schloss von `Abgleich` und läuft danach.
+                bereich.launch { direkt() }
+            } else {
                 SyncArbeit.anstossen(context, einstellungen.syncNurWlan().first(), sekunden = 0)
             }
         }

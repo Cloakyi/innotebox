@@ -208,6 +208,47 @@ class ZweiClientsTest {
         assertNotNull(id)
     }
 
+    /**
+     * Google drosselt oder ist gestört: Der Lauf meldet einen Fehler, der
+     * vorübergeht, damit der Hintergrundlauf es später noch einmal versucht.
+     * Die Vormerkung bleibt stehen und geht beim nächsten Lauf raus.
+     */
+    @Test
+    fun `ein ueberlastetes Google ist ein voruebergehender Fehler`() = runTest {
+        val sperre = SperrendesDrive(drive)
+        val aa = Testclient("aa", sperre, uhr, dateiordner.root)
+        try {
+            val id = aa.neueNotiz("Unterwegs")
+            sperre.fehler = { Drivefehler.Ueberlastet(503, "gestört") }
+            sperre.sperren = true
+            val ergebnis = aa.abgleich.lauf("t")
+            assertTrue(ergebnis is Abgleichergebnis.Fehler && ergebnis.voruebergehend)
+            assertTrue(aa.db.syncDao().withStatus(SyncStatus.DIRTY).isNotEmpty())
+
+            sperre.sperren = false
+            aa.sync()
+            assertNotNull(drive.text("InNoteBox/notes/$id.json"))
+        } finally {
+            aa.schliessen()
+        }
+    }
+
+    /** Eine echte Ablehnung dagegen ist nicht vorübergehend; sie käme beim nächsten Versuch wieder. */
+    @Test
+    fun `eine Ablehnung ist kein voruebergehender Fehler`() = runTest {
+        val sperre = SperrendesDrive(drive)
+        val aa = Testclient("aa", sperre, uhr, dateiordner.root)
+        try {
+            aa.neueNotiz("Unterwegs")
+            sperre.fehler = { Drivefehler.Abgelehnt(400, "kaputt") }
+            sperre.sperren = true
+            val ergebnis = aa.abgleich.lauf("t")
+            assertTrue(ergebnis is Abgleichergebnis.Fehler && !ergebnis.voruebergehend)
+        } finally {
+            aa.schliessen()
+        }
+    }
+
     // ------------------------------------------------ SYNC.md 12, Szenario 5
 
     /**
@@ -377,12 +418,13 @@ class ZweiClientsTest {
     }
 }
 
-/** Ein Drive, das sich auf Wunsch wie „kein Netz" verhaelt. */
+/** Ein Drive, das sich auf Wunsch wie „kein Netz" verhaelt, oder wie [fehler] es sagt. */
 class SperrendesDrive(private val echt: Drivezugang) : Drivezugang by echt {
     var sperren = false
+    var fehler: () -> Drivefehler = { Drivefehler.KeinNetz("gesperrt") }
 
     private fun pruefen() {
-        if (sperren) throw Drivefehler.KeinNetz("gesperrt")
+        if (sperren) throw fehler()
     }
 
     override suspend fun ordner(token: String, name: String, elternId: String): String {

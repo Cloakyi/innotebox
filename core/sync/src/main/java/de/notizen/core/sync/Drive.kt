@@ -52,15 +52,55 @@ private data class Dateiliste(
 /**
  * Ein Fehler, den der Aufrufer unterscheiden können muss.
  *
- * Drei Ausgänge, drei verschiedene Reaktionen, deshalb keine gemeinsame
+ * Vier Ausgänge, vier verschiedene Reaktionen, deshalb keine gemeinsame
  * Ausnahme: Nicht erlaubt heißt neu anmelden, kein Netz heißt später
- * nochmal, abgelehnt heißt hinsehen. Wer das zusammenwirft, baut einen
- * Sync, der bei fehlendem WLAN zur Neuanmeldung auffordert.
+ * nochmal, überlastet heißt mit wachsendem Abstand noch einmal, abgelehnt
+ * heißt hinsehen. Wer das zusammenwirft, baut einen Sync, der bei fehlendem
+ * WLAN zur Neuanmeldung auffordert.
  */
 sealed class Drivefehler(nachricht: String) : IOException(nachricht) {
     class NichtErlaubt(nachricht: String) : Drivefehler(nachricht)
     class KeinNetz(nachricht: String) : Drivefehler(nachricht)
+
+    /** Google drosselt oder ist gerade gestört. Das geht vorüber, anders als [Abgelehnt]. */
+    class Ueberlastet(val code: Int, nachricht: String) : Drivefehler(nachricht)
     class Abgelehnt(val code: Int, nachricht: String) : Drivefehler(nachricht)
+}
+
+/** Gründe, bei denen ein 403 nur „zu viel auf einmal“ bedeutet. */
+private val KONTINGENT = listOf(
+    "rateLimitExceeded",
+    "userRateLimitExceeded",
+    "quotaExceeded",
+    "sharingRateLimitExceeded",
+)
+
+/**
+ * Was ein Fehlercode von Drive bedeutet.
+ *
+ * 401 heißt immer: Token abgelaufen oder widerrufen. 403 kann beides
+ * heißen. Früher galt es pauschal als fehlende Erlaubnis, dann forderte eine
+ * überschrittene Quote zur Neuanmeldung auf, und die hätte nichts geholfen.
+ * Der Grund steht in der Antwort, also wird er gelesen.
+ *
+ * 429 und alles ab 500 liegt bei Google und geht vorüber, genau wie eine
+ * überschrittene Quote. Google selbst rät dafür zu einem neuen Versuch mit
+ * wachsendem Abstand; als „abgelehnt“ gab der Hintergrundlauf dagegen auf,
+ * und die Änderungen warteten bis zum nächsten Öffnen der App.
+ */
+internal fun drivefehlerZu(code: Int, text: String): Drivefehler = when {
+    code == 401 -> Drivefehler.NichtErlaubt("Google verweigert den Zugriff (401).")
+
+    code == 403 && KONTINGENT.any { it in text } ->
+        Drivefehler.Ueberlastet(403, "Google drosselt gerade. Später noch einmal.")
+
+    code == 403 -> Drivefehler.NichtErlaubt("Google verweigert den Zugriff (403).")
+
+    code == 429 -> Drivefehler.Ueberlastet(429, "Google drosselt gerade. Später noch einmal.")
+
+    code >= 500 -> Drivefehler.Ueberlastet(code, "Google Drive ist gerade gestört ($code). Später noch einmal.")
+
+    else -> Drivefehler.Abgelehnt(code, "Drive antwortete mit $code: $text")
 }
 
 /**
@@ -230,7 +270,7 @@ class Drive @Inject constructor(
             }
 
             antwort.use {
-                if (!it.isSuccessful) throw fehlerZu(it.code, it.body.string())
+                if (!it.isSuccessful) throw drivefehlerZu(it.code, it.body.string())
 
                 ziel.parentFile?.mkdirs()
                 val halb = File(ziel.parentFile, ziel.name + ".teil")
@@ -299,27 +339,8 @@ class Drive @Inject constructor(
             val text = it.body.string()
             if (it.isSuccessful) return@withContext text
 
-            throw fehlerZu(it.code, text)
+            throw drivefehlerZu(it.code, text)
         }
-    }
-
-    /**
-     * Was ein Fehlercode bedeutet.
-     *
-     * 401 heißt immer: Token abgelaufen oder widerrufen. 403 kann beides
-     * heißen. Früher galt es pauschal als fehlende Erlaubnis, dann forderte eine
-     * überschrittene Quote zur Neuanmeldung auf, und die hätte nichts geholfen.
-     * Der Grund steht in der Antwort, also wird er gelesen.
-     */
-    private fun fehlerZu(code: Int, text: String): Drivefehler = when {
-        code == 401 -> Drivefehler.NichtErlaubt("Google verweigert den Zugriff (401).")
-
-        code == 403 && KONTINGENT.any { it in text } ->
-            Drivefehler.Abgelehnt(403, "Google drosselt gerade. Später noch einmal.")
-
-        code == 403 -> Drivefehler.NichtErlaubt("Google verweigert den Zugriff (403).")
-
-        else -> Drivefehler.Abgelehnt(code, "Drive antwortete mit $code: $text")
     }
 
     /**
@@ -341,14 +362,6 @@ class Drive @Inject constructor(
 
     private companion object {
         val JSON_TYP = "application/json; charset=utf-8".toMediaType()
-
-        /** Gruende, bei denen ein 403 nur „zu viel auf einmal" bedeutet. */
-        val KONTINGENT = listOf(
-            "rateLimitExceeded",
-            "userRateLimitExceeded",
-            "quotaExceeded",
-            "sharingRateLimitExceeded",
-        )
     }
 }
 
