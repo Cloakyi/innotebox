@@ -1,5 +1,6 @@
 package de.notizen.app.audio
 
+import java.io.EOFException
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -26,7 +27,7 @@ fun pcmPegel(datei: File): FloatArray {
         val puffer = ByteArray(proRahmen * 2)
 
         while (true) {
-            val gelesen = strom.readNBytes(puffer, 0, puffer.size)
+            val gelesen = strom.leseVoll(puffer)
             if (gelesen < puffer.size) break
             pegel += effektivwert(puffer, gelesen)
         }
@@ -68,8 +69,46 @@ fun pcmAbschnitt(datei: File, abschnitt: Sprechabschnitt, ziel: OutputStream) {
     val laenge = abschnitt.dauerMs * bytesProMs
 
     datei.inputStream().use { strom ->
-        strom.skipNBytes(von)
+        strom.ueberspringe(von)
         kopiere(strom, ziel, laenge)
+    }
+}
+
+/**
+ * Liest, bis [puffer] voll ist oder der Strom endet, und gibt die Anzahl zurück.
+ *
+ * Dasselbe wie `readNBytes`, das es auf Android erst ab API 33 gibt. Ein
+ * einzelnes `read` darf weniger liefern, als in den Puffer passt, auch mitten
+ * in der Datei.
+ */
+internal fun InputStream.leseVoll(puffer: ByteArray): Int {
+    var gelesen = 0
+    while (gelesen < puffer.size) {
+        val neu = read(puffer, gelesen, puffer.size - gelesen)
+        if (neu < 0) break
+        gelesen += neu
+    }
+    return gelesen
+}
+
+/**
+ * Überspringt genau [bytes] Bytes und wirft [EOFException], wenn der Strom
+ * vorher endet.
+ *
+ * Dasselbe wie `skipNBytes`, das es auf Android erst ab API 34 gibt. `skip`
+ * allein darf weniger überspringen als verlangt, auch null Bytes; dann klärt
+ * ein einzelnes `read`, ob der Strom zu Ende ist.
+ */
+internal fun InputStream.ueberspringe(bytes: Long) {
+    var rest = bytes
+    while (rest > 0) {
+        val uebersprungen = skip(rest)
+        if (uebersprungen > 0) {
+            rest -= uebersprungen
+        } else {
+            if (read() < 0) throw EOFException()
+            rest--
+        }
     }
 }
 

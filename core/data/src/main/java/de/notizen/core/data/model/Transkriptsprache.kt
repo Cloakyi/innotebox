@@ -27,7 +27,11 @@ enum class Transkriptsprache(
     ITALIENISCH("Italienisch", "it", "IT"),
     ;
 
-    fun alsLocale(): Locale = Locale.of(sprachcode, land)
+    /**
+     * Über den Builder, nicht über `Locale.of`: Das gibt es auf Android erst ab
+     * API 36 und bräche auf älteren Geräten beim Transkribieren ab.
+     */
+    fun alsLocale(): Locale = Locale.Builder().setLanguage(sprachcode).setRegion(land).build()
 
     companion object {
         val STANDARD = DEUTSCH
