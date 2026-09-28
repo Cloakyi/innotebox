@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import de.notizen.app.ui.StageUi
@@ -186,6 +187,9 @@ fun WischbareKarte(
     onGesichertGezeigt: () -> Unit = {},
     hervorhebung: Float = 0f,
 ) {
+    // Dieselben Wege für Bedienhilfen, und nur, solange auch der Finger sie hat.
+    val aktionen = if (auswahlAktiv || eingerastet) emptyList() else wischAktionen(stufe, rechts, links, onWisch)
+
     WischbarerRahmen(
         stufe = stufe,
         auswahlAktiv = auswahlAktiv,
@@ -199,6 +203,7 @@ fun WischbareKarte(
         NoteCard(
             note = note,
             selected = selected,
+            aktionen = aktionen,
             // Ist die Loeschflaeche offen, schliesst ein Tippen auf die Karte
             // sie wieder. Die Notiz zu oeffnen waere hier die falsche Antwort.
             onClick = { if (eingerastet) onAusrasten() else onClick() },
@@ -216,6 +221,44 @@ fun WischbareKarte(
             modifier = modifier,
         )
     }
+}
+
+/**
+ * Die Wischgesten als Aktionen für TalkBack und andere Bedienhilfen.
+ *
+ * Mit einem Screenreader lässt sich nicht wischen. Die Wege dahinter sollen
+ * trotzdem erreichbar sein, ohne Umweg über die Mehrfachauswahl, die es im
+ * Papierkorb gar nicht gibt. Angeboten wird, was auch der Finger kann: Eine
+ * Richtung, die in dieser Stufe ins Leere liefe, fehlt. Die zweite Handlung
+ * beim Löschen entfällt, denn wer im Aktionsmenü „Endgültig löschen“ wählt, hat
+ * sich schon entschieden.
+ */
+internal fun wischAktionen(
+    stufe: Stage,
+    rechts: WischZiel,
+    links: WischZiel,
+    onWisch: (WischZiel) -> Unit,
+): List<CustomAccessibilityAction> =
+    listOf(rechts, links)
+        .filter { it.wirktIn(stufe) }
+        .distinct()
+        .mapNotNull { ziel ->
+            aktionsname(ziel, stufe)?.let { name ->
+                CustomAccessibilityAction(name) {
+                    onWisch(ziel)
+                    true
+                }
+            }
+        }
+
+/** Wie eine Wischrichtung im Aktionsmenü heißt; dieselben Worte wie in der Auswahlleiste. */
+internal fun aktionsname(ziel: WischZiel, stufe: Stage): String? = when (ziel) {
+    WischZiel.NAECHSTE_STUFE -> stufe.next()?.let { "Nach ${StageUi.label(it)} verschieben" }
+    WischZiel.VORHERIGE_STUFE -> stufe.previous()?.let { "Nach ${StageUi.label(it)} verschieben" }
+    WischZiel.PAPIERKORB -> "In den Papierkorb"
+    WischZiel.WIEDERHERSTELLEN -> "Zurückholen"
+    WischZiel.ENDGUELTIG -> "Endgültig löschen"
+    WischZiel.NICHTS -> null
 }
 
 /**

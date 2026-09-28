@@ -31,6 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.notizen.app.ui.NoteTypeIcons
@@ -105,6 +108,8 @@ fun NoteCard(
      * beim Neubauen im Raster nicht ihren eigenen Stand verliert.
      */
     hervorhebung: Float = 0f,
+    /** Die Wischgesten für Bedienhilfen, siehe `wischAktionen`. */
+    aktionen: List<CustomAccessibilityAction> = emptyList(),
 ) {
     val hatTitel = note.note.title.isNotBlank()
 
@@ -183,6 +188,9 @@ fun NoteCard(
         Column(
             modifier = Modifier
                 .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+                // Am selben Knoten wie das Tippen: Nur dort findet TalkBack die
+                // Aktionen, an der äußeren Karte blieben sie unerreichbar.
+                .semantics { if (aktionen.isNotEmpty()) customActions = aktionen }
                 .padding(14.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {

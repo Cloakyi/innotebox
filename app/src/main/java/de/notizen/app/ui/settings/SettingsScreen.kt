@@ -50,6 +50,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -882,7 +884,7 @@ private fun Abschnitt(titel: String) {
         text = titel,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 4.dp),
+        modifier = Modifier.semantics { heading() }.padding(start = 20.dp, top = 20.dp, bottom = 4.dp),
     )
 }
 

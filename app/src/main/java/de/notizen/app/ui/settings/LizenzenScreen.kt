@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
@@ -237,7 +239,7 @@ private fun Ueberschrift(titel: String) {
         text = titel,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 4.dp),
+        modifier = Modifier.semantics { heading() }.padding(start = 20.dp, top = 20.dp, bottom = 4.dp),
     )
 }
 

@@ -48,6 +48,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -406,6 +408,7 @@ private fun Abschnitt(
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .then(if (onUmschalten != null) Modifier.clickable(onClick = onUmschalten) else Modifier)
+            .semantics(mergeDescendants = true) { heading() }
             .padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 2.dp),
     ) {
         Text(
