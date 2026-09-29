@@ -54,8 +54,11 @@ object Entsperrung {
     }.getOrDefault("Die Entsperrung steht auf diesem Gerät gerade nicht bereit.")
 
     /**
-     * Zeigt den Dialog. [onErfolg] nach dem Entsperren, [onAbbruch] mit dem
-     * Satz des Systems, wenn der Nutzer abbricht oder das System verweigert.
+     * Zeigt den Dialog. [onErfolg] nach dem Entsperren, [onAbgewiesen], wenn der
+     * Nutzer ihn wegklickt, [onAbbruch] mit dem Satz des Systems, wenn das System
+     * verweigert, etwa nach zu vielen Versuchen. Bricht das System den Dialog
+     * selbst ab, weil die Activity beim Drehen neu entsteht, meldet sich keiner
+     * der drei; der neue Bildschirm fragt dann von vorn.
      */
     fun anfordern(
         activity: Activity,
@@ -63,6 +66,7 @@ object Entsperrung {
         untertitel: String,
         onErfolg: () -> Unit,
         onAbbruch: (String) -> Unit,
+        onAbgewiesen: () -> Unit = {},
     ) {
         val dialog = runCatching {
             BiometricPrompt.Builder(activity)
@@ -83,7 +87,11 @@ object Entsperrung {
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    onAbbruch(errString.toString())
+                    when (abbruchart(errorCode)) {
+                        Abbruchart.VOM_NUTZER -> onAbgewiesen()
+                        Abbruchart.VOM_SYSTEM -> Unit
+                        Abbruchart.FEHLER -> onAbbruch(errString.toString())
+                    }
                 }
                 // `onAuthenticationFailed` (ein Finger, der nicht passt) laesst
                 // den Dialog offen; das System zaehlt selbst und meldet am
@@ -91,6 +99,24 @@ object Entsperrung {
             },
         )
     }
+}
+
+/** Wie der Dialog zu Ende ging, wenn nicht mit einer Entsperrung. */
+internal enum class Abbruchart { VOM_NUTZER, VOM_SYSTEM, FEHLER }
+
+/**
+ * Ordnet die Fehlercodes des Dialogs ein.
+ *
+ * Wegklicken ist kein Fehler; den Satz des Systems dazu („vom Nutzer
+ * abgebrochen“) braucht niemand zu lesen. Einen eigenen Abbrechen-Knopf gibt es
+ * nicht, der ist mit `DEVICE_CREDENTIAL` verboten. Ein Abbruch durch das System
+ * selbst, etwa beim Drehen, ist auch kein Fehler. Alles andere, etwa zu viele
+ * Versuche, sagt der Satz des Systems am besten.
+ */
+internal fun abbruchart(fehlercode: Int): Abbruchart = when (fehlercode) {
+    BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED -> Abbruchart.VOM_NUTZER
+    BiometricPrompt.BIOMETRIC_ERROR_CANCELED -> Abbruchart.VOM_SYSTEM
+    else -> Abbruchart.FEHLER
 }
 
 /** Die Activity hinter einem Compose-Context, durch alle Huellen hindurch. */

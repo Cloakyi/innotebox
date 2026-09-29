@@ -22,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,14 +87,20 @@ fun Abdeckung() {
  * App darunter bleibt zusammengesetzt, damit nach dem Entsperren alles dort
  * steht, wo es war.
  *
- * Beim Erscheinen fragt er von selbst nach der Entsperrung; wer abbricht,
- * bekommt den Knopf und den Satz des Systems. Zurück verlässt die App, statt
- * den Bildschirm zu schließen.
+ * Beim Erscheinen fragt er von selbst nach der Entsperrung. Wer den Dialog
+ * wegklickt, bekommt den Knopf, und dabei bleibt es auch nach einem Drehen des
+ * Geräts: Die Activity entsteht dabei neu, und ohne den gemerkten Stand kam
+ * jedes Mal ungefragt der nächste Dialog. Den Satz des Systems zeigt er nur bei
+ * echten Fehlern, etwa nach zu vielen Versuchen. Zurück verlässt die App,
+ * statt den Bildschirm zu schließen.
  */
 @Composable
 fun Sperrbildschirm(onEntsperrt: () -> Unit) {
     val context = LocalContext.current
-    var hinweis by remember { mutableStateOf<String?>(null) }
+    var hinweis by rememberSaveable { mutableStateOf<String?>(null) }
+    // Ob der Dialog schon einmal weggeklickt wurde oder gescheitert ist. Dann
+    // wartet der Bildschirm auf den Knopf, statt nach einem Drehen neu zu fragen.
+    var abgewiesen by rememberSaveable { mutableStateOf(false) }
 
     val anfordern = {
         val activity = context.alsActivity()
@@ -102,12 +108,17 @@ fun Sperrbildschirm(onEntsperrt: () -> Unit) {
             hinweis = "Die Entsperrung ließ sich nicht öffnen."
         } else {
             hinweis = null
+            abgewiesen = false
             Entsperrung.anfordern(
                 activity = activity,
                 titel = "InNoteBox entsperren",
                 untertitel = "Mit Fingerabdruck, Gesicht oder der Bildschirmsperre des Geräts",
                 onErfolg = onEntsperrt,
-                onAbbruch = { hinweis = it },
+                onAbgewiesen = { abgewiesen = true },
+                onAbbruch = {
+                    abgewiesen = true
+                    hinweis = it
+                },
             )
         }
     }
@@ -124,7 +135,7 @@ fun Sperrbildschirm(onEntsperrt: () -> Unit) {
         // Zurueck heisst hier: die App verlassen, nicht die Sperre umgehen.
         BackHandler { context.alsActivity()?.moveTaskToBack(true) }
 
-        LaunchedEffect(Unit) { anfordern() }
+        LaunchedEffect(Unit) { if (!abgewiesen) anfordern() }
 
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainerLow,
