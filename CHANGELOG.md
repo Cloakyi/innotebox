@@ -1,6 +1,6 @@
 # Änderungen
 
-## Alpha 11 (noch nicht veröffentlicht)
+## Alpha 11 (2026-09-29)
 
 Teilen aus anderen Apps, Bedienung mit TalkBack und ein zuverlässigerer Abgleich.
 
@@ -13,6 +13,8 @@ Teilen aus anderen Apps, Bedienung mit TalkBack und ein zuverlässigerer Abgleic
   als solche an.
 - Auf Android 12 bis 15 bricht das Umwandeln von Aufnahmen in Text nicht mehr ab. Auf
   Android 12 erscheinen jetzt auch Wellenform und Pausensprung.
+- Wer die Abfrage der Sperre wegklickt, wird beim Drehen des Handys nicht mehr sofort wieder
+  gefragt, sondern erst über „Entsperren“. Der Satz „vom Nutzer abgebrochen“ erscheint nicht mehr.
 - Der Abgleich lädt viele Änderungen in einem Zug hoch statt in vielen einzelnen Läufen.
   Drosselt Google Drive oder ist es gestört, versucht die App es im Hintergrund später noch
   einmal, statt aufzugeben.

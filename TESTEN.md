@@ -79,6 +79,7 @@ Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 - [ ] Den Stern antippen. Die Notiz steht im Eingang bei den Favoriten.
 - [ ] Der Notiz eine Farbe und einen Tag geben. Neue Tags legst du unter „Tags verwalten“ an.
 - [ ] Über die drei Punkte „Kopie erstellen“. Die Kopie liegt im Eingang. „Teilen“ öffnet die Auswahl von Android.
+- [ ] In Chrome eine Seite teilen und InNoteBox wählen. Eine neue Notiz im Eingang geht auf. Oben im Text steht der Titel der Seite, darunter ihre Adresse, und das Titelfeld bleibt leer.
 
 Listen:
 
@@ -198,6 +199,7 @@ und sieht nur die Dateien, die sie selbst angelegt hat.
 - [ ] „Jetzt sichern“ neben „Jetzt abgleichen“ antippen. Im Drive-Ordner `InNoteBox-Backup` liegt danach eine Sicherung, die sich unter „Sichern und Wiederherstellen“ wieder einlesen lässt.
 - [ ] Unter den Knöpfen steht „Letzte Prüfung ohne Befund“.
 - [ ] „Abgleich von selbst“ ausschalten. Danach gleicht nur noch „Jetzt abgleichen“ ab.
+- [ ] „Abgleich von selbst“ wieder einschalten. Im Flugmodus mehrere Notizen ändern, dann das Netz wieder anschalten und die App offen lassen. Alle Änderungen gehen in einem Zug hoch.
 - [ ] Eine Testnotiz über die drei Punkte auf „Nicht mehr synchronisieren“ stellen, „Jetzt sichern“ antippen und die Notiz danach endgültig löschen. Die neue Sicherung aus `InNoteBox-Backup` herunterladen und einlesen. Die Testnotiz kommt nicht zurück.
 
 Mit zwei Geräten und demselben Konto:
@@ -218,6 +220,8 @@ Alles unter Einstellungen, „Sicherheit“.
 - [ ] Mit Sperre und ohne Aufnahmeschutz die App über die Startseite verlassen und dann die Übersicht der letzten Apps öffnen. Von InNoteBox ist kein Bild zu sehen. Ein Bildschirmfoto in der App geht trotzdem.
 - [ ] „Sperren nach“ auf eine Minute stellen und die App verlassen. In den Android-Einstellungen die automatische Uhrzeit ausschalten und die Uhr eine Stunde zurückstellen. Nach zwei Minuten ist die App gesperrt. Danach die automatische Uhrzeit wieder einschalten.
 - [ ] Mit Sperre die App schließen und eine `.notesbak` im Dateimanager antippen. Zuerst kommt die Sperre, erst nach dem Entsperren die Frage, ob die Sicherung eingelesen werden soll.
+- [ ] Mit Sperre aus Chrome eine Seite mit InNoteBox teilen. Zuerst kommt die Sperre, die neue Notiz erst nach dem Entsperren.
+- [ ] Die Abfrage der Sperre wegklicken und das Handy drehen. Es kommt keine neue Abfrage, erst wieder über „Entsperren“.
 - [ ] Mit Sperre eine Erinnerung in zwei Minuten stellen. Die Benachrichtigung sagt nur „Erinnerung“ und „Tippe, um die Notiz in InNoteBox zu öffnen.“ Auf dem Sperrbildschirm des Handys steht auch ohne Sperre der App kein Inhalt der Notiz.
 - [ ] Ein Menü offen lassen und nach der Sperrzeit zurückkommen. Die Sperre liegt darüber, nichts ist bedienbar.
 - [ ] Die Sperre ausschalten. Auch dafür fragt Android nach dem Entsperren.
