@@ -16,6 +16,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -80,6 +82,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -215,6 +219,9 @@ fun EditorScreen(
     // ist ein Spiegel davon, der zusaetzlich Cursor und Auswahl fuehrt.
     var textwert by remember { mutableStateOf(TextFieldValue(state.body)) }
     var textFokus by remember { mutableStateOf(false) }
+    // Das Feld, in das ein Tipp auf die freie Fläche unter dem Inhalt führt:
+    // der Text der Notiz oder bei einer Liste „Eintrag hinzufügen“.
+    val schreibfeld = remember { FocusRequester() }
 
     // Zieht Aenderungen nach, die NICHT aus dem Feld kommen: geladene Notiz,
     // uebernommenes Transkript, Zuruecksetzen aufs Original. Der Vergleich
@@ -533,63 +540,104 @@ fun EditorScreen(
             }
         },
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-        ) {
-            // Die Bilder stehen UEBER dem Titel. Ein Bild ist bei einer
-            // Bildnotiz der Inhalt, und Inhalt unter einem leeren Titelfeld zu
-            // verstecken hiesse, die Notiz falsch herum aufzuschlagen.
-            Bildraster(
-                bilder = state.bilder,
-                hintergrundId = state.hintergrundId,
-                onBild = { offenesBild = it.id },
-                modifier = Modifier.padding(bottom = 4.dp),
-            )
-
-            NahtlosesFeld(
-                value = state.title,
-                onValueChange = viewModel::onTitleChanged,
-                placeholder = "Titel",
-                textStyle = MaterialTheme.typography.headlineSmall,
-            )
-
-            state.erinnerungAn?.let { zeitpunkt ->
-                Erinnerungszeile(
-                    zeitpunkt = zeitpunkt,
-                    farbe = farbe.onContainer,
-                    onAendern = { erinnerungDialogOffen = true },
-                    onEntfernen = viewModel::entferneErinnerung,
+        BoxWithConstraints(Modifier.fillMaxSize().padding(padding)) {
+            // So hoch wie der sichtbare Bereich, damit die freie Fläche unter dem
+            // Inhalt bis an den unteren Rand reicht und sich antippen lässt.
+            val sichtbareHoehe = maxHeight
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState())
+                    .heightIn(min = sichtbareHoehe),
+            ) {
+                // Die Bilder stehen UEBER dem Titel. Ein Bild ist bei einer
+                // Bildnotiz der Inhalt, und Inhalt unter einem leeren Titelfeld zu
+                // verstecken hiesse, die Notiz falsch herum aufzuschlagen.
+                Bildraster(
+                    bilder = state.bilder,
+                    hintergrundId = state.hintergrundId,
+                    onBild = { offenesBild = it.id },
+                    modifier = Modifier.padding(bottom = 4.dp),
                 )
-            }
 
-            if (state.titelFehlt) {
-                Text(
-                    text = "Ab dem Workspace braucht eine Notiz einen Titel. Ohne Eingabe " +
-                        "wird beim Verlassen einer aus dem Text abgeleitet.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = farbe.onContainer.copy(alpha = 0.72f),
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
+                NahtlosesFeld(
+                    value = state.title,
+                    onValueChange = viewModel::onTitleChanged,
+                    placeholder = "Titel",
+                    textStyle = MaterialTheme.typography.headlineSmall,
                 )
-            }
 
-            when (state.type) {
-                NoteType.AUDIO -> {
-                    Seitenumschalter(
-                        seite = audioseite,
-                        hatTranskript = transkript.teile.isNotEmpty() ||
-                            state.body.isNotBlank(),
+                state.erinnerungAn?.let { zeitpunkt ->
+                    Erinnerungszeile(
+                        zeitpunkt = zeitpunkt,
                         farbe = farbe.onContainer,
-                        onWechsel = { audioseite = it },
-                        modifier = Modifier.padding(bottom = 12.dp),
+                        onAendern = { erinnerungDialogOffen = true },
+                        onEntfernen = viewModel::entferneErinnerung,
                     )
+                }
 
-                    when (audioseite) {
-                        Audioseite.AUFNAHME -> when {
-                            aufnahme.laeuft || !hatAufnahme -> AufnahmeBereich(
+                if (state.titelFehlt) {
+                    Text(
+                        text = "Ab dem Workspace braucht eine Notiz einen Titel. Ohne Eingabe " +
+                            "wird beim Verlassen einer aus dem Text abgeleitet.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = farbe.onContainer.copy(alpha = 0.72f),
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
+                    )
+                }
+
+                when (state.type) {
+                    NoteType.AUDIO -> {
+                        Seitenumschalter(
+                            seite = audioseite,
+                            hatTranskript = transkript.teile.isNotEmpty() ||
+                                state.body.isNotBlank(),
+                            farbe = farbe.onContainer,
+                            onWechsel = { audioseite = it },
+                            modifier = Modifier.padding(bottom = 12.dp),
+                        )
+
+                        when (audioseite) {
+                            Audioseite.AUFNAHME -> when {
+                                aufnahme.laeuft || !hatAufnahme -> AufnahmeBereich(
+                                    aufnahme = aufnahme,
+                                    transkript = transkript,
+                                    hatAufnahme = hatAufnahme,
+                                    modell = modell,
+                                    kiVerfuegbar = kiVerfuegbar,
+                                    transkriptErlaubt = kiSchalter,
+                                    laeuftAufbereitung = bereitetAuf,
+                                    farbe = farbe.onContainer,
+                                    onStarten = aufnehmenStarten,
+                                    onStoppen = { AufnahmeDienst.stoppen(context) },
+                                    onTranskript = {
+                                        audioseite = Audioseite.TRANSKRIPT
+                                        AufnahmeDienst.transkribieren(context, viewModel.noteId)
+                                    },
+                                    onLaden = viewModel::modellLaden,
+                                    onAufbereiten = viewModel::aufbereiten,
+                                    onEinstellungen = onEinstellungen,
+                                )
+
+                                else -> Aufnahmeseite(
+                                    wellenform = wellenform,
+                                    abschnitte = abschnitte,
+                                    status = abspielen,
+                                    notizId = viewModel.noteId,
+                                    dauerMs = aufnahmedauer,
+                                    stilleUeberspringen = stilleUeberspringen,
+                                    farbe = farbe.onContainer,
+                                    onAbspielen = { viewModel.abspielen(aufnahmeDatei) },
+                                    onSpringen = viewModel::springeZu,
+                                    onSpringenUm = viewModel::springenUm,
+                                    onStilleUmschalten = viewModel::stilleUeberspringenUmschalten,
+                                    onNeuAufnehmen = aufnehmenStarten,
+                                )
+                            }
+
+                            Audioseite.TRANSKRIPT -> Column {
+                                AufnahmeBereich(
                                 aufnahme = aufnahme,
                                 transkript = transkript,
                                 hatAufnahme = hatAufnahme,
@@ -601,166 +649,157 @@ fun EditorScreen(
                                 onStarten = aufnehmenStarten,
                                 onStoppen = { AufnahmeDienst.stoppen(context) },
                                 onTranskript = {
-                                    audioseite = Audioseite.TRANSKRIPT
                                     AufnahmeDienst.transkribieren(context, viewModel.noteId)
                                 },
                                 onLaden = viewModel::modellLaden,
                                 onAufbereiten = viewModel::aufbereiten,
                                 onEinstellungen = onEinstellungen,
-                            )
-
-                            else -> Aufnahmeseite(
-                                wellenform = wellenform,
-                                abschnitte = abschnitte,
-                                status = abspielen,
-                                notizId = viewModel.noteId,
-                                dauerMs = aufnahmedauer,
-                                stilleUeberspringen = stilleUeberspringen,
-                                farbe = farbe.onContainer,
-                                onAbspielen = { viewModel.abspielen(aufnahmeDatei) },
-                                onSpringen = viewModel::springeZu,
-                                onSpringenUm = viewModel::springenUm,
-                                onStilleUmschalten = viewModel::stilleUeberspringenUmschalten,
-                                onNeuAufnehmen = aufnehmenStarten,
-                            )
-                        }
-
-                        Audioseite.TRANSKRIPT -> Column {
-                            AufnahmeBereich(
-                            aufnahme = aufnahme,
-                            transkript = transkript,
-                            hatAufnahme = hatAufnahme,
-                            modell = modell,
-                            kiVerfuegbar = kiVerfuegbar,
-                            transkriptErlaubt = kiSchalter,
-                            laeuftAufbereitung = bereitetAuf,
-                            farbe = farbe.onContainer,
-                            onStarten = aufnehmenStarten,
-                            onStoppen = { AufnahmeDienst.stoppen(context) },
-                            onTranskript = {
-                                AufnahmeDienst.transkribieren(context, viewModel.noteId)
-                            },
-                            onLaden = viewModel::modellLaden,
-                            onAufbereiten = viewModel::aufbereiten,
-                            onEinstellungen = onEinstellungen,
-                                onTitel = { titelDialogOffen = true },
-                                nurTranskript = true,
-                            )
-
-                            if (rohtranskript.isNotBlank() || state.body.isNotBlank()) {
-                                Transkriptansicht(
-                                    original = rohtranskript,
-                                    bearbeitet = state.body,
-                                    fassung = fassung,
-                                    bearbeitungsmodus = bearbeitungsmodus,
-                                    farbe = farbe.onContainer,
-                                    // Der Akzent kommt aus der Notizfarbe, nicht
-                                    // aus dem Theme: Auf einer eingefaerbten
-                                    // Karte waere `primary` schlicht die falsche
-                                    // Farbe -- und moeglicherweise unlesbar.
-                                    markierer = markiererFarbe,
-                                    onFassung = { fassung = it },
-                                    onBearbeiten = { bearbeitungsmodus = true },
-                                    onFertig = {
-                                        bearbeitungsmodus = false
-                                        viewModel.speichereJetzt()
-                                    },
-                                    onZuruecksetzen = viewModel::aufOriginalZuruecksetzen,
-                                    bearbeitungsfeld = { anzeige ->
-                                        NahtlosesFeld(
-                                            value = state.body,
-                                            onValueChange = viewModel::onBodyChanged,
-                                            placeholder = "Transkript bearbeiten",
-                                            textStyle = MaterialTheme.typography.bodyLarge,
-                                            anzeige = anzeige,
-                                        )
-                                    },
-                                    modifier = Modifier.padding(top = 12.dp),
+                                    onTitel = { titelDialogOffen = true },
+                                    nurTranskript = true,
                                 )
+
+                                if (rohtranskript.isNotBlank() || state.body.isNotBlank()) {
+                                    Transkriptansicht(
+                                        original = rohtranskript,
+                                        bearbeitet = state.body,
+                                        fassung = fassung,
+                                        bearbeitungsmodus = bearbeitungsmodus,
+                                        farbe = farbe.onContainer,
+                                        // Der Akzent kommt aus der Notizfarbe, nicht
+                                        // aus dem Theme: Auf einer eingefaerbten
+                                        // Karte waere `primary` schlicht die falsche
+                                        // Farbe -- und moeglicherweise unlesbar.
+                                        markierer = markiererFarbe,
+                                        onFassung = { fassung = it },
+                                        onBearbeiten = { bearbeitungsmodus = true },
+                                        onFertig = {
+                                            bearbeitungsmodus = false
+                                            viewModel.speichereJetzt()
+                                        },
+                                        onZuruecksetzen = viewModel::aufOriginalZuruecksetzen,
+                                        bearbeitungsfeld = { anzeige ->
+                                            NahtlosesFeld(
+                                                value = state.body,
+                                                onValueChange = viewModel::onBodyChanged,
+                                                placeholder = "Transkript bearbeiten",
+                                                textStyle = MaterialTheme.typography.bodyLarge,
+                                                anzeige = anzeige,
+                                            )
+                                        },
+                                        modifier = Modifier.padding(top = 12.dp),
+                                    )
+                                }
                             }
                         }
                     }
-                }
-                NoteType.IMAGE -> if (state.bilder.isEmpty()) {
-                    // Nur solange noch nichts da ist. Sobald ein Bild in der
-                    // Notiz steht, waere der Hinweis eine Aufforderung zu etwas,
-                    // das schon geschehen ist.
-                    BildEinladung(
-                        farbe = farbe.onContainer,
-                        onHinzufuegen = { anhangBlattOffen = true },
-                    )
-                }
-                else -> Unit
-            }
-
-            // Sobald das Transkript fertig ist, wandert es in den Text --
-            // ohne Rueckfrage, denn genau dafuer hat man es erstellt.
-            LaunchedEffect(transkript.laeuft, transkript.teile.size) {
-                if (!transkript.laeuft && transkript.teile.isNotEmpty()) {
-                    viewModel.transkriptUebernehmen()
-                }
-            }
-
-            // Bei einer Audionotiz steht der Text auf der Transkriptseite --
-            // hier waere er ein zweites Mal dasselbe, und auf der Aufnahmeseite
-            // haette er ueberhaupt nichts zu suchen.
-            val eigenesTextfeld = state.type == NoteType.AUDIO
-
-            when {
-                eigenesTextfeld -> Unit
-                state.type == NoteType.LIST -> Checkliste(
-                    eintraege = state.items,
-                    bearbeiten = listeBearbeiten,
-                    farbe = farbe,
-                    onAbhaken = viewModel::onItemCheckedChanged,
-                    onText = viewModel::onItemTextChanged,
-                    onHinzufuegen = viewModel::eintragHinzufuegen,
-                    onVerschieben = viewModel::eintragVerschieben,
-                    onEntfernen = { id ->
-                        viewModel.removeItem(id)?.let { (eintrag, stelle) ->
-                            onUndoRequest(
-                                UndoRequest(
-                                    if (eintrag.text.isBlank()) {
-                                        "Eintrag entfernt"
-                                    } else {
-                                        "„" + eintrag.text + "\" entfernt"
-                                    },
-                                ) { viewModel.eintragZurueck(eintrag, stelle) },
-                            )
-                        }
-                    },
-                )
-                else -> {
-                    // Die schwebende Auswahlleiste bekommt „Uebersetzen",
-                    // aber nur, wenn es einen Weg gibt; sonst
-                    // bleibt die von Compose.
-                    val auswahl by rememberUpdatedState(textwert.selection)
-                    val ansicht = LocalView.current
-                    val leiste = remember(ansicht) {
-                        UebersetzenTextToolbar(ansicht) {
-                            viewModel.uebersetzenAnfragen(auswahl.min to auswahl.max)
-                        }
-                    }
-                    CompositionLocalProvider(
-                        LocalTextToolbar provides if (uebersetzungVerfuegbar) leiste else LocalTextToolbar.current,
-                    ) {
-                        AusgezeichnetesFeld(
-                            value = textwert,
-                            onValueChange = textAendern,
-                            placeholder = "Schreib einfach los",
-                            textStyle = MaterialTheme.typography.bodyLarge,
-                            onFokus = { textFokus = it },
-                            modifier = Modifier.fillMaxWidth(),
+                    NoteType.IMAGE -> if (state.bilder.isEmpty()) {
+                        // Nur solange noch nichts da ist. Sobald ein Bild in der
+                        // Notiz steht, waere der Hinweis eine Aufforderung zu etwas,
+                        // das schon geschehen ist.
+                        BildEinladung(
+                            farbe = farbe.onContainer,
+                            onHinzufuegen = { anhangBlattOffen = true },
                         )
                     }
+                    else -> Unit
                 }
-            }
 
-            // Nur so viel, dass die letzte Zeile nicht an der unteren Leiste
-            // klebt. Frueher standen hier 96 dp -- zusammen mit einem hohen
-            // Bild war das sichtbar Leerlauf, durch den man scrollen musste,
-            // ohne dass dort etwas stand.
-            Spacer(Modifier.height(24.dp))
+                // Sobald das Transkript fertig ist, wandert es in den Text --
+                // ohne Rueckfrage, denn genau dafuer hat man es erstellt.
+                LaunchedEffect(transkript.laeuft, transkript.teile.size) {
+                    if (!transkript.laeuft && transkript.teile.isNotEmpty()) {
+                        viewModel.transkriptUebernehmen()
+                    }
+                }
+
+                // Bei einer Audionotiz steht der Text auf der Transkriptseite --
+                // hier waere er ein zweites Mal dasselbe, und auf der Aufnahmeseite
+                // haette er ueberhaupt nichts zu suchen.
+                val eigenesTextfeld = state.type == NoteType.AUDIO
+
+                when {
+                    eigenesTextfeld -> Unit
+                    state.type == NoteType.LIST -> Checkliste(
+                        eintraege = state.items,
+                        bearbeiten = listeBearbeiten,
+                        farbe = farbe,
+                        onAbhaken = viewModel::onItemCheckedChanged,
+                        onText = viewModel::onItemTextChanged,
+                        onHinzufuegen = viewModel::eintragHinzufuegen,
+                        onVerschieben = viewModel::eintragVerschieben,
+                        schreibfeld = schreibfeld,
+                        onEntfernen = { id ->
+                            viewModel.removeItem(id)?.let { (eintrag, stelle) ->
+                                onUndoRequest(
+                                    UndoRequest(
+                                        if (eintrag.text.isBlank()) {
+                                            "Eintrag entfernt"
+                                        } else {
+                                            "„" + eintrag.text + "\" entfernt"
+                                        },
+                                    ) { viewModel.eintragZurueck(eintrag, stelle) },
+                                )
+                            }
+                        },
+                    )
+                    else -> {
+                        // Die schwebende Auswahlleiste bekommt „Uebersetzen",
+                        // aber nur, wenn es einen Weg gibt; sonst
+                        // bleibt die von Compose.
+                        val auswahl by rememberUpdatedState(textwert.selection)
+                        val ansicht = LocalView.current
+                        val leiste = remember(ansicht) {
+                            UebersetzenTextToolbar(ansicht) {
+                                viewModel.uebersetzenAnfragen(auswahl.min to auswahl.max)
+                            }
+                        }
+                        CompositionLocalProvider(
+                            LocalTextToolbar provides if (uebersetzungVerfuegbar) leiste else LocalTextToolbar.current,
+                        ) {
+                            AusgezeichnetesFeld(
+                                value = textwert,
+                                onValueChange = textAendern,
+                                placeholder = "Schreib einfach los",
+                                textStyle = MaterialTheme.typography.bodyLarge,
+                                onFokus = { textFokus = it },
+                                modifier = Modifier.fillMaxWidth().focusRequester(schreibfeld),
+                            )
+                        }
+                    }
+                }
+
+                // Die freie Fläche bis zum unteren Rand. Mindestens so viel, dass
+                // die letzte Zeile nicht an der unteren Leiste klebt (früher fest
+                // 96 dp, das war unter einem hohen Bild sichtbar Leerlauf).
+                //
+                // Ein Tipp darauf öffnet das Schreiben, wie ein Tipp auf das Feld
+                // selbst: bei Text- und Bildnotizen der Text mit dem Cursor am
+                // Ende, bei Listen „Eintrag hinzufügen“. Vorher traf man nur, wenn
+                // man genau auf „Schreib einfach los“ tippte (Rückmeldung von
+                // Nutzern, 2026-10-13). Audionotizen haben hier kein Textfeld.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .heightIn(min = 24.dp)
+                        .then(
+                            if (eigenesTextfeld) {
+                                Modifier
+                            } else {
+                                Modifier.clickable(
+                                    interactionSource = null,
+                                    indication = null,
+                                    onClickLabel = "Schreiben",
+                                ) {
+                                    if (state.type != NoteType.LIST) {
+                                        textSetzen(textwert.copy(selection = TextRange(textwert.text.length)))
+                                    }
+                                    schreibfeld.requestFocus()
+                                }
+                            },
+                        ),
+                )
+            }
         }
     }
 
@@ -1122,6 +1161,7 @@ private fun Checkliste(
     onHinzufuegen: (String) -> Unit,
     onVerschieben: (von: Int, nach: Int) -> Unit,
     onEntfernen: (id: String) -> Unit,
+    schreibfeld: FocusRequester,
 ) {
     val textfarbe = farbe.onContainer
     // Die Kaestchen tragen die Notizfarbe, nicht `primary`: Sie sitzen auf der
@@ -1202,12 +1242,12 @@ private fun Checkliste(
         }
     }
 
-    NeuerEintrag(textfarbe = textfarbe, onHinzufuegen = onHinzufuegen)
+    NeuerEintrag(textfarbe = textfarbe, onHinzufuegen = onHinzufuegen, schreibfeld = schreibfeld)
 }
 
 /** Das Feld „Eintrag hinzufuegen" unter der Liste, in beiden Zustaenden. */
 @Composable
-private fun NeuerEintrag(textfarbe: Color, onHinzufuegen: (String) -> Unit) {
+private fun NeuerEintrag(textfarbe: Color, onHinzufuegen: (String) -> Unit, schreibfeld: FocusRequester) {
     var text by rememberSaveable { mutableStateOf("") }
     val uebernehmen = {
         if (text.isNotBlank()) {
@@ -1237,6 +1277,7 @@ private fun NeuerEintrag(textfarbe: Color, onHinzufuegen: (String) -> Unit) {
             textStyle = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .weight(1f)
+                .focusRequester(schreibfeld)
                 // Verlaesst man das Feld mit Text darin, wird er uebernommen:
                 // nichts Getipptes darf verloren gehen.
                 .onFocusChanged { if (!it.isFocused) uebernehmen() },

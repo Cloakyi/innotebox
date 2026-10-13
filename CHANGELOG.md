@@ -11,6 +11,9 @@ Das Umwandeln in Text geht wieder, jetzt über die Spracherkennung von Android s
   Transkripte gehen damit ab Android 13.
 - Fehlt das Sprachpaket für die eingestellte Sprache, lädt es „Sprachpaket laden“ über das
   System nach.
+- Im Editor öffnet ein Tipp auf die freie Fläche unter dem Inhalt das Schreiben: bei Text-
+  und Bildnotizen mit dem Cursor am Ende des Textes, bei Listen in „Eintrag hinzufügen“.
+  Vorher musste man genau auf „Schreib einfach los“ tippen.
 - Nach einem Update blieb die App beim ersten Öffnen manchmal auf dem Logo stehen. Das
   passiert nicht mehr.
 - Alle Bibliotheken sind auf dem neuesten stabilen Stand, dazu Gradle 9.8.
