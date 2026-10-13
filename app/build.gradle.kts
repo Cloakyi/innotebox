@@ -41,10 +41,13 @@ android {
         //   "Alpha n"  Testfassung, öffentlich auf GitHub
         //   "Beta n"   offener Test
         //   "1.0"      die Vollversion, danach 1.1, 1.2 ...
-        // Innerhalb der Alpha zaehlt n wie der versionCode. Beginnt die Beta,
-        // faengt n wieder bei 1 an, der versionCode laeuft weiter.
-        versionCode = 12
-        versionName = "Alpha 12"
+        // Innerhalb der Alpha zaehlte n bis Alpha 12 wie der versionCode. Eine
+        // Korrektur kurz nach einem Release heisst "Alpha n.1" und zaehlt den
+        // versionCode trotzdem weiter, sonst liesse sie sich nicht als Update
+        // installieren (Alpha 12.1 hat 13). Beginnt die Beta, faengt n wieder
+        // bei 1 an, der versionCode laeuft weiter.
+        versionCode = 13
+        versionName = "Alpha 12.1"
     }
 
     // DER RELEASE-SCHLUESSEL liegt ausserhalb des Projekts, nie im Repo.

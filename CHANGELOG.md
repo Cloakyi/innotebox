@@ -1,5 +1,11 @@
 # Änderungen
 
+## Alpha 12.1 (2026-10-13)
+
+- Ein Tipp auf die freie Fläche unter dem Inhalt öffnet die Tastatur jetzt auch dann, wenn
+  man sie vorher eingefahren hat und der Cursor noch im Textfeld steht. Vorher passierte dann
+  nichts, und man musste das Textfeld selbst antippen.
+
 ## Alpha 12 (2026-10-13)
 
 Das Umwandeln in Text geht wieder, jetzt über die Spracherkennung von Android selbst.

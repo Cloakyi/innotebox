@@ -83,6 +83,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.Modifier
@@ -222,6 +223,7 @@ fun EditorScreen(
     // Das Feld, in das ein Tipp auf die freie Fläche unter dem Inhalt führt:
     // der Text der Notiz oder bei einer Liste „Eintrag hinzufügen“.
     val schreibfeld = remember { FocusRequester() }
+    val tastatur = LocalSoftwareKeyboardController.current
 
     // Zieht Aenderungen nach, die NICHT aus dem Feld kommen: geladene Notiz,
     // uebernommenes Transkript, Zuruecksetzen aufs Original. Der Vergleich
@@ -795,6 +797,11 @@ fun EditorScreen(
                                         textSetzen(textwert.copy(selection = TextRange(textwert.text.length)))
                                     }
                                     schreibfeld.requestFocus()
+                                    // Hat das Feld den Fokus noch, nur die Tastatur ist
+                                    // eingefahren, ändert requestFocus nichts. Die
+                                    // Tastatur kommt deshalb ausdrücklich (am Gerät
+                                    // gefunden, 2026-10-13).
+                                    tastatur?.show()
                                 }
                             },
                         ),
