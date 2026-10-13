@@ -1,6 +1,7 @@
 ---
 name: Testbericht
 about: Eine Runde testen und abhaken, was funktioniert
+labels: ["testbericht"]
 title: "Testbericht: "
 ---
 

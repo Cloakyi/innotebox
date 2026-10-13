@@ -24,3 +24,6 @@ keystore.properties
 !ZUSATZERLAUBNIS.md
 !TESTEN.md
 !.github/ISSUE_TEMPLATE/*.md
+!.github/pull_request_template.md
+!SECURITY.md
+!CODE_OF_CONDUCT.md

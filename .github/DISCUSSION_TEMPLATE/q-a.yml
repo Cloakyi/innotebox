@@ -1,0 +1,17 @@
+title: "Frage: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Stell deine Frage so, dass jemand ohne dein Handy in der Hand sie versteht. Viele Antworten stehen schon im [Wiki](https://github.com/Cloakyi/innotebox/wiki). Hat dir eine Antwort geholfen, markier sie als Antwort, dann finden andere sie schneller.
+  - type: textarea
+    id: frage
+    attributes:
+      label: Deine Frage
+    validations:
+      required: true
+  - type: input
+    id: umgebung
+    attributes:
+      label: Handy, Android-Version und Fassung der App
+      placeholder: z. B. Pixel 10, Android 17, Alpha 12.1

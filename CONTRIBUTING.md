@@ -2,8 +2,11 @@
 
 Fehlerberichte und Vorschläge sind willkommen, am besten als Issue mit einer kurzen
 Beschreibung, was du getan hast, was du erwartet hast und was stattdessen passiert ist.
-Gerät und Android-Version helfen fast immer. Zum Testen gibt es die Liste in
-[TESTEN.md](TESTEN.md) und beim Anlegen eines Issues die Vorlage **Testbericht**.
+Gerät und Android-Version helfen fast immer. Beim Anlegen eines Issues gibt es dafür die
+Formulare **Fehler melden** und **Wunsch oder Idee**, zum Testen die Liste in
+[TESTEN.md](TESTEN.md) und die Vorlage **Testbericht**. Fragen gehören in die
+[Diskussionen](https://github.com/Cloakyi/innotebox/discussions), Sicherheitslücken nicht in ein
+öffentliches Issue, sondern vertraulich, siehe [SECURITY.md](SECURITY.md).
 
 ## Lizenz deiner Beiträge
 

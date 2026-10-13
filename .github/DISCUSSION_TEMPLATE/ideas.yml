@@ -1,0 +1,18 @@
+title: "Idee: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hier ist Platz für Ideen, die noch nicht fertig gedacht sind. Andere können mitreden, abstimmen und weiterspinnen. Wird daraus etwas Konkretes, entsteht ein Issue.
+  - type: textarea
+    id: idee
+    attributes:
+      label: Deine Idee
+      description: Was soll die App können, und in welcher Situation würde dir das helfen?
+    validations:
+      required: true
+  - type: textarea
+    id: beispiel
+    attributes:
+      label: Ein Beispiel aus deinem Alltag
+      description: Wann hättest du das zuletzt gebraucht?

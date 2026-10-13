@@ -1,0 +1,109 @@
+name: Fehler melden
+description: Etwas in der App funktioniert nicht so, wie es soll.
+title: "Fehler: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke, dass du dir die Zeit nimmst. Je genauer du beschreibst, was passiert ist, desto schneller lässt es sich beheben.
+
+        **Dieses Issue ist öffentlich.** Zeig auf Bildschirmfotos nur Testnotizen, keine echten Inhalte, und schreib keine persönlichen Daten hinein. Eine Sicherheitslücke meldest du bitte nicht hier, sondern wie in der [Sicherheitsrichtlinie](https://github.com/Cloakyi/innotebox/blob/main/SECURITY.md) beschrieben.
+  - type: checkboxes
+    id: vorab
+    attributes:
+      label: Vorab
+      options:
+        - label: Ich nutze die neueste Fassung aus den [Releases](https://github.com/Cloakyi/innotebox/releases).
+          required: true
+        - label: Ich habe in den [bestehenden Issues](https://github.com/Cloakyi/innotebox/issues?q=is%3Aissue) und im [Wiki unter „Probleme lösen“](https://github.com/Cloakyi/innotebox/wiki/Probleme-lösen) nachgesehen.
+          required: true
+  - type: dropdown
+    id: bereich
+    attributes:
+      label: Bereich
+      description: Wo in der App ist es passiert?
+      options:
+        - Installieren oder Starten
+        - Notizen schreiben (Text, Liste, Bild)
+        - Eingang, Workspace und Archiv
+        - Ordner und Papierkorb
+        - Suche und Tags
+        - Sprachnotizen und Transkript
+        - KI auf dem Gerät
+        - Übersetzen
+        - Erinnerungen und Kalender
+        - Abgleich über Google Drive
+        - Sichern und Wiederherstellen
+        - Sperre und Aufnahmeschutz
+        - Einstellungen
+        - Etwas anderes
+    validations:
+      required: true
+  - type: textarea
+    id: was
+    attributes:
+      label: Was ist passiert?
+      description: Beschreib in ein paar Sätzen, was du gesehen hast. Eine Fehlermeldung bitte wörtlich.
+    validations:
+      required: true
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Was hättest du erwartet?
+    validations:
+      required: true
+  - type: textarea
+    id: schritte
+    attributes:
+      label: So lässt es sich nachstellen
+      description: Schritt für Schritt, so wie du es gemacht hast.
+      placeholder: |
+        1. Plus unten rechts, dann „Textnotiz“
+        2. Etwas schreiben und zurückgehen
+        3. …
+    validations:
+      required: true
+  - type: dropdown
+    id: haeufig
+    attributes:
+      label: Wie oft passiert es?
+      options:
+        - Jedes Mal
+        - Manchmal
+        - Nur einmal gesehen
+    validations:
+      required: true
+  - type: input
+    id: geraet
+    attributes:
+      label: Handy
+      placeholder: z. B. Pixel 10
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android-Version
+      description: Einstellungen, Über das Telefon, Android-Version.
+      placeholder: z. B. Android 17
+    validations:
+      required: true
+  - type: input
+    id: fassung
+    attributes:
+      label: Fassung der App
+      description: In der App ganz unten in den Einstellungen bei „Über die App“.
+      placeholder: z. B. Alpha 12.1
+    validations:
+      required: true
+  - type: textarea
+    id: bilder
+    attributes:
+      label: Bildschirmfotos oder Video
+      description: Einfach hineinziehen. Ist in der App der Aufnahmeschutz an, schalte ihn dafür kurz aus.
+  - type: textarea
+    id: sonst
+    attributes:
+      label: Sonst noch etwas?
+      description: Etwa ob die KI an ist, ob der Abgleich verbunden ist oder ob die Sperre an ist, wenn das zum Fehler passt.

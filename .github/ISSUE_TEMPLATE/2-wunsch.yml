@@ -1,0 +1,40 @@
+name: Wunsch oder Idee
+description: Etwas, das die App können sollte, oder etwas, das anders besser wäre.
+title: "Wunsch: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Schön, dass du eine Idee hast. InNoteBox folgt einer einfachen Idee: Notizen sind eine Arbeitsfläche, kein Archiv. Ein Wunsch passt am besten, wenn er das Festhalten leichter macht, keine Entscheidung vor dem Schreiben verlangt und der App Arbeit abnimmt statt dir neue zu machen.
+
+        Lose Ideen zum gemeinsamen Weiterdenken sind in den [Diskussionen unter „Ideas“](https://github.com/Cloakyi/innotebox/discussions/categories/ideas) gut aufgehoben.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Worum geht es?
+      description: Was willst du tun, und was stört dich heute daran?
+      placeholder: Wenn ich …, muss ich jedes Mal …
+    validations:
+      required: true
+  - type: textarea
+    id: vorschlag
+    attributes:
+      label: Dein Vorschlag
+      description: Wie könnte es aussehen oder funktionieren? Skizzen und Bildschirmfotos anderer Apps helfen.
+    validations:
+      required: true
+  - type: textarea
+    id: alternativen
+    attributes:
+      label: Andere Wege, an die du gedacht hast
+  - type: dropdown
+    id: wichtig
+    attributes:
+      label: Wie wichtig ist es dir?
+      options:
+        - Wäre schön
+        - Würde mir viel helfen
+        - Ohne das kann ich die App kaum nutzen
+    validations:
+      required: true

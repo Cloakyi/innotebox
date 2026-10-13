@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Frage zur App
+    url: https://github.com/Cloakyi/innotebox/discussions/categories/q-a
+    about: Wie geht etwas, wo finde ich etwas? Fragen beantworten wir in den Diskussionen.
+  - name: Wiki mit Anleitungen
+    url: https://github.com/Cloakyi/innotebox/wiki
+    about: Installieren, erste Schritte, jede Funktion erklärt und Hilfe bei Problemen.
+  - name: Sicherheitslücke melden
+    url: https://github.com/Cloakyi/innotebox/security/advisories/new
+    about: Bitte nicht öffentlich als Issue, sondern vertraulich über diesen Weg.
+  - name: Ohne GitHub-Konto
+    url: https://innotebox.de
+    about: Auf der Webseite stehen die Adressen für Fragen per Mail, etwa support@cloaki.de.

@@ -1,0 +1,14 @@
+# Hält die Aktionen in den Workflows aktuell. Ein Pull Request im Monat, alle Aktionen darin.
+# Die Bibliotheken der App laufen bewusst nicht hierüber: Jede Änderung dort braucht eine neue
+# Lizenzliste (./gradlew :app:lizenzen) und einen Test am Gerät.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      aktionen:
+        patterns: ["*"]
+    commit-message:
+      prefix: "Aktionen"

@@ -6,7 +6,7 @@ arbeitest, liegt im Workspace. Was ruht, räumt die App nachts ins Archiv, mit R
 Morgen, und die Suche findet es wieder. Warum das so ist und wie die App gebaut ist, steht in
 [docs/ENTSCHEIDUNGEN.md](docs/ENTSCHEIDUNGEN.md).
 
-Webseite: [innotebox.de](https://innotebox.de)
+Webseite: [innotebox.de](https://innotebox.de) · Anleitungen: [Wiki](https://github.com/Cloakyi/innotebox/wiki) · Fragen: [Diskussionen](https://github.com/Cloakyi/innotebox/discussions)
 
 ## Was drin ist
 
@@ -45,7 +45,7 @@ prüfen, dass ML Kit nur über eine Stelle und nie beim Start der App von selbst
 APK genau aus diesem Quelltext stammt, lässt sich mit der Befehlszeile von GitHub nachprüfen:
 
 ```
-gh attestation verify InNoteBox-Alpha-11.apk --repo Cloakyi/innotebox
+gh attestation verify InNoteBox-Alpha-12.1.apk --repo Cloakyi/innotebox
 ```
 
 Angeboten wird nur die jeweils neueste Fassung.
@@ -91,12 +91,19 @@ Die Entscheidungen hinter dem Code stehen in [docs/ENTSCHEIDUNGEN.md](docs/ENTSC
 das Datenformat für Abgleich und Sicherung in [SYNC.md](SYNC.md). Beides ist auch der
 Vertrag für einen zweiten Client, der denselben Drive-Ordner liest und schreibt.
 
-## Beitragen
+## Hilfe und Mitmachen
 
-Fehlerberichte und Vorschläge sind als Issue willkommen. Wer mittesten möchte, findet in
-[TESTEN.md](TESTEN.md) eine Liste zum Abhaken, vom Schnelltest in zehn Minuten bis zu jedem
-Bereich der App. Wie Beiträge lizenziert werden und was vor einem Pull Request zu prüfen ist,
-steht in [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Anleitungen:** Im [Wiki](https://github.com/Cloakyi/innotebox/wiki) steht jede Funktion
+  erklärt, dazu Installieren, erste Schritte und Hilfe bei Problemen.
+- **Fragen und Ideen:** in den [Diskussionen](https://github.com/Cloakyi/innotebox/discussions).
+- **Fehler und Wünsche:** als [Issue](https://github.com/Cloakyi/innotebox/issues/new/choose),
+  mit einem kurzen Formular, das nach allem fragt, was zum Nachstellen gebraucht wird.
+- **Mittesten:** [TESTEN.md](TESTEN.md) ist eine Liste zum Abhaken, vom Schnelltest in zehn
+  Minuten bis zu jedem Bereich der App. Rückmeldung gibt es über die Vorlage „Testbericht“.
+- **Sicherheitslücken** bitte vertraulich melden, wie in [SECURITY.md](SECURITY.md) beschrieben.
+- **Code beitragen:** Wie Beiträge lizenziert werden und was vor einem Pull Request zu prüfen
+  ist, steht in [CONTRIBUTING.md](CONTRIBUTING.md). Für den Umgang miteinander gilt
+  [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Lizenz
 
