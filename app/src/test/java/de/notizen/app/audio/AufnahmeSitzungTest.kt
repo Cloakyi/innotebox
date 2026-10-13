@@ -54,7 +54,7 @@ class AufnahmeSitzungTest {
     fun `der Fortschritt ist ein echter Anteil`() {
         // Die Zahl der Abschnitte steht nach dem Zerlegen fest -- deshalb darf
         // ein echter Balken gezeigt werden und kein unbestimmter Kringel.
-        sitzung.transkriptBeginnen(Erkennungsmodus.ADVANCED)
+        sitzung.transkriptBeginnen()
         sitzung.zerlegt(4)
         sitzung.transkriptFortschritt(1, 4)
 
@@ -63,7 +63,7 @@ class AufnahmeSitzungTest {
 
     @Test
     fun `ohne Abschnitte gibt es keinen Anteil statt einer Division durch null`() {
-        sitzung.transkriptBeginnen(Erkennungsmodus.BASIC)
+        sitzung.transkriptBeginnen()
         assertEquals(0f, sitzung.transkript.value.anteil)
     }
 
@@ -72,7 +72,7 @@ class AufnahmeSitzungTest {
         // Sie tragen ihre Zeitstempel aus dem Schnitt. Kaemen sie in falscher
         // Reihenfolge an, staende der Text durcheinander -- und man wuesste
         // nicht, warum.
-        sitzung.transkriptBeginnen(Erkennungsmodus.ADVANCED)
+        sitzung.transkriptBeginnen()
         sitzung.teil(Transkriptteil("zweiter", 5_000, 8_000))
         sitzung.teil(Transkriptteil("erster", 0, 3_000))
 
@@ -83,11 +83,11 @@ class AufnahmeSitzungTest {
     fun `ein neues Transkript beginnt bei null`() {
         // Sonst haenge der zweite Durchgang an den Ergebnissen des ersten, und
         // der Text stuende doppelt da.
-        sitzung.transkriptBeginnen(Erkennungsmodus.ADVANCED)
+        sitzung.transkriptBeginnen()
         sitzung.teil(Transkriptteil("alt", 0, 1_000))
         sitzung.transkriptFertig()
 
-        sitzung.transkriptBeginnen(Erkennungsmodus.ADVANCED)
+        sitzung.transkriptBeginnen()
 
         assertTrue(sitzung.transkript.value.teile.isEmpty())
         assertTrue(sitzung.transkript.value.laeuft)
@@ -97,7 +97,7 @@ class AufnahmeSitzungTest {
     fun `Aufnahme und Transkript stoeren einander nicht`() {
         // Zwei getrennte Zustaende, weil es zwei getrennte Vorgaenge sind.
         sitzung.beginnen("n1")
-        sitzung.transkriptBeginnen(Erkennungsmodus.BASIC)
+        sitzung.transkriptBeginnen()
         sitzung.transkriptFertig()
 
         assertTrue("Die Aufnahme laeuft weiter", sitzung.aufnahme.value.laeuft)

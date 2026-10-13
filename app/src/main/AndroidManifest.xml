@@ -60,6 +60,11 @@
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
+        <!-- Die Spracherkennung des Systems. Ohne diesen Eintrag sieht die App
+             den Erkennungsdienst nicht und hielte jedes Gerät für eines ohne. -->
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
     </queries>
 
     <application

@@ -43,8 +43,8 @@ android {
         //   "1.0"      die Vollversion, danach 1.1, 1.2 ...
         // Innerhalb der Alpha zaehlt n wie der versionCode. Beginnt die Beta,
         // faengt n wieder bei 1 an, der versionCode laeuft weiter.
-        versionCode = 11
-        versionName = "Alpha 11"
+        versionCode = 12
+        versionName = "Alpha 12"
     }
 
     // DER RELEASE-SCHLUESSEL liegt ausserhalb des Projekts, nie im Repo.
@@ -140,7 +140,6 @@ dependencies {
     // Google-Anmeldung und Drive-Zugriff.
     implementation(libs.play.services.auth)
 
-    implementation(libs.mlkit.genai.speech.recognition)
     implementation(libs.mlkit.genai.prompt)
     // Uebersetzung, Weg 3: laeuft ohne AICore, laedt seine
     // Sprachmodelle einmal aus dem Netz, deshalb nur hinter dem Netz-Schalter.

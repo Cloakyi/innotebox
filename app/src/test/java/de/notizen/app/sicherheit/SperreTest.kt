@@ -140,4 +140,24 @@ class SperreTest {
         assertTrue(sperre.entschieden.value)
         assertFalse(sperre.gesperrt.value)
     }
+
+    @Test
+    fun `ein zweites Fenster vor dem Stopp des ersten ist kein Hintergrund`() = runBlocking {
+        // Nach einem Update oder beim Öffnen einer geteilten Notiz startet das
+        // neue Fenster, bevor das alte sein onStop meldet. Vorher blieb dann
+        // die Abdeckung für immer liegen.
+        einstellungen.setSperreAn(true)
+        sperre.beimStart()
+        sperre.entsperrt()
+
+        sperre.beimStart()
+        sperre.beimStopp(konfigurationswechsel = false)
+
+        assertTrue("Die Abdeckung bleibt weg", sperre.entschieden.value)
+        assertFalse(sperre.gesperrt.value)
+
+        // Geht danach auch das zweite, ist die App wirklich im Hintergrund.
+        sperre.beimStopp(konfigurationswechsel = false)
+        assertFalse(sperre.entschieden.value)
+    }
 }

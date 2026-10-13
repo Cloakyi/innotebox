@@ -22,8 +22,6 @@ class MlKitZugangTest {
         "ai/MlKitStart.kt",
         "ai/Aufraeumen.kt",
         "ai/TitelKi.kt",
-        "audio/Transkription.kt",
-        "audio/Transkriptor.kt",
         "uebersetzung/KiUebersetzer.kt",
         "uebersetzung/MlKitUebersetzer.kt",
     )

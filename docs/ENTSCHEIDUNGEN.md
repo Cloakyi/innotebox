@@ -93,11 +93,19 @@ Löschen, Archivieren und Stufenwechsel gibt es immer eine Undo-Leiste.
 
 ## 7. KI nur auf dem Gerät
 
-Titelvorschlag, Aufbereiten von Transkripten und Spracherkennung laufen über ML Kit GenAI
-(AICore, Gemini Nano). Das gibt es nicht auf jedem Gerät, und das Modell kann fehlen oder
-nachladbar sein (`DOWNLOADABLE`). Deshalb:
+Titelvorschlag und Aufbereiten von Transkripten laufen über ML Kit GenAI (AICore, Gemini
+Nano). Die Spracherkennung läuft seit Alpha 12 über die Spracherkennung, die Android selbst
+mitbringt (`SpeechRecognizer.createOnDeviceSpeechRecognizer`, `Systemerkennung`). Bis
+Alpha 11 lief sie über ML Kit (`genai-speech-recognition`, nur als Alpha veröffentlicht);
+seit Oktober 2026 lehnt Googles Sprachdienst diese Schnittstelle für fremde Apps mit
+`PERMISSION_DENIED: Api access revoked` ab, auf dem Pixel 10 in beiden Modi. Der Weg über das
+System ist eine feste Schnittstelle seit Android 12, rechnet auf dem Gerät und nimmt ab
+Android 13 Ton aus einer Datei an; darunter gibt es kein Transkript, die Aufnahme geht
+trotzdem. Das alles gibt es nicht auf jedem Gerät, und Modell oder Sprachpaket können fehlen
+oder nachladbar sein. Deshalb:
 
-- **Erst fragen, dann anbieten.** Jede Stelle prüft `checkStatus()`, bevor sie ein
+- **Erst fragen, dann anbieten.** Jede Stelle prüft `checkStatus()` (ML Kit) oder
+  `checkRecognitionSupport()` (Spracherkennung), bevor sie ein
   Bedienelement zeigt. Was das Gerät nicht kann, steht in den Einstellungen blass mit dem
   Grund; ein Knopf, der da ist und nichts tut, wäre schlechter als keiner.
 - **Nie blockierend auf die KI warten.** Der Titeldialog ist leer und zeigt den Vorschlag

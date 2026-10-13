@@ -2,39 +2,40 @@
 
 [versions]
 agp = "9.4.1"
-kotlin = "2.4.0"                  # nur noch fuer das Compose-Compiler-Plugin;
+kotlin = "2.4.21"                  # nur noch fuer das Compose-Compiler-Plugin;
                                   # Kotlin selbst bringt AGP 9 mit
-ksp = "2.3.11"
-coreKtx = "1.17.0"
-lifecycle = "2.9.4"
-activityCompose = "1.11.0"
-composeBom = "2026.08.00"
+ksp = "2.3.12"
+coreKtx = "1.19.1"
+lifecycle = "2.11.0"
+activityCompose = "1.13.0"
+composeBom = "2026.09.00"
 hilt = "2.60.1"                   # MINDESTENS 2.59 -- erst ab da unterstuetzt
                                   # das Hilt-Gradle-Plugin AGP 9. Aeltere
                                   # Versionen brechen mit "Android
                                   # BaseExtension not found".
-hiltNavigationCompose = "1.3.0"
-navigation = "2.9.8"
+hiltNavigationCompose = "1.4.0"
+navigation = "2.10.2"
 datastore = "1.2.1"
 
-room = "2.8.4"                    # Datenbank
-workManager = "2.10.5"            # Hintergrundarbeit
-hiltWork = "1.2.0"                # Hintergrundarbeit mit Hilt
-kotlinxSerialization = "1.9.0"    # JSON fuer Abgleich und Sicherung
-kotlinxCoroutines = "1.10.2"
-okhttp = "5.1.0"                  # Zugriff auf Google Drive
-playServicesAuth = "21.4.0"       # AuthorizationClient
-mlkitSpeech = "1.0.0-alpha1"      # Spracherkennung auf dem Geraet
-mlkitPrompt = "1.0.0-beta2"       # Titel und Aufbereiten auf dem Geraet
+room = "2.8.5"                    # Datenbank
+workManager = "2.12.0"            # Hintergrundarbeit
+hiltWork = "1.4.0"                # Hintergrundarbeit mit Hilt
+kotlinxSerialization = "1.11.0"    # JSON fuer Abgleich und Sicherung
+kotlinxCoroutines = "1.11.0"
+okhttp = "5.5.0"                  # Zugriff auf Google Drive
+playServicesAuth = "22.0.0"       # AuthorizationClient
+mlkitPrompt = "1.0.0-beta2"       # Titel und Aufbereiten auf dem Geraet. Nicht auf beta3/beta4:
+                                  # Ab beta3 fragt die Bibliothek nach einer AICore-Funktion,
+                                  # die das Pixel 10 nicht hat (googlesamples/mlkit #1061).
 mlkitTranslate = "17.0.3"         # Uebersetzung, laedt Sprachmodelle selbst nach
 junit = "4.13.2"
 androidxTestCore = "1.7.0"        # Migrationstest
-robolectric = "4.16.1"
+robolectric = "4.17"
 # ASM muss neu genug sein, um Klassendateien der laufenden JDK zu lesen.
 # Wir bauen mit der JBR 25 aus Android Studio -- deren Klassen haben Major
 # Version 69, und das kann erst ASM 9.9. Aeltere Versionen scheitern mit
 # "Unsupported class file major version 69", noch bevor ein Test laeuft.
-asm = "9.9"
+asm = "9.11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,7 +59,6 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
-mlkit-genai-speech-recognition = { group = "com.google.mlkit", name = "genai-speech-recognition", version.ref = "mlkitSpeech" }
 mlkit-genai-prompt = { group = "com.google.mlkit", name = "genai-prompt", version.ref = "mlkitPrompt" }
 mlkit-translate = { group = "com.google.mlkit", name = "translate", version.ref = "mlkitTranslate" }
 

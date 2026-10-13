@@ -104,7 +104,7 @@ Der Code von InNoteBox steht unter der GNU General Public License, Version 3, un
 dieser Fassung (SPDX: `GPL-3.0-only`), siehe [LICENSE](LICENSE). Copyright 2026 Cloak Studio.
 
 Die App enthält Bibliotheken von Google, die keine freie Software sind: die Play-Dienste für
-die Anmeldung bei Google Drive und ML Kit für Spracherkennung, KI und Übersetzung. Die GPL
+die Anmeldung bei Google Drive und ML Kit für KI und Übersetzung. Die GPL
 allein erlaubt es nicht, GPL-Code zusammen mit solchen Bibliotheken weiterzugeben. Deshalb
 gilt eine zusätzliche Erlaubnis nach Abschnitt 7 der GPL; der Wortlaut steht in
 [ZUSATZERLAUBNIS.md](ZUSATZERLAUBNIS.md).
@@ -130,7 +130,7 @@ sie beim Bauen. Für sie gelten ihre eigenen Lizenzen:
 | AndroidX, Jetpack Compose, Material 3, Room, WorkManager, DataStore, Hilt, Dagger | Oberfläche, Datenbank, Hintergrundarbeit | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | Kotlin, kotlinx.coroutines, kotlinx.serialization, OkHttp | Sprache, Nebenläufigkeit, Netz | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | Google Play-Dienste (Anmeldung) | Anmeldung bei Google Drive | [Android Software Development Kit License](https://developer.android.com/studio/terms) |
-| ML Kit (Spracherkennung, Prompt API, Übersetzung) | Umwandlung in Text, KI auf dem Gerät, Übersetzung | [ML Kit Terms of Service](https://developers.google.com/ml-kit/terms) und [ML Kit GenAI Additional Terms](https://developers.google.com/ml-kit/genai-terms) |
+| ML Kit (Prompt API, Übersetzung) | KI auf dem Gerät, Übersetzung | [ML Kit Terms of Service](https://developers.google.com/ml-kit/terms) und [ML Kit GenAI Additional Terms](https://developers.google.com/ml-kit/genai-terms) |
 | Google Drive API | Abgleich zwischen Geräten | [Google APIs Terms of Service](https://developers.google.com/terms) |
 
 Drei kleine Hilfsbibliotheken, die AndroidX mitbringt, stehen unter MIT, BSD und CC0.

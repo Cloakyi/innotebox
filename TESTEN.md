@@ -153,7 +153,8 @@ Listen:
 
 - [ ] Eine Audio-Notiz anlegen und eine halbe Minute sprechen. Die Wellenform läuft gleichmäßig nach links, Stille erscheint als Punkte.
 - [ ] Die Aufnahme abspielen. Hat sie längere Pausen, springt „Pausen überspringen“ darüber und zeigt, wie viel Zeit das spart.
-- [ ] Bei eingeschalteter KI „Transkript erstellen“. Der Text erscheint, darunter steht, mit welcher Erkennung er entstanden ist. Der erkannte Text bleibt neben einer aufbereiteten Fassung erhalten.
+- [ ] Bei eingeschalteter KI „Transkript erstellen“. Der Text erscheint. Der erkannte Text bleibt neben einer aufbereiteten Fassung erhalten.
+- [ ] Fehlt das Sprachpaket, steht dort „Sprachpaket laden“. Danach lässt sich das Transkript erstellen.
 - [ ] Bei ausgeschalteter KI steht „Transkript erstellen“ blass da, darunter „Einstellungen öffnen“. Aufnehmen und Abspielen funktionieren trotzdem.
 
 ## KI auf dem Gerät

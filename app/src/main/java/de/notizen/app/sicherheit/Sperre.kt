@@ -70,10 +70,23 @@ class Sperre @Inject constructor(
     private var jeGeprueft = false
 
     /**
+     * Wie viele Fenster der App gerade sichtbar sind. Meist eins. Startet die
+     * App sich selbst neu (nach einem Update, beim Öffnen einer geteilten
+     * Notiz), kommt das neue Fenster, BEVOR das alte sein `onStop` meldet. Ohne
+     * diese Zählung hielt die Sperre das für den Weg in den Hintergrund, legte
+     * die Abdeckung über das neue Fenster und nahm sie nie wieder weg; am Gerät
+     * blieb nur das Logo stehen (2026-10-13).
+     */
+    private var sichtbar = 0
+
+    /**
      * Beim Sichtbarwerden der Activity. Sperrt beim ersten Mal im Prozess
      * (App-Start) und danach, wenn die App lang genug im Hintergrund war.
      */
     suspend fun beimStart() {
+        // Vor dem ersten Warten zählen: `onStart` ruft das in einer Coroutine
+        // auf, und bis zum ersten Lesen der Einstellung läuft sie sofort.
+        sichtbar++
         if (!einstellungen.sperreAn().first()) {
             jeGeprueft = true
             hintergrundSeit = null
@@ -89,9 +102,13 @@ class Sperre @Inject constructor(
         _entschieden.value = true
     }
 
-    /** Beim Verschwinden der Activity. Eine Drehung zaehlt nicht als Hintergrund. */
+    /**
+     * Beim Verschwinden der Activity. Eine Drehung zaehlt nicht als Hintergrund,
+     * und ebenso wenig ein Fenster, das geht, während ein anderes schon da ist.
+     */
     fun beimStopp(konfigurationswechsel: Boolean) {
-        if (konfigurationswechsel) return
+        sichtbar = (sichtbar - 1).coerceAtLeast(0)
+        if (konfigurationswechsel || sichtbar > 0) return
         if (hintergrundSeit == null) hintergrundSeit = laufuhr.jetzt()
         _entschieden.value = false
     }

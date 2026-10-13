@@ -49,7 +49,6 @@ data class TranskriptStatus(
     val laeuft: Boolean = false,
     val abschnitte: Int = 0,
     val fertig: Int = 0,
-    val modus: Erkennungsmodus? = null,
     val teile: List<Transkriptteil> = emptyList(),
     val fehler: String? = null,
 ) {
@@ -108,9 +107,7 @@ class AufnahmeSitzung @Inject constructor() {
 
     // ----------------------------------------------------------- Transkript
 
-    fun transkriptBeginnen(modus: Erkennungsmodus) = _transkript.update {
-        TranskriptStatus(laeuft = true, modus = modus)
-    }
+    fun transkriptBeginnen() = _transkript.update { TranskriptStatus(laeuft = true) }
 
     fun zerlegt(abschnitte: Int) = _transkript.update { it.copy(abschnitte = abschnitte) }
 

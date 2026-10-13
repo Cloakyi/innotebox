@@ -285,15 +285,14 @@ class EditorViewModel @Inject constructor(
                 _kiVerfuegbar.value = false
                 return@launch
             }
-            _modell.value = transkription.zustand().first
+            _modell.value = transkription.zustand()
             _kiVerfuegbar.value = aufraeumen.verfuegbar()
         }
     }
 
     fun modellLaden() {
         viewModelScope.launch {
-            val modus = transkription.zustand().second
-            transkription.laden(modus).collect { _modell.value = it }
+            transkription.laden().collect { _modell.value = it }
         }
     }
 

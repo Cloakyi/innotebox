@@ -1,5 +1,20 @@
 # Änderungen
 
+## Alpha 12 (2026-10-13)
+
+Das Umwandeln in Text geht wieder, jetzt über die Spracherkennung von Android selbst.
+
+- Aufnahmen werden wieder in Text umgewandelt. Seit Oktober lässt Google fremde Apps nicht
+  mehr an die Vorabversion seiner Spracherkennung, auf die InNoteBox bisher setzte; die App
+  meldete dann „keine Spracherkennung für Deutsch“. Jetzt nimmt sie die Spracherkennung, die
+  Android selbst mitbringt. Sie läuft ganz auf dem Gerät, der Ton verlässt das Handy nicht.
+  Transkripte gehen damit ab Android 13.
+- Fehlt das Sprachpaket für die eingestellte Sprache, lädt es „Sprachpaket laden“ über das
+  System nach.
+- Nach einem Update blieb die App beim ersten Öffnen manchmal auf dem Logo stehen. Das
+  passiert nicht mehr.
+- Alle Bibliotheken sind auf dem neuesten stabilen Stand, dazu Gradle 9.8.
+
 ## Alpha 11 (2026-09-29)
 
 Teilen aus anderen Apps, Bedienung mit TalkBack und ein zuverlässigerer Abgleich.

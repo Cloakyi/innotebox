@@ -190,10 +190,10 @@ class AufnahmeDienst : Service() {
                 return@launch
             }
 
-            val (zustand, modus) = transkription.zustand()
+            val zustand = transkription.zustand()
             if (zustand !is Modellzustand.Bereit) {
                 sitzung.transkriptFehler(
-                    "Das Sprachmodell steht gerade nicht bereit. " +
+                    "Das Sprachpaket steht gerade nicht bereit. " +
                         "Die Aufnahme bleibt erhalten, versuch es später erneut.",
                 )
                 sitzung.transkriptFertig()
@@ -201,10 +201,10 @@ class AufnahmeDienst : Service() {
                 return@launch
             }
 
-            sitzung.transkriptBeginnen(modus)
+            sitzung.transkriptBeginnen()
             val gesammelt = mutableListOf<Transkriptteil>()
 
-            transkriptor.transkribieren(datei, modus, transkription.sprache())
+            transkriptor.transkribieren(datei, transkription.sprache())
                 .collect { schritt ->
                 when (schritt) {
                     is Transkriptschritt.Zerlegt -> sitzung.zerlegt(schritt.abschnitte)

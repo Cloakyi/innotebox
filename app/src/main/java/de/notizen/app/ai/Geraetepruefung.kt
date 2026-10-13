@@ -36,7 +36,7 @@ class Geraetepruefung @Inject constructor(
 ) {
 
     suspend fun messen(): Geraetestand {
-        val sprache = runCatching { transkription.zustand().first }.getOrNull()
+        val sprache = runCatching { transkription.zustand() }.getOrNull()
         val textki = runCatching { titelKi.zustand() }.getOrNull()
         val uebersetzung = runCatching { uebersetzungspruefung.lage() }.getOrNull()
 
@@ -72,8 +72,7 @@ class Geraetepruefung @Inject constructor(
     suspend fun nachladen(stand: Geraetestand): Geraetestand {
         if (stand.spracherkennung == Faehigkeit.LADBAR) {
             runCatching {
-                val modus = transkription.zustand().second
-                transkription.laden(modus).last()
+                transkription.laden().last()
             }
         }
         if (stand.textki == Faehigkeit.LADBAR) {

@@ -145,7 +145,7 @@ class KiEinstellungenViewModel @Inject constructor(
             // Hinweise zum Geraet bleiben weg, statt etwas zu behaupten.
             val kiAn = einstellungen.kiAktiv().first()
             val textki = if (kiAn) runCatching { aufraeumen.verfuegbar() }.getOrDefault(false) else null
-            val sprache = if (kiAn) runCatching { transkription.zustand().first }.getOrNull() else null
+            val sprache = if (kiAn) runCatching { transkription.zustand() }.getOrNull() else null
 
             geraet.value = KiEinstellung(
                 textkiDa = textki,

@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import de.notizen.app.ai.Aufbereitung
 import de.notizen.app.audio.AufnahmeStatus
 import de.notizen.app.ui.components.LiveWellenform
-import de.notizen.app.audio.Erkennungsmodus
 import de.notizen.app.audio.Modellzustand
 import de.notizen.app.audio.TranskriptStatus
 
@@ -255,25 +254,6 @@ private fun Ruhend(
         }
     }
 
-    // Der Modus gehoert sichtbar gemacht: die Erkennungsqualitaet unterscheidet
-    // sich hoerbar, und wer den Rueckfall nicht kennt, haelt das Ergebnis fuer
-    // einen Fehler der App.
-    // Mit einem Satz dazu, was das Fachwort heisst. Der Hinweis stimmte
-    // vorher schon, sagte aber niemandem, was er bedeutet.
-    transkript.modus?.let {
-        Hinweis(
-            text = when (it) {
-                Erkennungsmodus.ADVANCED ->
-                    "Erkannt mit der erweiterten Erkennung. Das ist das genauere " +
-                        "Sprachmodell auf dem Gerät; es versteht Namen und Satzzeichen besser."
-                Erkennungsmodus.BASIC ->
-                    "Erkannt mit der einfachen Erkennung. Die erweiterte, die Namen und " +
-                        "Satzzeichen besser versteht, gibt es auf diesem Gerät nicht."
-            },
-            farbe = farbe,
-        )
-    }
-
     if (transkript.teile.isNotEmpty()) {
         when {
             kiVerfuegbar -> AufbereitenKnopf(laeuftAufbereitung, farbe, onAufbereiten)
@@ -378,11 +358,11 @@ private fun TranskriptKnopf(
 
         is Modellzustand.Ladbar -> Column {
             Text(
-                "Für das Transkript fehlt noch das Sprachmodell. " +
+                "Für das Transkript fehlt noch das Sprachpaket. " +
                     "Die Aufnahme ist gesichert.",
                 style = MaterialTheme.typography.bodyMedium,
             )
-            TextButton(onClick = onLaden) { Text("Modell laden", color = farbe) }
+            TextButton(onClick = onLaden) { Text("Sprachpaket laden", color = farbe) }
         }
 
         is Modellzustand.Laedt -> Row(
@@ -395,22 +375,20 @@ private fun TranskriptKnopf(
                 modifier = Modifier.size(18.dp),
             )
             Text(
-                // Kein Prozentbalken: die API liefert nur die geladenen Bytes,
-                // keine Gesamtgroesse.
-                text = if (modell.bytes > 0) "Lädt … ${modell.bytes / 1_000_000} MB" else "Lädt …",
+                text = if (modell.prozent > 0) "Lädt … ${modell.prozent} %" else "Lädt …",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(start = 10.dp),
             )
         }
 
         is Modellzustand.NichtVerfuegbar -> Hinweis(
-            "Auf diesem Gerät steht keine Spracherkennung für Deutsch bereit " +
-                "(Code ${modell.code}). Die Aufnahme bleibt trotzdem erhalten.",
+            "Auf diesem Gerät gibt es keine Spracherkennung für die eingestellte Sprache. " +
+                "Transkripte gehen ab Android 13. Die Aufnahme bleibt trotzdem erhalten.",
             farbe,
         )
 
         is Modellzustand.Fehler -> Hinweis(
-            "Die Spracherkennung meldet: ${modell.ursache.message}",
+            modell.ursache.message ?: "Die Spracherkennung meldet einen Fehler.",
             MaterialTheme.colorScheme.error,
         )
     }
