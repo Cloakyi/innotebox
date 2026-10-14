@@ -37,7 +37,8 @@ ML Kit und der Drive-Abgleich weg; alles andere funktioniert unverändert.
 
 Alpha, für Android ab Version 12. Die fertige App gibt es als signierte APK unter
 [Releases](https://github.com/Cloakyi/innotebox/releases); was sich je Fassung geändert hat,
-steht in [CHANGELOG.md](CHANGELOG.md). Offen ist noch die Verschlüsselung der Datenbank.
+steht in [CHANGELOG.md](CHANGELOG.md). Offen ist noch die Verschlüsselung der Datenbank, siehe
+[Wo die Daten liegen](#wo-die-daten-liegen-und-was-verschlüsselt-ist).
 
 Ab Alpha 11 baut und signiert GitHub jede APK selbst aus dem Quelltext des jeweiligen Stands
 und bescheinigt ihre Herkunft. Gebaut wird nur, wenn alle Prüfungen bestehen, auch die, die
@@ -50,9 +51,32 @@ gh attestation verify InNoteBox-Alpha-12.1.apk --repo Cloakyi/innotebox
 
 Angeboten wird nur die jeweils neueste Fassung.
 
+## Wo die Daten liegen und was verschlüsselt ist
+
+**InNoteBox verschlüsselt derzeit nichts selbst.** Das ist bewusst offen gesagt, damit sich
+niemand auf einen Schutz verlässt, den es nicht gibt.
+
+| Wo | Was | Verschlüsselt? |
+|---|---|---|
+| Auf dem Handy | Datenbank (Room/SQLite), Bilder, Aufnahmen | **Nein.** Sie liegen im privaten Speicher der App, an den andere Apps nicht herankommen. Ist das Handy selbst verschlüsselt (bei Android ab Version 10 Standard), gilt das auch für diese Dateien. |
+| Sicherungsdatei `.notesbak` | Alle Notizen, Anhänge, Ordner und Tags | **Nein.** Ein gewöhnliches ZIP mit lesbarem JSON, damit du auch ohne die App an deine Daten kommst ([SYNC.md](SYNC.md), Abschnitt 15). Bewahre sie auf wie ein offenes Notizbuch. |
+| Google Drive (Abgleich) | Eine lesbare JSON-Datei je Notiz, dazu die Anhänge | **Nein**, nicht durch die App. Die Übertragung läuft über HTTPS, gespeichert wird so, wie Google Drive Dateien speichert. |
+| Android Keystore | Der Schlüssel, mit dem die App deine Zustimmung zur KI **signiert** | Der Schlüssel verlässt das Gerät nicht. Er signiert nur, er verschlüsselt keine Notizen. |
+
+Die **Sperre** (Fingerabdruck, Gesicht, Bildschirmsperre) schützt die Oberfläche der App, nicht
+die Dateien. Der **Aufnahmeschutz** verhindert Bildschirmfotos. Eine Verschlüsselung der
+Datenbank und der Anhänge ist geplant und wird vorher einzeln entworfen
+([Fahrplan](https://github.com/users/Cloakyi/projects/1), Issue #2). Wie Sicherheitslücken
+gemeldet werden, steht in [SECURITY.md](SECURITY.md).
+
+## Rechtliches
+
 Impressum und Datenschutzerklärung stehen auf der Webseite:
 [innotebox.de/impressum](https://innotebox.de/impressum),
-[innotebox.de/datenschutz](https://innotebox.de/datenschutz).
+[innotebox.de/datenschutz](https://innotebox.de/datenschutz). Haftung und Gewährleistung regelt
+der [Haftungsausschluss](https://innotebox.de/haftungsausschluss); für den Code gilt zusätzlich
+der Ausschluss der Gewährleistung in Abschnitt 15 und 16 der GPL. InNoteBox ist eine
+Testfassung: Lege regelmäßig eine Sicherung an.
 
 ## Selbst bauen
 
