@@ -14,4 +14,4 @@ body:
     id: umgebung
     attributes:
       label: Handy, Android-Version und Fassung der App
-      placeholder: z. B. Pixel 10, Android 17, Alpha 12.1
+      placeholder: z. B. Pixel 10, Android 17, Alpha 13

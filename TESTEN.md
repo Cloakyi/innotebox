@@ -165,7 +165,7 @@ Termine:
 - [ ] Den Block mit dem Finger verschieben, auch in einen anderen Tag. Er bleibt unter dem Finger.
 - [ ] Den unteren Punkt des Blocks langsam nach unten ziehen. Das Ende folgt dem Finger in Viertelstunden und springt nicht bis ans Ende des Tages. Dasselbe mit dem oberen Punkt nach oben.
 - [ ] Das Blatt nach unten wegziehen und loslassen. Der Block blendet sofort aus, nicht erst, wenn das Blatt unten ist.
-- [ ] Einen gespeicherten Termin antippen. Er öffnet sich groß mit Symbol, Zeit und Ort.
+- [ ] Einen gespeicherten Termin antippen. Er öffnet sich groß mit Symbol und Zeit. Ist ein Ort eingetragen, steht er darunter.
 
 Wiederholen:
 
