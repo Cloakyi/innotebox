@@ -10,6 +10,8 @@ import de.notizen.core.data.model.NoteColor
 import de.notizen.core.data.model.NoteType
 import de.notizen.core.data.model.Stage
 import de.notizen.core.data.model.SyncStatus
+import de.notizen.core.data.model.Terminart
+import de.notizen.core.data.model.Wiederholung
 
 /**
  * Aufzaehlungstypen werden als NAME gespeichert, nie als Ordinalzahl.
@@ -57,4 +59,31 @@ class Converters {
     @TypeConverter fun bereichToString(value: Bereich): String = value.name
 
     @TypeConverter fun stringToBereich(value: String): Bereich = Bereich.valueOf(value)
+
+    @TypeConverter fun terminartToString(value: Terminart): String = value.name
+
+    @TypeConverter fun stringToTerminart(value: String): Terminart = Terminart.valueOf(value)
+
+    @TypeConverter fun wiederholungToString(value: Wiederholung): String = value.name
+
+    @TypeConverter fun stringToWiederholung(value: String): Wiederholung = Wiederholung.valueOf(value)
+
+    // Die Zahlenlisten der Termine (SYNC.md 16.3) als JSON-Text: "[30,10]".
+    // Zwei Namen fuer die JVM, weil List<Int> und List<Long> dort gleich aussehen.
+
+    @JvmName("intsToString")
+    @TypeConverter fun intsToString(value: List<Int>): String = value.joinToString(",", "[", "]")
+
+    @JvmName("stringToInts")
+    @TypeConverter fun stringToInts(value: String): List<Int> = zahlen(value).map { it.toInt() }
+
+    @JvmName("longsToString")
+    @TypeConverter fun longsToString(value: List<Long>): String = value.joinToString(",", "[", "]")
+
+    @JvmName("stringToLongs")
+    @TypeConverter fun stringToLongs(value: String): List<Long> = zahlen(value)
+
+    private fun zahlen(text: String): List<Long> =
+        text.trim().removePrefix("[").removeSuffix("]").split(',')
+            .mapNotNull { it.trim().toLongOrNull() }
 }

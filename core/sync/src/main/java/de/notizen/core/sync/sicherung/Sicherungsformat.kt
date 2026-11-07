@@ -21,8 +21,11 @@ import java.util.Locale
  * die Fassung steigt trotzdem, damit eine aeltere App die Datei als neuer
  * erkennt und nicht halb versteht. Fassung 1 bis 3 lesen sich weiter, die
  * fehlenden Felder gelten als null bzw. ORDNER.
+ *
+ * Fassung 5 (2026-10-30): dazu `calendars.json` und `events.json`, der
+ * Kalender der App (SYNC.md 16). Fassung 1 bis 4 lesen sich weiter, ohne Kalender.
  */
-const val SICHERUNG_VERSION = 4
+const val SICHERUNG_VERSION = 5
 
 /** Die Endung. Steht hier einmal, damit sie nicht an drei Stellen getippt wird. */
 const val ENDUNG = "notesbak"
@@ -32,6 +35,10 @@ const val EINTRAG_KOPF = "manifest.json"
 const val EINTRAG_NOTIZEN = "notes.json"
 const val EINTRAG_TAGS = "tags.json"
 const val EINTRAG_ORDNER = "folders.json"
+
+/** Seit Fassung 5: der Kalender der App. */
+const val EINTRAG_KALENDER = "calendars.json"
+const val EINTRAG_TERMINE = "events.json"
 
 /** Seit Fassung 3: die Zaehlerstaende je Entitaet und die Grabsteine (SYNC.md 10). */
 const val EINTRAG_ZAEHLER = "revs.json"

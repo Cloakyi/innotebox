@@ -103,12 +103,11 @@ data class EditorState(
      * ein Schalter, der seinen eigenen Stand nicht kennt, geraten ist.
      */
     val abgleichAn: Boolean = true,
-    val kalenderAn: Boolean = true,
 
     /**
      * Der Ordner, in dem diese Notiz liegt, oder `null` fuer den Hauptordner.
      *
-     * Anders als [abgleichAn] und [kalenderAn] geht dieses Feld mit nach Drive.
+     * Anders als [abgleichAn] geht dieses Feld mit nach Drive.
      * Es steht hier trotzdem aus demselben Grund: Das Menue zeigt den Ordner
      * an, und eine Anzeige, die ihren eigenen Stand nicht kennt, ist geraten.
      */
@@ -205,7 +204,6 @@ class EditorViewModel @Inject constructor(
                     hintergrundId = n.note.backgroundAttachmentId,
                     hintergrund = hintergrundVon(n),
                     abgleichAn = n.note.syncEnabled,
-                    kalenderAn = n.note.calendarEnabled,
                     ordnerId = n.note.folderId,
                     imOrdnerArchiv = n.note.ordnerArchiviertAt != null,
                 )
@@ -743,27 +741,6 @@ class EditorViewModel @Inject constructor(
      * Das Wegräumen in Drive passiert nicht hier: Es braucht Netz, und Netz
      * gehört nicht hinter eine Schaltfläche. Der nächste Abgleich erledigt es.
      */
-    /**
-     * Nimmt diese Notiz vom Kalender aus oder wieder hinein.
-     *
-     * Der Termin selbst wird hier nicht angefasst. Das macht der
-     * `Kalenderspiegel`, der auf die Datenbank sieht: Zwei Stellen, die Termine
-     * schreiben, waeren eine zu viel.
-     */
-    fun kalenderUmschalten() {
-        val neu = !_state.value.kalenderAn
-        _state.update { it.copy(kalenderAn = neu) }
-        viewModelScope.launch {
-            notes.setKalender(noteId, neu)
-            _hinweis.value = if (neu) {
-                "Diese Notiz erscheint wieder im Kalender."
-            } else {
-                "Diese Notiz erscheint nicht mehr im Kalender. Die Erinnerung " +
-                    "klingelt trotzdem."
-            }
-        }
-    }
-
     /**
      * Legt diese Notiz in einen Ordner. `null` nimmt sie aus jedem heraus.
      *

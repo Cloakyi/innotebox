@@ -31,6 +31,8 @@ object Routes {
     const val PROTOKOLL = "protokoll"
     const val LIZENZEN = "lizenzen"
     const val KALENDER = "kalender"
+
+    const val KALENDER_EINSTELLUNGEN = "kalender/einstellungen"
     const val EDITOR = "editor/{noteId}"
 
     /**

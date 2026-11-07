@@ -56,10 +56,6 @@ enum class Berechtigung(val titel: String, val wozu: String) {
         "Mikrofon",
         "Für Sprachnotizen. Die Aufnahme bleibt auf dem Gerät.",
     ),
-    KALENDER(
-        "Kalender",
-        "Damit Erinnerungen auch im Kalender des Geräts stehen.",
-    ),
     EXAKTE_ALARME(
         "Erinnerungen auf die Minute",
         "Ohne diese Einstellung darf Android eine Erinnerung um bis zu eine Stunde verschieben.",
@@ -74,9 +70,6 @@ enum class Berechtigung(val titel: String, val wozu: String) {
 fun erteilt(context: Context, was: Berechtigung): Boolean = when (was) {
     Berechtigung.BENACHRICHTIGUNGEN -> gewaehrt(context, Manifest.permission.POST_NOTIFICATIONS)
     Berechtigung.MIKROFON -> gewaehrt(context, Manifest.permission.RECORD_AUDIO)
-    Berechtigung.KALENDER ->
-        gewaehrt(context, Manifest.permission.READ_CALENDAR) &&
-            gewaehrt(context, Manifest.permission.WRITE_CALENDAR)
     Berechtigung.EXAKTE_ALARME ->
         context.getSystemService(AlarmManager::class.java)?.canScheduleExactAlarms() == true
     Berechtigung.ENERGIESPAREN ->
@@ -129,7 +122,6 @@ fun Berechtigungsdialog(): Boolean {
     if (!offen || fehlend.isEmpty()) return false
 
     val einzeln = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { stand++ }
-    val mehrere = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { stand++ }
 
     AlertDialog(
         onDismissRequest = { offen = false },
@@ -172,12 +164,6 @@ fun Berechtigungsdialog(): Boolean {
                                         Berechtigung.BENACHRICHTIGUNGEN ->
                                             einzeln.launch(Manifest.permission.POST_NOTIFICATIONS)
                                         Berechtigung.MIKROFON -> einzeln.launch(Manifest.permission.RECORD_AUDIO)
-                                        Berechtigung.KALENDER -> mehrere.launch(
-                                            arrayOf(
-                                                Manifest.permission.READ_CALENDAR,
-                                                Manifest.permission.WRITE_CALENDAR,
-                                            ),
-                                        )
                                         // Systemeinstellungen: versuchen und den Fehlschlag
                                         // abfangen, nicht vorab pruefen (docs/ENTSCHEIDUNGEN.md, resolveActivity).
                                         Berechtigung.EXAKTE_ALARME -> runCatching {

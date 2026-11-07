@@ -12,6 +12,7 @@ import de.notizen.core.data.repository.FolderRepository
 import de.notizen.core.data.repository.NoteContent
 import de.notizen.core.data.repository.NoteRepository
 import de.notizen.core.data.repository.TagRepository
+import de.notizen.core.data.repository.KalenderRepository
 import de.notizen.core.data.util.Clock
 import de.notizen.core.sync.sicherung.Sicherung
 import org.robolectric.RuntimeEnvironment
@@ -74,6 +75,7 @@ class Testclient(
     )
     val ordner = FolderRepository(db, db.folderDao(), db.noteDao(), db.syncDao(), uhr)
     val tags = TagRepository(db, db.tagDao(), db.syncDao(), uhr)
+    val kalender = KalenderRepository(db, db.kalenderDao(), db.syncDao(), einstellungen, uhr)
 
     val abgleich = Abgleich(
         drive = drive,
@@ -85,6 +87,7 @@ class Testclient(
         reminderDao = db.reminderDao(),
         tagDao = db.tagDao(),
         folderDao = db.folderDao(),
+        kalenderDao = db.kalenderDao(),
         ablage = ablage,
         weckdienst = weckdienst,
         db = db,
@@ -98,6 +101,7 @@ class Testclient(
         noteDao = db.noteDao(),
         tagDao = db.tagDao(),
         folderDao = db.folderDao(),
+        kalenderDao = db.kalenderDao(),
         attachmentDao = db.attachmentDao(),
         transcriptDao = db.transcriptDao(),
         syncDao = db.syncDao(),

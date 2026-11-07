@@ -6,6 +6,7 @@ import de.notizen.core.data.aussen.Weckdienst
 import de.notizen.core.data.db.NotizenDatabase
 import de.notizen.core.data.db.dao.AttachmentDao
 import de.notizen.core.data.db.dao.FolderDao
+import de.notizen.core.data.db.dao.KalenderDao
 import de.notizen.core.data.db.dao.NoteDao
 import de.notizen.core.data.db.dao.SyncDao
 import de.notizen.core.data.db.dao.TagDao
@@ -21,7 +22,9 @@ import de.notizen.core.sync.alsDokument
 import de.notizen.core.sync.alsEintraege
 import de.notizen.core.sync.alsNotiz
 import de.notizen.core.sync.alsOrdner
+import de.notizen.core.sync.alsKalender
 import de.notizen.core.sync.alsTag
+import de.notizen.core.sync.alsTermin
 import de.notizen.core.sync.alsTranskripte
 import java.io.File
 import java.io.InputStream
@@ -83,6 +86,7 @@ class Sicherung @Inject constructor(
     private val noteDao: NoteDao,
     private val tagDao: TagDao,
     private val folderDao: FolderDao,
+    private val kalenderDao: KalenderDao,
     private val attachmentDao: AttachmentDao,
     private val transcriptDao: TranscriptDao,
     private val syncDao: SyncDao,
@@ -141,12 +145,12 @@ class Sicherung @Inject constructor(
         // Abgleich gegen den Spiegel; ohne die Grabsteine kaeme Geloeschtes
         // aus dem Spiegel zurueck.
         val zaehler = syncDao.alleStaende()
-            .filter { it.entityType == EntityType.NOTE || it.entityType == EntityType.FOLDER || it.entityType == EntityType.TAG }
+            .filter { it.entityType in SICHERBAR }
             .filter { it.baseRev > 0 }
             .filter { !nurAbgleichbare || it.entityType != EntityType.NOTE || it.entityId in enthalten }
             .map { Zaehlerstand(it.entityType.name, it.entityId, it.baseRev) }
         val grabsteine = syncDao.allTombstones()
-            .filter { it.entityType == EntityType.NOTE || it.entityType == EntityType.FOLDER || it.entityType == EntityType.TAG }
+            .filter { it.entityType in SICHERBAR }
             .map { Grabsteineintrag(it.entityType.name, it.entityId, it.deletedAt, it.rev) }
 
         val bericht = paket.packen(
@@ -163,6 +167,9 @@ class Sicherung @Inject constructor(
             ordner = ordner,
             zaehler = zaehler,
             geloescht = grabsteine,
+            kalender = kalenderDao.alleKalender().map { it.alsDokument() },
+            termine = kalenderDao.alleTermine().map { it.alsDokument() },
+            bildFuer = { ablage.ziel(it, "image/jpeg") },
             notizIds = ids,
             notizFuer = { id ->
                 noteDao.getById(id)?.let { voll ->
@@ -250,6 +257,7 @@ class Sicherung @Inject constructor(
         // gezeichnet wird, aber die Reihenfolge ist dieselbe wie beim Abgleich,
         // und zwei Wege, die dasselbe tun, sollen es gleich tun.
         ordnerUebernehmen(inhalt)
+        kalenderUebernehmen(inhalt)
         var neu = 0
         var ersetzt = 0
         var behalten = 0
@@ -332,6 +340,25 @@ class Sicherung @Inject constructor(
             uebernommen++
         }
         return uebernommen
+    }
+
+    /**
+     * Kalender und Termine aus der Datei (seit Fassung 5). Dieselbe Regel:
+     * Der neuere Stand gewinnt, geloescht wird nie.
+     */
+    private suspend fun kalenderUebernehmen(inhalt: Sicherungsinhalt) {
+        for (k in inhalt.kalender) {
+            val lokal = kalenderDao.kalenderById(k.id)
+            if (entscheiden(lokal?.updatedAt, k.updatedAt) == Uebernahme.BEHALTEN) continue
+            kalenderDao.kalenderSpeichern(listOf(k.alsKalender()))
+            vormerken(EntityType.EVENT_CALENDAR, k.id, k.updatedAt)
+        }
+        for (t in inhalt.termine) {
+            val lokal = kalenderDao.terminById(t.id)
+            if (entscheiden(lokal?.updatedAt, t.updatedAt) == Uebernahme.BEHALTEN) continue
+            kalenderDao.termineSpeichern(listOf(t.alsTermin()))
+            vormerken(EntityType.EVENT, t.id, t.updatedAt)
+        }
     }
 
     /**
@@ -467,3 +494,12 @@ class Sicherung @Inject constructor(
         weckdienst.uebernehmen(eintrag.notiz.id, eintrag.notiz.title, termine)
     }
 }
+
+/** Was in die Zaehlerstaende und Grabsteine einer Sicherung gehoert. */
+private val SICHERBAR = setOf(
+    EntityType.NOTE,
+    EntityType.FOLDER,
+    EntityType.TAG,
+    EntityType.EVENT_CALENDAR,
+    EntityType.EVENT,
+)

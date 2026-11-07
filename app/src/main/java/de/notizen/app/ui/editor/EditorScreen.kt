@@ -816,8 +816,6 @@ fun EditorScreen(
         NotizMenueBlatt(
             anzahlTags = meineTags.size,
             abgleichAn = state.abgleichAn,
-            kalenderAn = state.kalenderAn,
-            hatErinnerung = state.erinnerungAn != null,
             zeigeOrdner = ordnermodus,
             ordnername = ordnerViewModel.baumzeilen()
                 .firstOrNull { it.ordner.id == state.ordnerId }?.ordner?.name,
@@ -837,10 +835,6 @@ fun EditorScreen(
             onAbgleich = {
                 menueBlattOffen = false
                 viewModel.abgleichUmschalten()
-            },
-            onKalender = {
-                menueBlattOffen = false
-                viewModel.kalenderUmschalten()
             },
             onJetztSichern = {
                 menueBlattOffen = false

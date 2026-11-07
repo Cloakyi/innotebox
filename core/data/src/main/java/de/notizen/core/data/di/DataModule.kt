@@ -17,6 +17,7 @@ import de.notizen.core.data.db.NotizenDatabase
 import de.notizen.core.data.db.dao.ArchiveDao
 import de.notizen.core.data.db.dao.AttachmentDao
 import de.notizen.core.data.db.dao.FolderDao
+import de.notizen.core.data.db.dao.KalenderDao
 import de.notizen.core.data.db.dao.NoteDao
 import de.notizen.core.data.db.dao.ReminderDao
 import de.notizen.core.data.db.dao.SearchDao
@@ -72,6 +73,8 @@ object DatabaseModule {
     @Provides fun provideFolderDao(db: NotizenDatabase): FolderDao = db.folderDao()
 
     @Provides fun provideSyncDao(db: NotizenDatabase): SyncDao = db.syncDao()
+
+    @Provides fun provideKalenderDao(db: NotizenDatabase): KalenderDao = db.kalenderDao()
 }
 
 @Module

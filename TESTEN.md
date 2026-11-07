@@ -59,8 +59,8 @@ Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 
 ## Erster Start
 
-- [ ] Beim Start erscheint „Was die App braucht“, solange eine von fünf Berechtigungen fehlt: Benachrichtigungen, Mikrofon, Kalender, Erinnerungen auf die Minute und die Ausnahme vom Energiesparen. „Erlauben“ führt in die Systemeinstellung, danach steht ein Haken daneben.
-- [ ] „Später“ schließt das Fenster. Beim nächsten Start kommt es wieder, solange etwas fehlt. Sind alle fünf erteilt, erscheint es nicht mehr.
+- [ ] Beim Start erscheint „Was die App braucht“, solange eine von vier Berechtigungen fehlt: Benachrichtigungen, Mikrofon, Erinnerungen auf die Minute und die Ausnahme vom Energiesparen. „Erlauben“ führt in die Systemeinstellung, danach steht ein Haken daneben.
+- [ ] „Später“ schließt das Fenster. Beim nächsten Start kommt es wieder, solange etwas fehlt. Sind alle vier erteilt, erscheint es nicht mehr.
 - [ ] Danach fragt die App, ob die KI auf dem Gerät arbeiten darf. „Einschalten“ bleibt grau, bis das Häkchen bei „Ich bin mindestens 18 Jahre alt.“ sitzt.
 - [ ] „Datenschutzerklärung lesen“ öffnet die Seite im Browser.
 - [ ] Neben das Fenster tippen. Es schließt sich und kommt beim nächsten Start wieder.
@@ -75,11 +75,17 @@ Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 - [ ] Ein Bild hinzufügen, als Foto oder aus der Galerie. Es erscheint in der Notiz.
 - [ ] Das Bild antippen und „Als Hintergrund“ wählen. Die Karte im Eingang zeigt es als Hintergrund. „Kein Hintergrund“ nimmt es wieder weg.
 - [ ] Eine Erinnerung in zwei Minuten stellen. In der Notiz steht „Erinnerung am …“, und zur gewählten Minute kommt eine Benachrichtigung.
-- [ ] Unter Einstellungen, Kalender „Erinnerungen im Kalender“ einschalten. Die Erinnerung steht jetzt auch im Kalender des Handys.
 - [ ] Den Stern antippen. Die Notiz steht im Eingang bei den Favoriten.
 - [ ] Der Notiz eine Farbe und einen Tag geben. Neue Tags legst du unter „Tags verwalten“ an.
 - [ ] Über die drei Punkte „Kopie erstellen“. Die Kopie liegt im Eingang. „Teilen“ öffnet die Auswahl von Android.
 - [ ] In Chrome eine Seite teilen und InNoteBox wählen. Eine neue Notiz im Eingang geht auf. Oben im Text steht der Titel der Seite, darunter ihre Adresse, und das Titelfeld bleibt leer.
+
+## Kalender
+
+- [ ] In der Seitenspalte den Kalender öffnen. Über das Plus unten rechts einen Termin anlegen, ihm einen Titel geben, die Zeile „Einmalig“ antippen und „Jede Woche“ wählen. Der Termin steht danach in jeder Woche.
+- [ ] Dort „Benutzerdefiniert…“ wählen, zum Beispiel alle zwei Wochen am Montag und Donnerstag, mit Ende nach fünf Terminen. Im Kalender stehen genau fünf Termine an diesen Tagen.
+- [ ] Über das Plus einen Geburtstag anlegen. Er ist ganztägig, steht im Kalender „Geburtstage“ und wiederholt sich jedes Jahr.
+- [ ] Über das Plus eine Aufgabe anlegen, einmal mit Datum und einmal „Ohne Datum“. Beide stehen in der Aufgabenliste oben rechts, im Kalender nur die mit Datum. Abhaken streicht sie durch.
 
 Listen:
 

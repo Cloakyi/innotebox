@@ -16,6 +16,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import de.notizen.app.erinnerung.ErinnerungEmpfaenger
+import de.notizen.app.kalender.Terminwecker
 import de.notizen.app.kalender.Kalenderzugang
 import de.notizen.app.ui.NotizenApp
 import de.notizen.app.ui.start.Berechtigungsdialog
@@ -59,6 +60,9 @@ class MainActivity : ComponentActivity() {
      * Aufgabe nach vorn und liefert den Auftrag über `onNewIntent`.
      */
     private val zuOeffnen = mutableStateOf<String?>(null)
+
+    /** Eine Terminbenachrichtigung wurde angetippt: Der Kalender soll aufgehen. */
+    private val kalenderOeffnen = mutableStateOf(false)
 
     /**
      * Die Sicherungsdatei, die aus einem Dateimanager hereingereicht wurde.
@@ -143,6 +147,8 @@ class MainActivity : ComponentActivity() {
                     // Zurueckgemeldet, sobald geoeffnet wurde. Sonst spraenge
                     // die App bei jeder Drehung wieder in dieselbe Notiz.
                     onGeoeffnet = { zuOeffnen.value = null },
+                    oeffneKalender = kalenderOeffnen.value,
+                    onKalenderGeoeffnet = { kalenderOeffnen.value = false },
                     // Eine hereingereichte Sicherung erst nach dem Entsperren.
                     // Sonst laege die Rueckfrage zum Einlesen ueber der Sperre.
                     lieseSicherung = zuLesen.value.takeIf { entschieden && !gesperrt },
@@ -189,6 +195,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun auftragLesen(intent: Intent) {
+        if (intent.getBooleanExtra(Terminwecker.EXTRA_KALENDER_OEFFNEN, false)) {
+            kalenderOeffnen.value = true
+            intent.removeExtra(Terminwecker.EXTRA_KALENDER_OEFFNEN)
+        }
+
         intent.getStringExtra(ErinnerungEmpfaenger.EXTRA_NOTIZ_OEFFNEN)?.let {
             zuOeffnen.value = it
             // Aus dem Intent entfernen, damit ein spaeteres Wiederaufnehmen der

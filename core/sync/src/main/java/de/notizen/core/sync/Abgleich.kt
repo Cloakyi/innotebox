@@ -7,12 +7,15 @@ import de.notizen.core.data.aussen.Weckdienst
 import de.notizen.core.data.db.NotizenDatabase
 import de.notizen.core.data.db.dao.AttachmentDao
 import de.notizen.core.data.db.dao.FolderDao
+import de.notizen.core.data.db.dao.KalenderDao
 import de.notizen.core.data.db.dao.NoteDao
 import de.notizen.core.data.db.dao.ReminderDao
 import de.notizen.core.data.db.dao.SyncDao
 import de.notizen.core.data.db.dao.TagDao
 import de.notizen.core.data.db.dao.TranscriptDao
 import de.notizen.core.data.db.entity.AttachmentEntity
+import de.notizen.core.data.db.entity.EventCalendarEntity
+import de.notizen.core.data.db.entity.EventEntity
 import de.notizen.core.data.db.entity.FolderEntity
 import de.notizen.core.data.db.entity.NoteTagCrossRef
 import de.notizen.core.data.db.entity.SyncStateEntity
@@ -147,6 +150,7 @@ class Abgleich @Inject constructor(
     private val reminderDao: ReminderDao,
     private val tagDao: TagDao,
     private val folderDao: FolderDao,
+    private val kalenderDao: KalenderDao,
     private val ablage: Anhangablage,
     private val weckdienst: Weckdienst,
     private val db: NotizenDatabase,
@@ -238,9 +242,36 @@ class Abgleich @Inject constructor(
         val ordnerordner = drive.ordner(token, ORDNER, wurzel)
         ordnerAbgleichen(token, geraet, ordnerordner, z)
 
+        // Der Kalender (SYNC.md 16): erst die Kalender, dann ihre Termine.
+        val kalenderordner = drive.ordner(token, KALENDER, wurzel)
+        entitaetenAbgleichen<Kalenderinhalt, EventCalendarEntity>(
+            token, geraet, kalenderordner, z, EntityType.EVENT_CALENDAR,
+            lokal = kalenderDao.alleKalender().associateBy { it.id },
+            deletedAt = { it.deletedAt },
+            updatedAt = { it.updatedAt },
+            createdAt = { it.createdAt },
+            inhalt = { it.alsInhalt() },
+            ausHuelle = { it.alsKalenderdokument()?.alsKalender() },
+            mitZustand = { e, geloescht, zeit -> e.copy(deletedAt = geloescht, updatedAt = zeit) },
+            speichern = { kalenderDao.kalenderSpeichern(listOf(it)) },
+        )
+        val terminordner = drive.ordner(token, TERMINE, wurzel)
+        entitaetenAbgleichen<Termininhalt, EventEntity>(
+            token, geraet, terminordner, z, EntityType.EVENT,
+            lokal = kalenderDao.alleTermine().associateBy { it.id },
+            deletedAt = { it.deletedAt },
+            updatedAt = { it.updatedAt },
+            createdAt = { it.createdAt },
+            inhalt = { it.alsInhalt() },
+            ausHuelle = { it.alsTermindokument()?.alsTermin() },
+            mitZustand = { e, geloescht, zeit -> e.copy(deletedAt = geloescht, updatedAt = zeit) },
+            speichern = { kalenderDao.termineSpeichern(listOf(it)) },
+        )
+
         val notizordner = drive.ordner(token, NOTIZEN, wurzel)
         val anhaenge = Anhangordner(token, wurzel)
         notizenAbgleichen(token, geraet, notizordner, anhaenge, z)
+        terminbilderAbgleichen(token, anhaenge)
 
         // -------------------------------------------------------- Aufraeumen
         schritt(Abgleichschritt.Aufraeumen)
@@ -393,6 +424,18 @@ class Abgleich @Inject constructor(
             EntityType.TAG -> db.withTransaction {
                 syncDao.dropState(typ, id)
                 tagDao.purge(id)
+            }
+            EntityType.EVENT_CALENDAR -> db.withTransaction {
+                syncDao.dropState(typ, id)
+                kalenderDao.kalenderEntfernen(id)
+            }
+            EntityType.EVENT -> {
+                val bild = kalenderDao.terminById(id)?.bannerId
+                db.withTransaction {
+                    syncDao.dropState(typ, id)
+                    kalenderDao.terminEntfernen(id)
+                }
+                bild?.let { runCatching { ablage.ziel(it, BILDTYP).delete() } }
             }
             else -> Unit
         }
@@ -632,6 +675,151 @@ class Abgleich @Inject constructor(
                 EntityType.FOLDER, zeile.id, huelle.rev, datei.id, datei.headRevisionId, zeile.updatedAt, clock.now(),
             )
         }
+    }
+
+    // ---------------------------------------------------------- Kalender
+
+    /**
+     * Kalender und Termine (SYNC.md 16), nach denselben Regeln wie Tags und
+     * Ordner: eine Datei je Eintrag, geloescht wird weich, und bei einem
+     * Konflikt gewinnt die Fassung mit dem spaeteren `updatedAt`. Eine Kopie
+     * eines Termins anzulegen hiesse, ihn doppelt klingeln zu lassen.
+     */
+    private suspend inline fun <reified I, E : Any> entitaetenAbgleichen(
+        token: String,
+        geraet: String,
+        ordnerId: String,
+        z: Zaehler,
+        typ: EntityType,
+        lokal: Map<String, E>,
+        deletedAt: (E) -> Long?,
+        crossinline updatedAt: (E) -> Long,
+        createdAt: (E) -> Long,
+        inhalt: (E) -> I,
+        ausHuelle: (Huelle<I>) -> E?,
+        mitZustand: (E, Long?, Long) -> E,
+        crossinline speichern: suspend (E) -> Unit,
+    ) {
+        val fern = drive.inhalt(token, ordnerId).filter { it.name.endsWith(".json") }.associateBy { it.name }
+        val steine = syncDao.tombstonesOf(typ).associateBy { it.entityId }
+        val ids = lokal.keys + steine.keys + fern.keys.map { it.removeSuffix(".json") }
+
+        for (id in ids) {
+            val datei = fern["$id.json"]
+            val eigen = lokal[id]
+            val huelle = datei?.let { fernHuelle<I>(token, it, z) }
+            if (datei != null && huelle == null) continue
+
+            val stand = lokalstand(typ, id, eigen != null, eigen?.let(deletedAt), eigen?.let(updatedAt) ?: 0)
+            when (val tat = Abgleichregeln.entscheiden(stand, huelle?.alsFern())) {
+                Handlung.Nichts -> Unit
+
+                is Handlung.Hochladen -> if (eigen != null) {
+                    eintragHochladen(token, ordnerId, datei, typ, id, tat.rev, geraet,
+                        deletedAt(eigen), createdAt(eigen), updatedAt(eigen), inhalt(eigen))
+                    z.hochgeladen++
+                } else {
+                    steine[id]?.let { grabsteinHochladen(token, ordnerId, datei, it, tat.rev, geraet) }
+                }
+
+                is Handlung.FehltDrueben -> if (eigen != null) {
+                    eintragHochladen(token, ordnerId, null, typ, id, tat.rev, geraet,
+                        deletedAt(eigen), createdAt(eigen), updatedAt(eigen), inhalt(eigen))
+                    z.fehlend++
+                }
+
+                Handlung.Herunterladen -> {
+                    val h = huelle ?: continue
+                    if (h.state == Zustand.DELETED) {
+                        if (eigen != null) {
+                            grabsteinUebernehmen(typ, id, h)
+                            z.geloescht++
+                        }
+                    } else {
+                        val zeile = ausHuelle(h) ?: continue
+                        db.withTransaction {
+                            speichern(zeile)
+                            syncDao.abgeglichen(typ, id, h.rev, datei!!.id, datei.headRevisionId, updatedAt(zeile), clock.now())
+                        }
+                        z.geholt++
+                    }
+                }
+
+                is Handlung.Konflikt -> {
+                    val h = huelle ?: continue
+                    when (val a = tat.aufloesung) {
+                        Aufloesung.GeloeschtGewinnt -> if (eigen != null) {
+                            if (h.state == Zustand.DELETED) {
+                                grabsteinUebernehmen(typ, id, h)
+                                z.geloescht++
+                            }
+                        } else {
+                            steine[id]?.let { grabsteinHochladen(token, ordnerId, datei, it, tat.rev, geraet) }
+                        }
+
+                        is Aufloesung.PapierkorbGewinnt -> {
+                            val e = eigen ?: continue
+                            val f = ausHuelle(h) ?: continue
+                            val basis = if (a.inhaltVonDrueben) f else e
+                            val vereint = mitZustand(
+                                basis,
+                                deletedAt(e) ?: deletedAt(f),
+                                maxOf(updatedAt(e), updatedAt(f)),
+                            )
+                            db.withTransaction { speichern(vereint) }
+                            eintragHochladen(token, ordnerId, datei, typ, id, tat.rev, geraet,
+                                deletedAt(vereint), createdAt(vereint), updatedAt(vereint), inhalt(vereint))
+                            z.hochgeladen++
+                        }
+
+                        is Aufloesung.Kopie -> {
+                            val e = eigen ?: continue
+                            if (a.fernGewinnt) {
+                                val zeile = ausHuelle(h) ?: continue
+                                db.withTransaction {
+                                    speichern(zeile)
+                                    syncDao.abgeglichen(typ, id, h.rev, datei!!.id, datei.headRevisionId, updatedAt(zeile), clock.now())
+                                }
+                                z.geholt++
+                            } else {
+                                eintragHochladen(token, ordnerId, datei, typ, id, tat.rev, geraet,
+                                    deletedAt(e), createdAt(e), updatedAt(e), inhalt(e))
+                                z.hochgeladen++
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /** Schreibt einen Kalender oder Termin als Huelle nach Drive und hakt ihn ab. */
+    private suspend inline fun <reified I> eintragHochladen(
+        token: String,
+        ordnerId: String,
+        vorhanden: Drivedatei?,
+        typ: EntityType,
+        id: String,
+        rev: Long,
+        geraet: String,
+        deletedAt: Long?,
+        createdAt: Long,
+        updatedAt: Long,
+        inhalt: I,
+    ) {
+        val huelle = Huelle(
+            schemaVersion = SCHEMA_VERSION_6,
+            id = id,
+            type = typ.name,
+            rev = rev,
+            lastEditor = geraet,
+            state = zustandVon(deletedAt),
+            stateChangedAt = deletedAt ?: createdAt,
+            updatedAt = updatedAt,
+            payload = inhalt,
+        )
+        val datei = schreiben(token, ordnerId, vorhanden, huelle)
+        syncDao.abgeglichen(typ, id, rev, datei.id, datei.headRevisionId, updatedAt, clock.now())
     }
 
     // ---------------------------------------------------------- Notizen
@@ -969,7 +1157,8 @@ class Abgleich @Inject constructor(
                 EntityType.ATTACHMENT -> attachmentDao.noteIdOf(zustand.entityId)?.let { ids += it }
                 EntityType.TRANSCRIPT -> transcriptDao.noteIdOf(zustand.entityId)?.let { ids += it }
                 EntityType.REMINDER -> reminderDao.noteIdOf(zustand.entityId)?.let { ids += it }
-                EntityType.TAG, EntityType.NOTE_ITEM, EntityType.FOLDER, EntityType.CALENDAR -> Unit
+                EntityType.TAG, EntityType.NOTE_ITEM, EntityType.FOLDER, EntityType.CALENDAR,
+                EntityType.EVENT_CALENDAR, EntityType.EVENT -> Unit
             }
         }
         return ids
@@ -998,6 +1187,32 @@ class Abgleich @Inject constructor(
             val abgelegt = drueben[name] ?: drive.anlegenBinaer(token, ziel, name, anhang.mimeType, datei)
                 .also { anhaenge.vergessen() }
             attachmentDao.upsertAll(listOf(anhang.copy(remoteId = abgelegt.id)))
+        }
+    }
+
+    /**
+     * Die eigenen Bilder der Termine (SYNC.md 16.2): hoch, was drueben fehlt,
+     * herunter, was hier fehlt. Gefunden wird ueber den Namen, eine Datei
+     * aendert sich nie. Ein Fehlschlag wartet auf den naechsten Lauf.
+     */
+    private suspend fun terminbilderAbgleichen(token: String, anhaenge: Anhangordner) {
+        val bilder = kalenderDao.alleTermine().filter { it.deletedAt == null }.mapNotNull { it.bannerId }.distinct()
+        if (bilder.isEmpty()) return
+        val drueben = anhaenge.dateien()
+        for (bild in bilder) {
+            val name = bild + "." + endungFuer(BILDTYP)
+            val datei = ablage.ziel(bild, BILDTYP)
+            val hier = datei.exists() && datei.length() > 0L
+            val oben = drueben[name]
+            runCatching {
+                when {
+                    hier && oben == null -> {
+                        drive.anlegenBinaer(token, anhaenge.id(), name, BILDTYP, datei)
+                        anhaenge.vergessen()
+                    }
+                    !hier && oben != null -> drive.herunterladen(token, oben.id, datei)
+                }
+            }
         }
     }
 
@@ -1202,7 +1417,7 @@ class Abgleich @Inject constructor(
 
     private suspend fun alleGrabsteineLesen(token: String, wurzel: String): List<Grabsteinsicht> {
         val gefunden = ArrayList<Grabsteinsicht>()
-        for (unterordner in listOf(NOTIZEN, ORDNER, TAGS)) {
+        for (unterordner in listOf(NOTIZEN, ORDNER, TAGS, KALENDER, TERMINE)) {
             val ordnerId = drive.ordner(token, unterordner, wurzel)
             for (datei in drive.inhalt(token, ordnerId)) {
                 if (!datei.name.endsWith(".json")) continue
@@ -1222,8 +1437,11 @@ class Abgleich @Inject constructor(
         const val NOTIZEN = "notes"
         const val ORDNER = "folders"
         const val TAGS = "tags"
+        const val KALENDER = "calendars"
+        const val TERMINE = "events"
         const val ANHAENGE = "attachments"
         const val INDEX = "index.json"
         const val SCHEMA_DATEI = "SCHEMA.md"
+        const val BILDTYP = "image/jpeg"
     }
 }

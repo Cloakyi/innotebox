@@ -334,3 +334,94 @@ Abgleich ausgenommen sind; die Sicherungsdatei für die eigene Ablage enthält a
 wird nur nach einer Rückfrage, die den Kopf der Datei zeigt. Beim Auspacken gelten
 Obergrenzen (`Grenzen`: Größe je JSON-Teil und je Datei, Zahl der Einträge, freier Platz);
 wird eine überschritten, bricht das Einlesen ab und räumt Ausgepacktes wieder weg.
+
+## 15. Kalender und Termine
+
+Seit 2026-10-30 hat die App einen eigenen Kalender. Aufbau und Ansichten sind die, die man
+von verbreiteten Kalender-Apps kennt: Terminübersicht, Tag, 3 Tage, Woche und Monat, eine eigene Seitenspalte mit den
+Kalendern zum Ein- und Ausblenden, ein Plus für Termin, Aufgabe und Geburtstag. Drei Kalender
+legt die App von selbst an (`Mein Kalender`, `Aufgaben`, `Geburtstage`) und gibt ihnen feste
+Kennungen, damit zwei Geräte dieselben haben statt je drei eigene.
+
+**Keine Verbindung zu Google Kalender, in keine Richtung.** Kalender und Termine gehen
+denselben Weg wie Notizen: als Hüllen in die Ordner `calendars/` und `events/` des eigenen
+Drive (SYNC.md 16) und in die Sicherungsdatei (Fassung 5). Die Kalender-API von Google bleibt
+aus demselben Grund draußen wie in Abschnitt 10. Seit dem 2026-10-30 liest die App auch die
+Termine des Geräts nicht mehr, und sie schreibt die Erinnerungen der Notizen nicht mehr in
+dessen Kalender. Was frühere Fassungen dort eingetragen haben, räumt `Kalenderspiegel` beim
+Start weg, solange die Erlaubnis dafür noch besteht; deshalb bleiben `READ_CALENDAR` und
+`WRITE_CALENDAR` im Manifest.
+
+**Überlappende Blöcke im Raster** (`kaskade`). Termine, die innerhalb einer halben Stunde
+beginnen, stehen in einer Reihe nebeneinander; jeder greift dabei um das 1,7fache seiner Breite
+unter den rechten Nachbarn, der spätere liegt oben. Beginnt ein Termin später, während ein
+anderer läuft, liegt er um 12 Prozent eingerückt darüber, und der lange bleibt dahinter
+sichtbar. Bliebe dabei weniger als die halbe Breite, geht er in die Reihe. Blöcke, die über
+oder unter anderen liegen, tragen einen schmalen Rand in der Farbe des Hintergrunds.
+
+**Oben steht nur, was einen ganzen Tag dauert.** Ganztägige Termine und solche ab 24 Stunden
+stehen in der Leiste über dem Raster. Ein kürzerer Termin über Mitternacht steht im Raster,
+geteilt in einen Block je Tag mit „(1/2)“ und „(2/2)“ (`teil`).
+
+**Der Editor ist ein Blatt über dem Kalender**, keine eigene Seite. Halb offen sieht man den
+Kalender und darin den Block des Termins, den man mit dem Finger verschieben und an zwei
+Punkten in Viertelstunden länger oder kürzer ziehen kann. Ein Tipp auf eine freie Stelle legt
+so einen Block in der eingestellten Standarddauer an; das lässt sich abschalten, dann gibt es
+neue Termine nur über das Plus.
+
+**Aufgaben dürfen ohne Datum sein** (`undated`, SYNC.md 16.2). Sie haben dann weder Zeit noch
+Wiederholung noch Erinnerung, stehen nie im Kalender und klingeln nie (`Terminregeln` gibt für
+sie kein Vorkommen). Zu sehen sind sie in der Aufgabenliste oben rechts, die alle Aufgaben der
+Kalender nach Zeitpunkt ordnet. Listen in Notizen gehören nicht dazu.
+
+**Wiederholung** (2026-10-30). Die
+Auswahl bietet Einmalig, Täglich, Wöchentlich, Monatlich, Jährlich und „Benutzerdefiniert…“;
+dort gibt es den Abstand, bei Wochen die Tage und das Ende nach Datum oder Anzahl. Gespeichert
+wird das in vier Feldern neben `recurrence` (SYNC.md 16.2, Room 10), nicht als Regeltext nach
+iCalendar: Die Felder kann ein älterer Client einfach übergehen und rechnet dann die alte
+Serie. Die Anzahl zählt ausgelassene Vorkommen mit, wie bei iCalendar. `WERKTAGS` bleibt für
+alte Termine erhalten und erscheint in der Auswahl als eigene Serie. Monatlich gibt es nur
+den Tag des Monats, nicht „am letzten Freitag“. Konto, Zeitzone und Gäste aus Google gibt es
+nicht, weil die App ohne einen fremden Kalenderdienst auskommt.
+
+**Ein Termin zeigt oben sein Symbol oder ein eigenes Bild** (2026-10-30). Das Symbol suchen die Wörter sofort und, wenn die KI an ist, danach das
+Modell auf dem Gerät aus (`Symbolwahl`). Ein eigenes Bild liegt als `bannerId` am Termin und
+als Datei neben den Anhängen der Notizen, mit denselben Regeln: normalisiert, nie verändert,
+ein neues Bild bekommt eine neue Kennung. Der Abgleich holt und schickt die Datei über ihren
+Namen (`terminbilderAbgleichen`), die Sicherung nimmt sie mit. Ein eigenes Anhangsmodell für
+Termine wäre sauberer, kostete aber eine zweite Tabelle für genau ein Bild je Termin.
+
+**Erinnerungen aus Notizen erscheinen im Kalender** als eigene Ebene, abschaltbar. Sie bleiben
+Erinnerungen ihrer Notiz; der Kalender schreibt sie nicht um.
+
+**Ganztägige Termine liegen in UTC-Mitternacht**, das Ende ist der letzte Tag einschließlich.
+Ein Geburtstag ist damit überall auf der Welt am selben Datum. Ihre Erinnerungen zählen Minuten
+vor der lokalen Mitternacht des Tages; negativ heißt danach (-540 ist 9 Uhr am selben Tag).
+Serien werden in Ortszeit ausgerollt (`Terminregeln`), damit ein wöchentlicher Termin um
+10 Uhr auch nach der Zeitumstellung um 10 Uhr steht.
+
+**Ein Wecker je Art, nicht je Termin** (`Terminwecker`). Geplant wird immer nur der nächste
+fällige Zeitpunkt für normale und für wichtige Termine; beim Klingeln werden alle fälligen
+gezeigt und der nächste geplant. Ein Termin mehr oder weniger ändert damit nichts an der Zahl
+der Alarme, und nach Neustart, Zeitumstellung oder Wechsel der Zeitzone wird einfach neu
+gerechnet. Was bis zu zwei Stunden verpasst wurde, kommt nach.
+
+**Wichtige Termine klingeln wie ein Wecker.** Sie gehen über `setAlarmClock`, einen eigenen
+Kanal mit Weckerton und eine Benachrichtigung mit Vollbild, die bis zum Ausschalten klingelt
+(höchstens zehn Minuten). Der Vollbildschirm zeigt Symbol, Titel, Zeit und Ort; unten stehen
+Schlummern und ein großer Knopf zum Ausschalten. Fehlt die Erlaubnis für exakte Alarme oder für
+das Vollbild, sagt es der Editor und führt in die Einstellung. Bei gesperrter App steht in der
+Benachrichtigung nur „Termin“.
+
+**Das Symbol wählen zuerst die Wörter, dann die KI.** Beim Speichern setzt eine feste
+Wortliste sofort ein Symbol (das längste passende Wort am Wortanfang gewinnt, „Zahnarzt“ vor
+„Arzt“). Ist die KI eingeschaltet und zugestimmt, fragt die App danach das Modell auf dem
+Gerät und nimmt dessen Antwort nur, wenn sie ein Wort aus derselben festen Liste ist und der
+Titel sich inzwischen nicht geändert hat. Ein Geburtstag ist immer ein Kuchen.
+
+**Einstellungen und Vorgaben bleiben auf dem Gerät** (2026-11-07). Standarddauer,
+Kalenderwochen, Wochenende ausblenden, das Anlegen per Tipp und die Vorgaben je Kalender
+(Benachrichtigung, Dauer, ganztägig) liegen in den Einstellungen des Geräts, nicht in Drive,
+wie schon die ausgeblendeten Kalender: Was man sehen will, ist eine Frage des Geräts. Aufgaben
+und Geburtstage haben keine Vorgaben, für sie gelten feste Regeln. Wechselt man bei einem neuen
+Termin den Kalender, folgt nur, was noch so steht, wie der alte Kalender es vorgab.

@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import de.notizen.app.MainActivity
+import de.notizen.app.kalender.Terminwecker
 import de.notizen.core.data.prefs.Einstellungen
 import de.notizen.core.data.repository.NoteRepository
 import de.notizen.core.data.repository.ReminderRepository
@@ -171,7 +172,13 @@ class NeustartEmpfaenger : BroadcastReceiver() {
 
     @Inject lateinit var planer: ErinnerungPlaner
 
+    @Inject lateinit var terminwecker: Terminwecker
+
     override fun onReceive(context: Context, intent: Intent) {
+        // Die Wecker der Termine stellt der Start der App ohnehin neu
+        // (Terminwecker.beobachten). Eine neue Zeitzone erreicht einen schon
+        // laufenden Prozess aber nur hier.
+        terminwecker.neuPlanen()
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
 
         val fertig = goAsync()

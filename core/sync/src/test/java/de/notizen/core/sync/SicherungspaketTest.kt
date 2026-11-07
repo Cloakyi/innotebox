@@ -245,7 +245,7 @@ class SicherungspaketTest {
         val inhalt = paket.entpacken(ByteArrayInputStream(roh.toByteArray())) { null }
 
         assertEquals(SICHERUNG_VERSION, inhalt.kopf?.formatVersion)
-        assertEquals(4, SICHERUNG_VERSION)
+        assertEquals(5, SICHERUNG_VERSION)
         assertEquals(77L, inhalt.notizen.single().notiz.ordnerArchiviertAt)
         assertEquals("o-alt", inhalt.notizen.single().notiz.herkunftOrdnerId)
         assertEquals("o-weg", inhalt.notizen.single().notiz.ehemaligerOrdnerId)

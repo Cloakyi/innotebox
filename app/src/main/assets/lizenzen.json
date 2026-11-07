@@ -173,12 +173,6 @@
             "text": 0
         },
         {
-            "name": "androidx.compose.ui:ui-tooling-preview",
-            "version": "1.12.1",
-            "lizenz": "Apache License 2.0",
-            "text": 0
-        },
-        {
             "name": "androidx.compose.ui:ui-unit",
             "version": "1.12.1",
             "lizenz": "Apache License 2.0",

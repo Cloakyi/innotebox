@@ -94,7 +94,7 @@ body:
     attributes:
       label: Fassung der App
       description: In der App ganz unten in den Einstellungen bei „Über die App“.
-      placeholder: z. B. Alpha 12.1
+      placeholder: z. B. Alpha 13
     validations:
       required: true
   - type: textarea

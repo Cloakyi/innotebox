@@ -55,12 +55,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.notizen.app.kalender.KalenderViewModel
 import de.notizen.app.ui.ordner.OrdnungViewModel
 import de.notizen.app.ui.components.DATENSCHUTZ
 import de.notizen.app.ui.components.KiZustimmungDialog
-import de.notizen.app.kalender.Kalenderwahl
-import de.notizen.app.kalender.kalenderbeschriftung
 import de.notizen.app.sync.SyncViewModel
 import de.notizen.app.ui.theme.ThemeViewModel
 import de.notizen.core.data.model.Stage
@@ -94,7 +91,6 @@ fun SettingsScreen(
     kiViewModel: KiEinstellungenViewModel = hiltViewModel(),
     aufraeumViewModel: AufraeumViewModel = hiltViewModel(),
     syncViewModel: SyncViewModel = hiltViewModel(),
-    kalenderViewModel: KalenderViewModel = hiltViewModel(),
     ordnungViewModel: OrdnungViewModel = hiltViewModel(),
     sicherheitViewModel: SicherheitViewModel = hiltViewModel(),
 ) {
@@ -103,8 +99,6 @@ fun SettingsScreen(
     val ki by kiViewModel.state.collectAsStateWithLifecycle()
     val aufraeumen by aufraeumViewModel.state.collectAsStateWithLifecycle()
     val sync by syncViewModel.state.collectAsStateWithLifecycle()
-    val kalender by kalenderViewModel.lage.collectAsStateWithLifecycle()
-    val kalenderAuswahl by kalenderViewModel.auswahl.collectAsStateWithLifecycle()
     val ordnermodus by ordnungViewModel.ordnermodus.collectAsStateWithLifecycle()
     val sicherheit by sicherheitViewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -130,24 +124,10 @@ fun SettingsScreen(
         kiHervorhebung.animateTo(0f, tween(700))
     }
 
-    // Die Liste der Kalender kennt keinen Fluss, der sich meldet. Einmal beim
-    // Aufgehen des Bildschirms holen reicht: Ein Konto kommt nicht waehrend des
-    // Hinsehens dazu.
-    LaunchedEffect(Unit) { kalenderViewModel.kalenderLaden() }
-
     // Was das Geraet an KI kann, wird hier gefragt und nicht geraten. Auf einem
     // Geraet ohne AICore steht sonst ein Schalter, der nichts bewirkt, und
     // niemand erfaehrt warum.
     LaunchedEffect(Unit) { kiViewModel.geraetPruefen() }
-
-    // Der Kalender wird zur Laufzeit erfragt, und erst dann, wenn jemand den
-    // Schalter umlegt. Eine App, die beim Start nach allem fragt, was sie
-    // irgendwann brauchen koennte, bekommt zu Recht ein Nein.
-    val kalenderErlaubnis = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions(),
-    ) { ergebnis ->
-        if (ergebnis.values.all { it }) kalenderViewModel.erlaubnisErteilt()
-    }
 
     if (erklaerungOffen) {
         AlertDialog(
@@ -584,61 +564,6 @@ fun SettingsScreen(
             onClick = onSync,
         )
 
-        Abschnitt("Kalender")
-        EchterSchalter(
-            titel = "Erinnerungen im Kalender",
-            hinweis = if (kalender.an) {
-                "Jede Notiz mit Erinnerung bekommt einen Termin"
-            } else {
-                "Aus. Erinnerungen klingeln weiter, stehen aber nirgends"
-            },
-            an = kalender.an,
-            onAendern = { an ->
-                when {
-                    !an -> kalenderViewModel.setAn(false)
-                    kalenderViewModel.erlaubt() -> kalenderViewModel.setAn(true)
-                    else -> kalenderErlaubnis.launch(
-                        arrayOf(
-                            Manifest.permission.READ_CALENDAR,
-                            Manifest.permission.WRITE_CALENDAR,
-                        ),
-                    )
-                }
-            },
-        )
-
-        if (kalender.an) {
-            if (kalenderAuswahl.isEmpty()) {
-                Hinweiszeile(
-                    "Auf diesem Gerät ist kein Kalender eingerichtet, in den " +
-                        "geschrieben werden darf. Richte in der Kalender-App ein " +
-                        "Konto ein und komm dann hierher zurück.",
-                )
-            } else {
-                Kalenderauswahl(
-                    auswahl = kalenderAuswahl,
-                    gewaehlt = kalender.gewaehlt,
-                    onWahl = kalenderViewModel::setKalender,
-                )
-
-                val gewaehlterKalender = kalenderAuswahl.firstOrNull { it.id == kalender.gewaehlt }
-                if (gewaehlterKalender != null && !gewaehlterKalender.synchronisiert) {
-                    Hinweiszeile(
-                        "Achtung: Dieser Kalender wird gerade nicht mit dem Konto " +
-                            "abgeglichen. Die Termine bleiben dann auf diesem Gerät " +
-                            "und tauchen in Google Kalender nicht auf.",
-                    )
-                }
-            }
-
-            Hinweiszeile(
-                "Der Termin dauert eine halbe Stunde und trägt den Titel der " +
-                    "Notiz. Tippst du ihn in Google Kalender an, öffnet sich die " +
-                    "Notiz. Einzelne Notizen kannst du im Menü hinter den drei " +
-                    "Punkten ausnehmen.",
-            )
-        }
-
         Abschnitt("Daten")
         Eintrag("Sichern und Wiederherstellen", "Export und Import als .notesbak", onBackup)
 
@@ -712,95 +637,6 @@ private fun Angabe(titel: String, wert: String) {
     ) {
         Text(titel, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
         Text(wert, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-/**
- * Die Auswahl des Kalenders.
- *
- * Zwei Zeilen je Eintrag, nicht eine. Der Hauptkalender eines Google-Kontos
- * heisst beim Anbieter genau wie die Adresse des Kontos. In einer einzeiligen
- * Liste stand deshalb eine Mailadresse zwischen Namen wie „Arbeit", und es sah
- * aus, als koenne man dort Konten waehlen statt Kalender. Aufgefallen am
- * 2026-08-23. Jetzt steht oben, WAS es ist, und darunter, ZU WEM es gehoert.
- *
- * Ein eigenes Menue statt [AuswahlMenue]: Das ist fuer einzeilige Werte gebaut,
- * und eine zweite Zeile hineinzuzwaengen machte es fuer alle anderen
- * Einstellungen komplizierter.
- */
-@Composable
-private fun Kalenderauswahl(
-    auswahl: List<Kalenderwahl>,
-    gewaehlt: Long,
-    onWahl: (Long) -> Unit,
-) {
-    var offen by remember { mutableStateOf(false) }
-    val aktuell = auswahl.firstOrNull { it.id == gewaehlt }
-
-    Box {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { offen = true }
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = if (aktuell == null) "Bitte wählen" else kalenderbeschriftung(aktuell),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                aktuell?.konto?.takeIf { it.isNotBlank() }?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-            Icon(
-                imageVector = Icons.Outlined.ArrowDropDown,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
-
-        DropdownMenu(expanded = offen, onDismissRequest = { offen = false }) {
-            auswahl.forEach { wahl ->
-                DropdownMenuItem(
-                    text = {
-                        Column {
-                            Text(kalenderbeschriftung(wahl))
-                            if (wahl.konto.isNotBlank()) {
-                                Text(
-                                    text = wahl.konto,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                        }
-                    },
-                    onClick = {
-                        onWahl(wahl.id)
-                        offen = false
-                    },
-                    trailingIcon = {
-                        // Der Platz bleibt immer frei, sonst wandern die Texte
-                        // beim Umschalten.
-                        if (wahl.id == gewaehlt) {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        } else {
-                            Spacer(Modifier.size(24.dp))
-                        }
-                    },
-                )
-            }
-        }
     }
 }
 

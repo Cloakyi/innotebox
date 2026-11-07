@@ -49,7 +49,7 @@ Ab Alpha 11 baut und signiert GitHub jede APK aus dem Quelltext und bescheinigt 
 Ob eine APK echt ist, prüfst du mit der Befehlszeile von GitHub:
 
 ```
-gh attestation verify InNoteBox-Alpha-12.1.apk --repo Cloakyi/innotebox
+gh attestation verify InNoteBox-Alpha-13.apk --repo Cloakyi/innotebox
 ```
 
 Der Fingerabdruck des Signaturschlüssels (SHA-256) lautet

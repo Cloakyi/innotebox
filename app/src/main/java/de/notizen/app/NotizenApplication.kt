@@ -14,6 +14,9 @@ import de.notizen.app.archiv.AufraeumArbeit
 import de.notizen.app.archiv.aufraeumKanalAnlegen
 import de.notizen.app.audio.aufnahmeKanalAnlegen
 import de.notizen.app.kalender.Kalenderspiegel
+import de.notizen.app.kalender.Terminwecker
+import de.notizen.app.kalender.terminKanaeleAnlegen
+import de.notizen.core.data.repository.KalenderRepository
 import de.notizen.app.sync.Syncwaechter
 import de.notizen.app.erinnerung.kanalAnlegen
 import javax.inject.Inject
@@ -44,6 +47,13 @@ class NotizenApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var kalenderspiegel: Kalenderspiegel
 
+    /** Stellt die Wecker der Termine, bei jeder Aenderung und nach jedem Start. */
+    @Inject
+    lateinit var terminwecker: Terminwecker
+
+    @Inject
+    lateinit var kalender: KalenderRepository
+
     /** Fuer den Geraetenamen in `index.json` (SYNC.md 3.4). */
     @Inject
     lateinit var einstellungen: Einstellungen
@@ -61,6 +71,7 @@ class NotizenApplication : Application(), Configuration.Provider {
         kanalAnlegen(this)
         aufnahmeKanalAnlegen(this)
         aufraeumKanalAnlegen(this)
+        terminKanaeleAnlegen(this)
 
         // Bedingungslos anmelden. Ob wirklich etwas zu tun ist, prüft der Lauf
         // selbst -- ein Zeitplan, der mit den Einstellungen synchron gehalten
@@ -76,7 +87,11 @@ class NotizenApplication : Application(), Configuration.Provider {
         // Und der Waechter stoesst nach jeder Aenderung einen an -- entprellt,
         // damit zwanzigmal Speichern nicht zwanzig Laeufe bedeutet.
         syncwaechter.beobachten(this)
-        kalenderspiegel.beobachten()
+        kalenderspiegel.aufraeumen()
+
+        // Die drei Kalender beim ersten Start, danach die Wecker.
+        CoroutineScope(Dispatchers.IO).launch { kalender.einrichten() }
+        terminwecker.beobachten()
 
         // Beim Oeffnen der App holen, beim Verlassen schicken. Ohne das haengt
         // alles am Fuenfzehn-Minuten-Takt, und eine Notiz vom Rechner waere

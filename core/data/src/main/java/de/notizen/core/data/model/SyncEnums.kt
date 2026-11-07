@@ -62,4 +62,10 @@ enum class EntityType {
      * Typ NOTE.
      */
     CALENDAR,
+
+    /** Ein Kalender der App (SYNC.md 16.1). Geht nach Drive, Ordner `calendars/`. */
+    EVENT_CALENDAR,
+
+    /** Ein Termin, eine Aufgabe oder ein Geburtstag (SYNC.md 16.2). Ordner `events/`. */
+    EVENT,
 }

@@ -1,6 +1,8 @@
 package de.notizen.core.sync.sicherung
 
 import de.notizen.core.sync.Anhangdokument
+import de.notizen.core.sync.Kalenderdokument
+import de.notizen.core.sync.Termindokument
 import de.notizen.core.sync.Ordnerdokument
 import de.notizen.core.sync.Sync
 import de.notizen.core.sync.Tagdokument
@@ -40,6 +42,9 @@ data class Sicherungsinhalt(
     /** Seit Fassung 3. Bei aelteren Dateien leer. */
     val zaehler: List<Zaehlerstand> = emptyList(),
     val geloescht: List<Grabsteineintrag> = emptyList(),
+    /** Seit Fassung 5. Bei aelteren Dateien leer. */
+    val kalender: List<Kalenderdokument> = emptyList(),
+    val termine: List<Termindokument> = emptyList(),
 )
 
 /**
@@ -107,6 +112,9 @@ class Sicherungspaket(private val grenzen: Grenzen = Grenzen()) {
         dateiFuer: suspend (Anhangdokument) -> File?,
         zaehler: List<Zaehlerstand> = emptyList(),
         geloescht: List<Grabsteineintrag> = emptyList(),
+        kalender: List<Kalenderdokument> = emptyList(),
+        termine: List<Termindokument> = emptyList(),
+        bildFuer: suspend (String) -> File? = { null },
     ): Packbericht {
         var geschriebeneNotizen = 0
         var geschriebeneDateien = 0
@@ -118,6 +126,8 @@ class Sicherungspaket(private val grenzen: Grenzen = Grenzen()) {
             zip.eintrag(EINTRAG_ORDNER) { it.write(Sync.encodeToString(ordner).toByteArray()) }
             zip.eintrag(EINTRAG_ZAEHLER) { it.write(Sync.encodeToString(zaehler).toByteArray()) }
             zip.eintrag(EINTRAG_GELOESCHT) { it.write(Sync.encodeToString(geloescht).toByteArray()) }
+            zip.eintrag(EINTRAG_KALENDER) { it.write(Sync.encodeToString(kalender).toByteArray()) }
+            zip.eintrag(EINTRAG_TERMINE) { it.write(Sync.encodeToString(termine).toByteArray()) }
 
             // Die Anhangsdateien werden waehrend des Notizdurchlaufs
             // gesammelt, aber erst NACH `notes.json` geschrieben: In ein
@@ -140,6 +150,15 @@ class Sicherungspaket(private val grenzen: Grenzen = Grenzen()) {
                     }
                 }
                 strom.write("\n]\n".toByteArray())
+            }
+
+            // Die eigenen Bilder der Termine liegen wie Anhaenge (SYNC.md 16.2).
+            for (termin in termine) {
+                val bild = termin.inhalt.bannerId ?: continue
+                if (!schonDrin.add(bild)) continue
+                val datei = bildFuer(bild) ?: continue
+                if (!datei.isFile || datei.length() == 0L) continue
+                anhaenge += ORDNER_ANHAENGE + bild + ".jpg" to datei
             }
 
             for ((pfad, datei) in anhaenge) {
@@ -180,6 +199,8 @@ class Sicherungspaket(private val grenzen: Grenzen = Grenzen()) {
         var notizen: List<Sicherungsnotiz> = emptyList()
         var zaehler: List<Zaehlerstand> = emptyList()
         var geloescht: List<Grabsteineintrag> = emptyList()
+        var kalender: List<Kalenderdokument> = emptyList()
+        var termine: List<Termindokument> = emptyList()
         val dateien = LinkedHashMap<String, File>()
         var abgewiesen = 0
 
@@ -211,6 +232,12 @@ class Sicherungspaket(private val grenzen: Grenzen = Grenzen()) {
                         EINTRAG_GELOESCHT -> geloescht =
                             lesenOderNull(zip) { Sync.decodeFromString<List<Grabsteineintrag>>(it) } ?: emptyList()
 
+                        EINTRAG_KALENDER -> kalender =
+                            lesenOderNull(zip) { Sync.decodeFromString<List<Kalenderdokument>>(it) } ?: emptyList()
+
+                        EINTRAG_TERMINE -> termine =
+                            lesenOderNull(zip) { Sync.decodeFromString<List<Termindokument>>(it) } ?: emptyList()
+
                         else -> {
                             val name = sichererAnhangname(eintrag.name)
                             if (name == null) {
@@ -229,7 +256,7 @@ class Sicherungspaket(private val grenzen: Grenzen = Grenzen()) {
             throw fehler
         }
 
-        return Sicherungsinhalt(kopf, tags, ordner, notizen, dateien, abgewiesen, zaehler, geloescht)
+        return Sicherungsinhalt(kopf, tags, ordner, notizen, dateien, abgewiesen, zaehler, geloescht, kalender, termine)
     }
 
     /**

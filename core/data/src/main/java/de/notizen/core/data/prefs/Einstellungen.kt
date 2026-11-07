@@ -700,6 +700,107 @@ class Einstellungen @Inject constructor(
 
     private fun sortierungKey(stage: Stage) = stringPreferencesKey("sortierung_${stage.name}")
 
+    // --------------------------------------------------------------- Kalender
+
+    /**
+     * Welche Kalender der App ausgeblendet sind (SYNC.md 16.1). Geht nicht nach
+     * Drive: Was man auf dem Handy sehen will, ist eine Frage dieses Geraets.
+     */
+    fun kalenderAusgeblendet(): Flow<Set<String>> =
+        store.data.map { it[KALENDER_AUSGEBLENDET] ?: emptySet() }
+
+    suspend fun setKalenderSichtbar(id: String, sichtbar: Boolean) {
+        store.edit {
+            val bisher = it[KALENDER_AUSGEBLENDET] ?: emptySet()
+            it[KALENDER_AUSGEBLENDET] = if (sichtbar) bisher - id else bisher + id
+        }
+    }
+
+    /** Die zuletzt gewaehlte Ansicht des Kalenders, als Name. Leer heisst Standard. */
+    fun kalenderAnsicht(): Flow<String> = store.data.map { it[KALENDER_ANSICHT] ?: "" }
+
+    suspend fun setKalenderAnsicht(name: String) {
+        store.edit { it[KALENDER_ANSICHT] = name }
+    }
+
+    /** Der Kalender, der fuer neue Termine vorgewaehlt ist. Leer heisst der erste. */
+    fun standardkalender(): Flow<String> = store.data.map { it[STANDARDKALENDER] ?: "" }
+
+    suspend fun setStandardkalender(id: String) {
+        store.edit { it[STANDARDKALENDER] = id }
+    }
+
+    /** Erinnerungen fuer neue Termine, in Minuten vor dem Beginn. */
+    fun standardErinnerung(): Flow<Int> = store.data.map { it[STANDARD_ERINNERUNG] ?: 30 }
+
+    suspend fun setStandardErinnerung(minuten: Int) {
+        store.edit { it[STANDARD_ERINNERUNG] = minuten }
+    }
+
+    /** Ob Notizen mit Erinnerung im Kalender der App erscheinen. */
+    fun erinnerungsnotizenImKalender(): Flow<Boolean> =
+        store.data.map { it[ERINNERUNGSNOTIZEN_IM_KALENDER] ?: true }
+
+    suspend fun setErinnerungsnotizenImKalender(an: Boolean) {
+        store.edit { it[ERINNERUNGSNOTIZEN_IM_KALENDER] = an }
+    }
+
+    /** Ob die KI zu jedem Termin ein passendes Symbol aussucht. */
+    fun terminsymbolKi(): Flow<Boolean> = store.data.map { it[TERMINSYMBOL_KI] ?: true }
+
+    suspend fun setTerminsymbolKi(an: Boolean) {
+        store.edit { it[TERMINSYMBOL_KI] = an }
+    }
+
+    /** Wie lange ein neuer Termin dauert, in Minuten. */
+    fun terminDauer(): Flow<Int> = store.data.map { it[TERMIN_DAUER] ?: 60 }
+
+    suspend fun setTerminDauer(minuten: Int) {
+        store.edit { it[TERMIN_DAUER] = minuten }
+    }
+
+    /** Ob Monat und Zeitraster die Nummer der Kalenderwoche zeigen. */
+    fun kalenderwochen(): Flow<Boolean> = store.data.map { it[KALENDERWOCHEN] ?: false }
+
+    suspend fun setKalenderwochen(an: Boolean) {
+        store.edit { it[KALENDERWOCHEN] = an }
+    }
+
+    /** Ob die Woche nur Montag bis Freitag zeigt. */
+    fun wochenendeAus(): Flow<Boolean> = store.data.map { it[WOCHENENDE_AUS] ?: false }
+
+    suspend fun setWochenendeAus(aus: Boolean) {
+        store.edit { it[WOCHENENDE_AUS] = aus }
+    }
+
+    /** Ob ein Tipp in eine freie Stelle des Rasters einen neuen Termin anlegt. */
+    fun tippenLegtAn(): Flow<Boolean> = store.data.map { it[TIPPEN_LEGT_AN] ?: true }
+
+    suspend fun setTippenLegtAn(an: Boolean) {
+        store.edit { it[TIPPEN_LEGT_AN] = an }
+    }
+
+    /**
+     * Was jeder Kalender fuer neue Termine vorgibt, je Kennung als kurzer Text.
+     * Nur auf diesem Geraet, wie die ausgeblendeten Kalender.
+     */
+    fun kalendervorgaben(): Flow<Map<String, String>> = store.data.map { p ->
+        p.asMap().mapNotNull { (k, v) ->
+            if (k.name.startsWith(VORGABE) && v is String) k.name.removePrefix(VORGABE) to v else null
+        }.toMap()
+    }
+
+    suspend fun setKalendervorgabe(id: String, text: String) {
+        store.edit { it[stringPreferencesKey(VORGABE + id)] = text }
+    }
+
+    /** Ob die Standardkalender schon einmal angelegt wurden. */
+    suspend fun kalenderEingerichtet(): Boolean = store.data.first()[KALENDER_EINGERICHTET] ?: false
+
+    suspend fun setKalenderEingerichtet() {
+        store.edit { it[KALENDER_EINGERICHTET] = true }
+    }
+
     private companion object {
         val THEME = stringPreferencesKey("theme")
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
@@ -746,5 +847,17 @@ class Einstellungen @Inject constructor(
         val LETZTER_TAGESDURCHLAUF = stringPreferencesKey("letzter_tagesdurchlauf")
         val LETZTER_PRUEFBERICHT = stringPreferencesKey("letzter_pruefbericht")
         val PURGE_WASSERZEICHEN = longPreferencesKey("purge_wasserzeichen")
+        val KALENDER_AUSGEBLENDET = stringSetPreferencesKey("kalender_ausgeblendet")
+        val KALENDER_ANSICHT = stringPreferencesKey("kalender_ansicht")
+        val STANDARDKALENDER = stringPreferencesKey("standardkalender")
+        val STANDARD_ERINNERUNG = intPreferencesKey("standard_erinnerung")
+        val ERINNERUNGSNOTIZEN_IM_KALENDER = booleanPreferencesKey("erinnerungsnotizen_im_kalender")
+        val TERMINSYMBOL_KI = booleanPreferencesKey("terminsymbol_ki")
+        val TERMIN_DAUER = intPreferencesKey("termin_dauer")
+        val KALENDERWOCHEN = booleanPreferencesKey("kalenderwochen")
+        val WOCHENENDE_AUS = booleanPreferencesKey("wochenende_aus")
+        val TIPPEN_LEGT_AN = booleanPreferencesKey("tippen_legt_an")
+        const val VORGABE = "kalendervorgabe_"
+        val KALENDER_EINGERICHTET = booleanPreferencesKey("kalender_eingerichtet")
     }
 }

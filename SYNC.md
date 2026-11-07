@@ -1,4 +1,4 @@
-# Abgleich und Sicherung: das Datenformat (Schema 5)
+# Abgleich und Sicherung: das Datenformat (Schema 6)
 
 Dieses Dokument ist der Vertrag zwischen allen Programmen, die den Bestand von InNoteBox
 lesen oder schreiben: der Android-App, einem späteren Desktop- oder Web-Client und
@@ -57,6 +57,8 @@ unangetastet liegen. Er wird weder gelesen noch geschrieben noch gelöscht (Absc
 ├── notes/<uuid>.json         eine Datei je Notiz
 ├── folders/<uuid>.json       eine Datei je Ordner
 ├── tags/<uuid>.json          eine Datei je Tag
+├── calendars/<uuid>.json     eine Datei je Kalender (seit Schema 6, Abschnitt 16)
+├── events/<uuid>.json        eine Datei je Termin, Aufgabe oder Geburtstag (seit Schema 6)
 └── attachments/<uuid>.<ext>  Bilder und Aufnahmen, unveränderlich
 ```
 
@@ -134,6 +136,8 @@ Namen `<anhangId>.<ext>`.
 
 **`TAG`**: `name`, `colorArgb`, `iconOrEmoji`, `sortIndex`, `createdAt` (Abschnitt 14.3
 ohne `deletedAt`).
+
+**`EVENT_CALENDAR`** und **`EVENT`**: seit Schema 6, siehe Abschnitt 16.
 
 ### 3.4 `index.json`
 
@@ -428,7 +432,9 @@ hinten angehängt werden; Umbenennen oder Umsortieren ist ein Schema-Bruch.
 | `Bereich` | `ORDNER`, `ARCHIV` |
 | `ArchiveTrigger` | `AGE`, `COUNT`, `BOTH` (rein lokal) |
 | `SyncStatus` | `SYNCED`, `DIRTY`, `CONFLICT` (rein lokal) |
-| `EntityType` | `NOTE`, `TAG`, `NOTE_ITEM`, `ATTACHMENT`, `TRANSCRIPT`, `REMINDER`, `FOLDER`, `CALENDAR` |
+| `EntityType` | `NOTE`, `TAG`, `NOTE_ITEM`, `ATTACHMENT`, `TRANSCRIPT`, `REMINDER`, `FOLDER`, `CALENDAR`, `EVENT_CALENDAR`, `EVENT` |
+| `Terminart` | `TERMIN`, `AUFGABE`, `GEBURTSTAG` (seit Schema 6) |
+| `Wiederholung` | `KEINE`, `TAEGLICH`, `WERKTAGS`, `WOECHENTLICH`, `MONATLICH`, `JAEHRLICH` (seit Schema 6) |
 
 `NoteColor` wird als **Name** gespeichert, nie als Farbwert. Nur so sieht dieselbe Notiz im
 hellen und im dunklen Theme richtig aus, und ein anderer Client darf eigene Tonwerte
@@ -747,7 +753,8 @@ liegt, statt sie erneut zu schicken.
 ### 15.2 Was mitgeht
 
 Alles, was Abschnitt 14 als synchronisiert führt, plus die Felder aus 15.1, plus der
-Papierkorb und die Grabsteine. Nicht mitgehen: die Einstellungen der App, das Protokoll der
+Papierkorb und die Grabsteine, seit Fassung 5 auch die Kalender und Termine aus Abschnitt 16
+(`calendars.json`, `events.json`). Nicht mitgehen: die Einstellungen der App, das Protokoll der
 Auto-Archiv-Läufe, der Volltextindex (wird beim Einlesen neu gebaut), `sync_state` und bereits
 ausgelöste Erinnerungen.
 
@@ -785,7 +792,104 @@ Alles andere wird übergangen und gezählt.
 
 `manifest.json` trägt zwei Zahlen. `schemaVersion` sagt, wie eine Notiz darin aussieht, und
 ist dieselbe wie beim Abgleich. `formatVersion` sagt, wie die Datei drumherum gebaut ist,
-und steht bei **4**. Eine Datei mit höherer `formatVersion` wird abgelehnt, statt sie halb zu
+und steht bei **5**. Eine Datei mit höherer `formatVersion` wird abgelehnt, statt sie halb zu
 verstehen. Ältere Fassungen lesen sich weiter: Fassung 1 kennt keine Ordner, Fassung 2 keine
-Zählerstände und Grabsteine, Fassung 3 nicht die Felder aus Schema 5; was fehlt, gilt mit
+Zählerstände und Grabsteine, Fassung 3 nicht die Felder aus Schema 5, Fassung 4 keine Kalender; was fehlt, gilt mit
 seinem Standardwert.
+
+---
+
+## 16. Kalender und Termine (Schema 6)
+
+Seit Schema 6 hat InNoteBox einen eigenen Kalender. Er gleicht **nicht** mit Google Kalender
+ab, sondern genau wie die Notizen über den Spiegel in Drive. Zwei neue Entitätstypen, beide
+mit der Hülle aus Abschnitt 3.1 und allen Regeln aus Abschnitt 1 bis 9: `EVENT_CALENDAR` in
+`calendars/`, `EVENT` in `events/`. Ein Client auf Schema 5 sieht die beiden Ordner nicht
+an und verliert nichts.
+
+Gelöscht wird weich: Ein gelöschter Termin oder Kalender ist `TRASHED` und erscheint
+nirgends mehr. Ein gelöschter Kalender nimmt seine Termine mit, jeder davon wird selbst
+`TRASHED`. Rückgängig macht man es, indem `state` wieder `ACTIVE` wird.
+
+### 16.1 `payload` eines Kalenders (`EVENT_CALENDAR`)
+
+| Feld | Typ | Bedeutung |
+|---|---|---|
+| `name` | String | wie der Kalender heißt |
+| `colorArgb` | Int | Farbe als ARGB-Rohwert |
+| `sortIndex` | Int | Reihenfolge in der Seitenspalte |
+| `createdAt` | Long | UTC-Millis |
+
+Welche Kalender eingeblendet sind und welcher für neue Termine vorgewählt ist, ist eine
+Einstellung des Geräts und geht nicht nach Drive.
+
+### 16.2 `payload` eines Termins (`EVENT`)
+
+| Feld | Typ | Default | Bedeutung |
+|---|---|---|---|
+| `calendarId` | String | | Kennung des Kalenders. Zeigt sie ins Leere, erscheint der Termin im ersten Kalender |
+| `art` | `Terminart` | `TERMIN` | Termin, Aufgabe oder Geburtstag |
+| `title` | String | | |
+| `description` | String | `""` | |
+| `location` | String | `""` | |
+| `allDay` | Boolean | `false` | ganztägig |
+| `startAt` | Long | | Beginn, siehe unten |
+| `endAt` | Long | | Ende, siehe unten. Nie vor `startAt` |
+| `timeZone` | String | | IANA-Zone, in der der Termin angelegt wurde. Nur zur Auskunft |
+| `recurrence` | `Wiederholung` | `KEINE` | Ein Geburtstag ist immer `JAEHRLICH` |
+| `repeatInterval` | Int | `1` | Abstand der Serie in Einheiten von `recurrence`: `2` mit `WOECHENTLICH` heißt alle zwei Wochen. Werte unter 1 gelten als 1. Seit Room 10 |
+| `repeatDays` | Int[] | `[]` | nur mit `WOECHENTLICH`: Wochentage nach ISO, 1 Montag bis 7 Sonntag. Leer heißt der Wochentag des ersten Vorkommens. Seit Room 10 |
+| `repeatUntil` | Long? | `null` | letzter Tag der Serie (einschließlich), in derselben Form wie ein ganztägiges `startAt`. Seit Room 10 |
+| `repeatCount` | Int? | `null` | Anzahl der Vorkommen der Serie. Gilt nur, wenn `repeatUntil` fehlt. Seit Room 10 |
+| `exceptions` | Long[] | `[]` | Beginn einzelner Vorkommen einer Serie, die gelöscht sind |
+| `reminders` | Int[] | `[]` | Erinnerungen in Minuten vor dem Beginn, siehe unten |
+| `important` | Boolean | `false` | Wichtig: Erinnerungen klingeln als Wecker mit Vollbild statt als Benachrichtigung |
+| `colorArgb` | Int? | `null` | eigene Farbe; `null` heißt die Farbe des Kalenders |
+| `symbol` | String? | `null` | Name eines Symbols, das zum Termin passt (etwa `arzt`, `geburtstag`). Ein unbekannter Name gilt als `null` |
+| `bannerId` | String? | `null` | eigenes Bild über dem Termin. Die Datei liegt als `<bannerId>.jpg` im Ordner `attachments/`, normalisiert wie ein Bild einer Notiz (14.6). Ein neues Bild bekommt eine neue Kennung, eine Datei ändert sich nie. Seit Room 11 |
+| `done` | Boolean | `false` | nur bei Aufgaben: erledigt |
+| `undated` | Boolean | `false` | nur bei Aufgaben: ohne Datum. Dann gelten `startAt`, `endAt`, `recurrence` und `reminders` nicht; die Aufgabe steht nur in der Aufgabenliste, nicht im Kalender. Seit Room 9 |
+| `createdAt` | Long | | UTC-Millis |
+
+**Zeit mit Uhrzeit:** `startAt` und `endAt` sind UTC-Millis.
+
+**Ganztägig:** `startAt` ist der erste Tag, `endAt` der letzte Tag (einschließlich), jeweils
+als Mitternacht **UTC** dieses Datums, also Tageszahl seit 1970 mal 86 400 000. Ein
+ganztägiger Termin hängt am Datum, nicht an einem Zeitpunkt; in Tokio und in Berlin ist er
+derselbe Tag. Wer ihn als Zeitpunkt in Ortszeit liest, verschiebt ihn westlich von Greenwich
+um einen Tag.
+
+**Erinnerungen bei ganztägigen Terminen** zählen ab Mitternacht Ortszeit des ersten Tages.
+Ein negativer Wert liegt nach Mitternacht: `-540` ist 9:00 Uhr am Tag selbst, `420` ist
+17:00 Uhr am Vortag.
+
+**Serien** wiederholen Beginn und Dauer des ersten Vorkommens, gerechnet in Ortszeit:
+`MONATLICH` am selben Tag des Monats (am 31. eines kürzeren Monats am letzten Tag),
+`WERKTAGS` von Montag bis Freitag. `exceptions` trägt den Beginn eines ausgelassenen
+Vorkommens in derselben Form wie `startAt`.
+
+**Benutzerdefinierte Serien** zählen `repeatInterval` Einheiten ab dem ersten Vorkommen.
+Wöchentlich mit `repeatDays` zählen die Wochen ab dem Montag der ersten Woche; in jeder
+gezählten Woche kommt jeder genannte Tag vor, in der ersten nur die Tage ab dem ersten
+Vorkommen. `repeatCount` zählt auch Vorkommen mit, die in `exceptions` stehen, wie bei
+iCalendar. Ein Vorkommen gehört zur Serie, wenn sein erster Tag nicht nach `repeatUntil`
+liegt.
+
+### 16.3 Lokal
+
+Room 7 -> 8: zwei neue Tabellen `event_calendars` und `events` mit denselben Feldern plus
+`updatedAt` und `deletedAt`. Die Listen `exceptions` und `reminders` stehen dort als
+JSON-Text. Keine bestehende Tabelle ändert sich.
+
+Room 8 -> 9: `events` bekommt die Spalte `undated` (Vorgabe 0). Ein älterer Client, der das
+Feld nicht kennt, zeigt eine Aufgabe ohne Datum am Tag ihres Anlegens.
+
+Room 9 -> 10: `events` bekommt die Spalten `repeatInterval` (Vorgabe 1), `repeatDays`
+(JSON-Text, Vorgabe `[]`), `repeatUntil` und `repeatCount` (beide leer). Ein älterer Client,
+der die Felder nicht kennt, rechnet die Serie ohne Abstand und ohne Ende.
+
+Room 10 -> 11: `events` bekommt die Spalte `bannerId` (leer). Die Datei des Bildes geht wie
+ein Anhang nach `attachments/` und in die Sicherung (`attachments/<bannerId>.jpg`). Fehlt
+sie auf einem Gerät, holt der nächste Abgleich sie über den Namen. Ein ersetztes Bild
+bekommt einen Grabstein vom Typ `ATTACHMENT`, damit seine Datei in Drive verschwindet.
+

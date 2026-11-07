@@ -44,10 +44,10 @@ android {
         // Innerhalb der Alpha zaehlte n bis Alpha 12 wie der versionCode. Eine
         // Korrektur kurz nach einem Release heisst "Alpha n.1" und zaehlt den
         // versionCode trotzdem weiter, sonst liesse sie sich nicht als Update
-        // installieren (Alpha 12.1 hat 13). Beginnt die Beta, faengt n wieder
-        // bei 1 an, der versionCode laeuft weiter.
-        versionCode = 13
-        versionName = "Alpha 12.1"
+        // installieren (Alpha 12.1 hat 13, Alpha 13 hat 14). Beginnt die Beta,
+        // faengt n wieder bei 1 an, der versionCode laeuft weiter.
+        versionCode = 14
+        versionName = "Alpha 13"
     }
 
     // DER RELEASE-SCHLUESSEL liegt ausserhalb des Projekts, nie im Repo.
@@ -124,7 +124,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)

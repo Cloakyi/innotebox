@@ -19,8 +19,6 @@ import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.automirrored.outlined.DriveFileMove
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.EventAvailable
-import androidx.compose.material.icons.outlined.EventBusy
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,8 +51,6 @@ import androidx.compose.ui.unit.dp
 fun NotizMenueBlatt(
     anzahlTags: Int,
     abgleichAn: Boolean,
-    kalenderAn: Boolean,
-    hatErinnerung: Boolean,
     zeigeOrdner: Boolean,
     ordnername: String?,
     imArchiv: Boolean,
@@ -62,7 +58,6 @@ fun NotizMenueBlatt(
     onArchivieren: () -> Unit,
     onZurueckholen: () -> Unit,
     onAbgleich: () -> Unit,
-    onKalender: () -> Unit,
     onJetztSichern: () -> Unit,
     onTags: () -> Unit,
     onKopie: () -> Unit,
@@ -160,30 +155,6 @@ fun NotizMenueBlatt(
                 },
                 onKlick = onAbgleich,
             )
-            // Nur wenn es ueberhaupt eine Erinnerung gibt. Ohne Termin gibt es
-            // nichts einzutragen, und ein Schalter fuer etwas, das gar nicht
-            // stattfindet, laesst einen raten, was er tut.
-            if (hatErinnerung) {
-                Eintrag(
-                    symbol = if (kalenderAn) {
-                        Icons.Outlined.EventBusy
-                    } else {
-                        Icons.Outlined.EventAvailable
-                    },
-                    text = if (kalenderAn) {
-                        "Nicht im Kalender zeigen"
-                    } else {
-                        "Wieder im Kalender zeigen"
-                    },
-                    unterzeile = if (kalenderAn) {
-                        "Steht als Termin im Kalender"
-                    } else {
-                        "Klingelt, steht aber in keinem Kalender"
-                    },
-                    onKlick = onKalender,
-                )
-            }
-
             Eintrag(
                 symbol = Icons.Outlined.Delete,
                 text = "In den Papierkorb",

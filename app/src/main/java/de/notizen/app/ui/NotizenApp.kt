@@ -118,7 +118,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.notizen.app.ui.components.FarbAuswahlBlatt
-import de.notizen.app.kalender.KalenderScreen
+import de.notizen.app.kalender.KalenderEinstellungenScreen
+import de.notizen.app.kalender.TerminkalenderScreen
 import de.notizen.app.ui.ordner.OrdnerDialogHost
 import de.notizen.app.ui.ordner.OrdnerScreen
 import de.notizen.app.ui.ordner.OrdnerViewModel
@@ -330,6 +331,8 @@ private fun NavHostController.wechsleZu(ziel: String, istStartziel: Boolean) {
 fun NotizenApp(
     oeffneNotiz: String? = null,
     onGeoeffnet: () -> Unit = {},
+    oeffneKalender: Boolean = false,
+    onKalenderGeoeffnet: () -> Unit = {},
     lieseSicherung: Uri? = null,
     onSicherungGelesen: () -> Unit = {},
     teilen: Geteilt? = null,
@@ -417,6 +420,14 @@ fun NotizenApp(
         oeffneNotiz?.let {
             navController.navigate(Routes.editor(it))
             onGeoeffnet()
+        }
+    }
+
+    // Eine angetippte Terminbenachrichtigung fuehrt in den Kalender.
+    LaunchedEffect(oeffneKalender) {
+        if (oeffneKalender) {
+            navController.wechsleZu(Routes.KALENDER, false)
+            onKalenderGeoeffnet()
         }
     }
 
@@ -741,29 +752,23 @@ fun NotizenApp(
         }
 
         composable(Routes.KALENDER) {
-            HomeGeruest(
-                titel = "Kalender",
-                aktuelleStufe = null,
-                aktuelleRoute = Routes.KALENDER,
-                navController = navController,
-                drawerState = drawerState,
+            // Der Kalender hat seine eigene Seitenspalte
+            // und deshalb nicht das Geruest der Notizen.
+            TerminkalenderScreen(
                 snackbarHostState = snackbarHostState,
-                shell = shell,
-                stageViewModel = null,
-                ordnermodus = ordnermodus,
+                onNotiz = { navController.navigate(Routes.editor(it)) },
+                onEinstellungen = { navController.navigate(Routes.KALENDER_EINSTELLUNGEN) },
+                onZuDenNotizen = { navController.popBackStack() },
+                zeigeUndo = zeigeUndo,
                 zeigeHinweis = zeigeHinweis,
-                // Kein Suchfeld in der Kopfzeile: Dieser Bildschirm hat keine
-                // Suche, und ein Feld, das beim Antippen nichts tut, kostet
-                // genau das Vertrauen, das eine Oberflaeche braucht. Der
-                // Papierkorb sucht in seinem eigenen Feld weiter unten.
-                zeigeSuchleiste = false,
-            ) { padding ->
-                KalenderScreen(
-                    innerPadding = padding,
-                    onNotiz = { navController.navigate(Routes.editor(it)) },
-                    zeigeHinweis = zeigeHinweis,
-                )
-            }
+            )
+        }
+
+        composable(Routes.KALENDER_EINSTELLUNGEN) {
+            KalenderEinstellungenScreen(
+                onZurueck = { navController.popBackStack() },
+                zeigeUndo = zeigeUndo,
+            )
         }
 
         composable(Routes.TAGS) {

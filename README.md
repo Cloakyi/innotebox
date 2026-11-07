@@ -19,7 +19,9 @@ Webseite: [innotebox.de](https://innotebox.de) · Anleitungen: [Wiki](https://gi
   Abhören überspringen
 - Volltextsuche über Titel, Text, Listen und Transkripte, mit Filtern nach Stufe, Tag,
   Farbe, Ordner und Papierkorb
-- Tags, Farben, Favoriten, Erinnerungen auf die Minute (auch im Kalender des Geräts)
+- Tags, Farben, Favoriten, Erinnerungen auf die Minute
+- Ein eigener Kalender mit Terminen, Aufgaben und Geburtstagen, Serien, Wecker für
+  wichtige Termine und Abgleich über dein Google Drive
 - KI nur auf dem Gerät (Titelvorschlag, Umwandeln in Text, Aufbereiten von Transkripten),
   erst nach Zustimmung und jederzeit abschaltbar
 - Übersetzung über das System, die KI auf dem Gerät oder ML Kit; letzteres nur nach
@@ -46,7 +48,7 @@ prüfen, dass ML Kit nur über eine Stelle und nie beim Start der App von selbst
 APK genau aus diesem Quelltext stammt, lässt sich mit der Befehlszeile von GitHub nachprüfen:
 
 ```
-gh attestation verify InNoteBox-Alpha-12.1.apk --repo Cloakyi/innotebox
+gh attestation verify InNoteBox-Alpha-13.apk --repo Cloakyi/innotebox
 ```
 
 Angeboten wird nur die jeweils neueste Fassung.
@@ -58,9 +60,9 @@ niemand auf einen Schutz verlässt, den es nicht gibt.
 
 | Wo | Was | Verschlüsselt? |
 |---|---|---|
-| Auf dem Handy | Datenbank (Room/SQLite), Bilder, Aufnahmen | **Nein.** Sie liegen im privaten Speicher der App, an den andere Apps nicht herankommen. Ist das Handy selbst verschlüsselt (bei Android ab Version 10 Standard), gilt das auch für diese Dateien. |
-| Sicherungsdatei `.notesbak` | Alle Notizen, Anhänge, Ordner und Tags | **Nein.** Ein gewöhnliches ZIP mit lesbarem JSON, damit du auch ohne die App an deine Daten kommst ([SYNC.md](SYNC.md), Abschnitt 15). Bewahre sie auf wie ein offenes Notizbuch. |
-| Google Drive (Abgleich) | Eine lesbare JSON-Datei je Notiz, dazu die Anhänge | **Nein**, nicht durch die App. Die Übertragung läuft über HTTPS, gespeichert wird so, wie Google Drive Dateien speichert. |
+| Auf dem Handy | Datenbank (Room/SQLite) mit Notizen und Terminen, Bilder, Aufnahmen | **Nein.** Sie liegen im privaten Speicher der App, an den andere Apps nicht herankommen. Ist das Handy selbst verschlüsselt (bei Android ab Version 10 Standard), gilt das auch für diese Dateien. |
+| Sicherungsdatei `.notesbak` | Alle Notizen, Anhänge, Ordner, Tags, Kalender und Termine | **Nein.** Ein gewöhnliches ZIP mit lesbarem JSON, damit du auch ohne die App an deine Daten kommst ([SYNC.md](SYNC.md), Abschnitt 15). Bewahre sie auf wie ein offenes Notizbuch. |
+| Google Drive (Abgleich) | Eine lesbare JSON-Datei je Notiz, Kalender und Termin, dazu die Anhänge | **Nein**, nicht durch die App. Die Übertragung läuft über HTTPS, gespeichert wird so, wie Google Drive Dateien speichert. |
 | Android Keystore | Der Schlüssel, mit dem die App deine Zustimmung zur KI **signiert** | Der Schlüssel verlässt das Gerät nicht. Er signiert nur, er verschlüsselt keine Notizen. |
 
 Die **Sperre** (Fingerabdruck, Gesicht, Bildschirmsperre) schützt die Oberfläche der App, nicht

@@ -9,6 +9,7 @@ import androidx.sqlite.execSQL
 import de.notizen.core.data.db.dao.ArchiveDao
 import de.notizen.core.data.db.dao.AttachmentDao
 import de.notizen.core.data.db.dao.FolderDao
+import de.notizen.core.data.db.dao.KalenderDao
 import de.notizen.core.data.db.dao.NoteDao
 import de.notizen.core.data.db.dao.ReminderDao
 import de.notizen.core.data.db.dao.SearchDao
@@ -18,6 +19,8 @@ import de.notizen.core.data.db.dao.TranscriptDao
 import de.notizen.core.data.db.entity.ArchiveRunEntity
 import de.notizen.core.data.db.entity.ArchiveRunItemEntity
 import de.notizen.core.data.db.entity.AttachmentEntity
+import de.notizen.core.data.db.entity.EventCalendarEntity
+import de.notizen.core.data.db.entity.EventEntity
 import de.notizen.core.data.db.entity.FolderEntity
 import de.notizen.core.data.db.entity.NoteEntity
 import de.notizen.core.data.db.entity.NoteFtsEntity
@@ -68,6 +71,8 @@ import de.notizen.core.data.db.entity.TranscriptEntity
         ArchiveRunItemEntity::class,
         SyncStateEntity::class,
         TombstoneEntity::class,
+        EventCalendarEntity::class,
+        EventEntity::class,
     ],
 )
 @TypeConverters(Converters::class)
@@ -91,8 +96,10 @@ abstract class NotizenDatabase : RoomDatabase() {
 
     abstract fun syncDao(): SyncDao
 
+    abstract fun kalenderDao(): KalenderDao
+
     companion object {
-        const val VERSION = 7
+        const val VERSION = 11
         const val NAME = "notizen.db"
 
         /**
@@ -237,8 +244,80 @@ abstract class NotizenDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Schema 7 -> 8: der Kalender der App (SYNC.md 16, Dokument-Schema 6).
+         *
+         * Zwei neue Tabellen, keine bestehende aendert sich. Die Anweisungen
+         * sind aus dem exportierten Schema 8 abgeschrieben; Room vergleicht
+         * beim Oeffnen Zeichen fuer Zeichen.
+         */
+        val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL(SQL_KALENDER)
+                connection.execSQL(SQL_TERMINE)
+                connection.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_event_calendars_deletedAt` " +
+                        "ON `event_calendars` (`deletedAt`)",
+                )
+                connection.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_events_calendarId` ON `events` (`calendarId`)",
+                )
+                connection.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_events_deletedAt` ON `events` (`deletedAt`)",
+                )
+                connection.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_events_startAt` ON `events` (`startAt`)",
+                )
+            }
+        }
+
+        /**
+         * Schema 8 -> 9: Aufgaben ohne Datum (SYNC.md 16.2, `undated`).
+         * Eine Spalte, Vorgabe nein; bestehende Termine bleiben, wie sie sind.
+         */
+        val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL("ALTER TABLE events ADD COLUMN undated INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        /**
+         * Schema 9 -> 10: benutzerdefinierte Serien (SYNC.md 16.2). Vier Spalten,
+         * die Vorgaben ergeben genau die bisherigen Serien.
+         */
+        val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL("ALTER TABLE events ADD COLUMN repeatInterval INTEGER NOT NULL DEFAULT 1")
+                connection.execSQL("ALTER TABLE events ADD COLUMN repeatDays TEXT NOT NULL DEFAULT '[]'")
+                connection.execSQL("ALTER TABLE events ADD COLUMN repeatUntil INTEGER")
+                connection.execSQL("ALTER TABLE events ADD COLUMN repeatCount INTEGER")
+            }
+        }
+
+        /** Schema 10 -> 11: ein eigenes Bild ueber dem Termin (SYNC.md 16.2, `bannerId`). */
+        val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL("ALTER TABLE events ADD COLUMN bannerId TEXT")
+            }
+        }
+
+        private const val SQL_KALENDER =
+            "CREATE TABLE IF NOT EXISTS `event_calendars` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, " +
+                "`colorArgb` INTEGER NOT NULL, `sortIndex` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, " +
+                "`updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER, PRIMARY KEY(`id`))"
+
+        private const val SQL_TERMINE =
+            "CREATE TABLE IF NOT EXISTS `events` (`id` TEXT NOT NULL, `calendarId` TEXT NOT NULL, " +
+                "`art` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, " +
+                "`location` TEXT NOT NULL, `allDay` INTEGER NOT NULL, `startAt` INTEGER NOT NULL, " +
+                "`endAt` INTEGER NOT NULL, `timeZone` TEXT NOT NULL, `recurrence` TEXT NOT NULL, " +
+                "`exceptions` TEXT NOT NULL, `reminders` TEXT NOT NULL, `important` INTEGER NOT NULL, " +
+                "`colorArgb` INTEGER, `symbol` TEXT, `done` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, " +
+                "`updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER, PRIMARY KEY(`id`))"
+
         val MIGRATIONS: Array<Migration> = arrayOf(
             MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7,
+            MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11,
         )
     }
 }

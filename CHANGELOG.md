@@ -1,5 +1,38 @@
 # Änderungen
 
+## Alpha 13 (2026-11-07)
+
+InNoteBox hat jetzt einen eigenen Kalender mit Terminen, Aufgaben und Geburtstagen.
+
+- Der Kalender zeigt eine Terminübersicht, einen Tag, drei Tage, eine Woche oder einen Monat.
+  In der Seitenspalte lassen sich die Kalender ein- und ausblenden, oben rechts stehen Suche,
+  Aufgaben und Heute. Über das Plus unten rechts entstehen Termine, Aufgaben und Geburtstage.
+- Drei Kalender legt die App von selbst an: Mein Kalender, Aufgaben und Geburtstage. Weitere
+  Kalender lassen sich mit Namen und Farbe anlegen, ändern und löschen. Zur Wahl stehen
+  24 Farben.
+- Der Editor ist ein Blatt über dem Kalender. Halb offen sieht man den Termin als Block im
+  Raster, verschiebt ihn mit dem Finger und zieht ihn an zwei Punkten länger oder kürzer.
+  Ein Tipp auf eine freie Stelle legt dort einen Termin an.
+- Termine können sich wiederholen: täglich, wöchentlich, monatlich, jährlich oder nach eigener
+  Regel mit Abstand, Wochentagen und einem Ende nach Datum oder Anzahl.
+- Aufgaben dürfen ohne Datum sein. Sie stehen dann nur in der Aufgabenliste und klingeln nie.
+- Ein Termin zeigt oben ein passendes Symbol oder ein eigenes Bild. Das Symbol suchen die
+  Wörter des Titels aus und, wenn die KI eingeschaltet ist, das Modell auf dem Gerät.
+- Wichtige Termine klingeln wie ein Wecker, auf dem ganzen Bildschirm und auch über dem
+  Sperrbildschirm, mit Schlummern und einem großen Knopf zum Ausschalten.
+- Erinnerungen aus Notizen erscheinen auf Wunsch als eigene Ebene im Kalender. Ein Tipp öffnet
+  die Notiz.
+- In den Kalendereinstellungen gibt es Standardkalender, Standardbenachrichtigung und
+  Standarddauer für neue Termine. Dazu kommen Kalenderwochen, Wochenende ausblenden und ein
+  Schalter, mit dem neue Termine nur noch über das Plus entstehen.
+- Jeder eigene Kalender kann vorgeben, mit welcher Benachrichtigung und Dauer seine neuen
+  Termine beginnen und ob sie ganztägig sind.
+- Kalender und Termine gehen beim Abgleich in dein Google Drive und stehen in der
+  Sicherungsdatei, genau wie Notizen. Die Einstellungen des Kalenders bleiben auf dem Gerät.
+- Die App liest und beschreibt den Kalender des Geräts nicht mehr. Termine, die frühere
+  Fassungen für Erinnerungen dort eingetragen haben, räumt sie beim Start weg. Der Schalter
+  „Erinnerungen im Kalender“ ist deshalb aus den Einstellungen verschwunden.
+
 ## Alpha 12.1 (2026-10-13)
 
 - Ein Tipp auf die freie Fläche unter dem Inhalt öffnet die Tastatur jetzt auch dann, wenn

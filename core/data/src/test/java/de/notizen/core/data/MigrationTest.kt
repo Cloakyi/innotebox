@@ -306,6 +306,110 @@ class MigrationTest {
         }
     }
 
+    /**
+     * Schema 8 bringt nur zwei neue Tabellen fuer den Kalender. Was schon da
+     * war, bleibt unberuehrt, und die neuen Tabellen nehmen Zeilen an.
+     */
+    @Test
+    fun `von Schema 7 auf 8 -- der Kalender kommt dazu`() {
+        helfer.createDatabase(7).use { alt ->
+            alt.execSQL(
+                """
+                INSERT INTO folders (id, parentId, name, iconOrEmoji, colorArgb, sortIndex,
+                    createdAt, updatedAt, deletedAt, bereich, ehemaligerElternId)
+                VALUES ('o-1', NULL, 'Rechnungen', NULL, NULL, 0, 100, 100, NULL, 'ORDNER', NULL)
+                """.trimIndent(),
+            )
+        }
+
+        helfer.runMigrationsAndValidate(8, NotizenDatabase.MIGRATIONS.toList()).use { neu ->
+            assertEquals("Rechnungen", neu.einWert("SELECT name FROM folders WHERE id = 'o-1'", 0))
+            assertEquals("0", neu.einWert("SELECT COUNT(*) FROM event_calendars", 0))
+            assertEquals("0", neu.einWert("SELECT COUNT(*) FROM events", 0))
+            neu.execSQL(
+                """
+                INSERT INTO event_calendars (id, name, colorArgb, sortIndex, createdAt, updatedAt, deletedAt)
+                VALUES ('k', 'Mein Kalender', -12285196, 0, 1, 1, NULL)
+                """.trimIndent(),
+            )
+            neu.execSQL(
+                """
+                INSERT INTO events (id, calendarId, art, title, description, location, allDay, startAt,
+                    endAt, timeZone, recurrence, exceptions, reminders, important, colorArgb, symbol,
+                    done, createdAt, updatedAt, deletedAt)
+                VALUES ('t', 'k', 'TERMIN', 'Zahnarzt', '', '', 0, 10, 20, 'Europe/Berlin', 'KEINE',
+                    '[]', '[30]', 1, NULL, NULL, 0, 1, 1, NULL)
+                """.trimIndent(),
+            )
+            assertEquals("[30]", neu.einWert("SELECT reminders FROM events WHERE id = 't'", 0))
+        }
+    }
+
+    /** Schema 9 kennt Aufgaben ohne Datum; ein vorhandener Termin ist danach datiert. */
+    @Test
+    fun `von Schema 8 auf 9 -- Aufgaben ohne Datum`() {
+        helfer.createDatabase(8).use { alt ->
+            alt.execSQL(
+                """
+                INSERT INTO events (id, calendarId, art, title, description, location, allDay, startAt,
+                    endAt, timeZone, recurrence, exceptions, reminders, important, colorArgb, symbol,
+                    done, createdAt, updatedAt, deletedAt)
+                VALUES ('t', 'k', 'AUFGABE', 'Steuer', '', '', 1, 0, 0, 'Europe/Berlin', 'KEINE',
+                    '[]', '[]', 0, NULL, NULL, 0, 1, 1, NULL)
+                """.trimIndent(),
+            )
+        }
+
+        helfer.runMigrationsAndValidate(9, NotizenDatabase.MIGRATIONS.toList()).use { neu ->
+            assertEquals("0", neu.einWert("SELECT undated FROM events WHERE id = 't'", 0))
+            assertEquals("Steuer", neu.einWert("SELECT title FROM events WHERE id = 't'", 0))
+        }
+    }
+
+    /** Schema 10 kennt benutzerdefinierte Serien; eine vorhandene Serie bleibt, wie sie war. */
+    @Test
+    fun `von Schema 9 auf 10 -- benutzerdefinierte Serien`() {
+        helfer.createDatabase(9).use { alt ->
+            alt.execSQL(
+                """
+                INSERT INTO events (id, calendarId, art, title, description, location, allDay, startAt,
+                    endAt, timeZone, recurrence, exceptions, reminders, important, colorArgb, symbol,
+                    done, undated, createdAt, updatedAt, deletedAt)
+                VALUES ('t', 'k', 'TERMIN', 'Training', '', '', 0, 0, 0, 'Europe/Berlin', 'WOECHENTLICH',
+                    '[]', '[]', 0, NULL, NULL, 0, 0, 1, 1, NULL)
+                """.trimIndent(),
+            )
+        }
+
+        helfer.runMigrationsAndValidate(10, NotizenDatabase.MIGRATIONS.toList()).use { neu ->
+            assertEquals("1", neu.einWert("SELECT repeatInterval FROM events WHERE id = 't'", 0))
+            assertEquals("[]", neu.einWert("SELECT repeatDays FROM events WHERE id = 't'", 0))
+            assertNull(neu.einWert("SELECT repeatUntil FROM events WHERE id = 't'", 0))
+            assertNull(neu.einWert("SELECT repeatCount FROM events WHERE id = 't'", 0))
+            assertEquals("WOECHENTLICH", neu.einWert("SELECT recurrence FROM events WHERE id = 't'", 0))
+        }
+    }
+
+    @Test
+    fun `von Schema 10 auf 11 -- ein eigenes Bild am Termin`() {
+        helfer.createDatabase(10).use { alt ->
+            alt.execSQL(
+                """
+                INSERT INTO events (id, calendarId, art, title, description, location, allDay, startAt,
+                    endAt, timeZone, recurrence, repeatInterval, repeatDays, exceptions, reminders,
+                    important, colorArgb, symbol, done, undated, createdAt, updatedAt, deletedAt)
+                VALUES ('t', 'k', 'TERMIN', 'Konzert', '', '', 0, 0, 0, 'Europe/Berlin', 'KEINE', 1, '[]',
+                    '[]', '[]', 0, NULL, 'music', 0, 0, 1, 1, NULL)
+                """.trimIndent(),
+            )
+        }
+
+        helfer.runMigrationsAndValidate(11, NotizenDatabase.MIGRATIONS.toList()).use { neu ->
+            assertNull(neu.einWert("SELECT bannerId FROM events WHERE id = 't'", 0))
+            assertEquals("music", neu.einWert("SELECT symbol FROM events WHERE id = 't'", 0))
+        }
+    }
+
     @Test
     fun `der Weg von Schema 1 bis zur aktuellen Version laeuft am Stueck`() {
         // Jemand, der die App seit der ersten Fassung benutzt, springt nicht

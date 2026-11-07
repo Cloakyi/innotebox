@@ -103,6 +103,30 @@ class TitelKi @Inject constructor() {
         }
     }
 
+    /**
+     * Waehlt zu einem Termin ein Symbol aus einer festen Liste. Gibt die rohe
+     * Antwort zurueck; ob sie taugt, prueft der Aufrufer gegen die Liste.
+     * `null`, wenn das Modell nicht bereit ist oder der Aufruf scheitert.
+     */
+    suspend fun symbol(termin: String, auswahl: List<Pair<String, String>>): String? =
+        withContext(Dispatchers.IO) {
+            if (termin.isBlank()) return@withContext null
+            mitModell({ null }) { modell ->
+                if (zuZustand(modell.checkStatus()) != KiZustand.BEREIT) return@mitModell null
+                val liste = auswahl.joinToString("\n") { (schluessel, text) -> "$schluessel: $text" }
+                val prompt = """
+                    Waehle fuer einen Kalendertermin das passendste Symbol aus dieser Liste.
+                    Antworte ausschliesslich mit dem Wort vor dem Doppelpunkt, sonst nichts.
+
+                    $liste
+
+                    Termin:
+                    ${termin.take(MAX_QUELLE)}
+                """.trimIndent()
+                modell.generateContent(prompt).candidates.firstOrNull()?.text
+            }
+        }
+
     // ------------------------------------------------------------------ intern
 
     private suspend fun <T> mitModell(
