@@ -20,6 +20,7 @@ title: "Testbericht: "
 - [ ] In der Seitenspalte „Suche“ öffnen und ein Wort aus der Notiz eintippen. Die Notiz erscheint schon nach den ersten Buchstaben.
 - [ ] Die Notiz über die drei Punkte in den Papierkorb legen und im Papierkorb wieder zurückholen.
 - [ ] Eine Audio-Notiz anlegen, ein paar Sekunden sprechen, anhalten und abspielen.
+- [ ] In der Seitenspalte „Kalender“ öffnen, über das Plus einen Termin anlegen und „Speichern“ antippen. Der Termin steht im Kalender.
 - [ ] Unter Einstellungen, Sichern und Wiederherstellen „Jetzt sichern“ antippen. Die Datei endet auf `.notesbak`.
 
 ### Weitere Bereiche

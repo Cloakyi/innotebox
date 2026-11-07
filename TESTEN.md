@@ -36,6 +36,7 @@ Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 - [Ordner](#ordner)
 - [Papierkorb](#papierkorb)
 - [Archiv im Ordnermodus](#archiv-im-ordnermodus)
+- [Kalender](#kalender)
 - [Sprachnotizen](#sprachnotizen)
 - [KI auf dem Gerät](#ki-auf-dem-gerät)
 - [Übersetzen](#übersetzen)
@@ -55,6 +56,7 @@ Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 - [ ] In der Seitenspalte „Suche“ öffnen und ein Wort aus der Notiz eintippen. Die Notiz erscheint schon nach den ersten Buchstaben.
 - [ ] Die Notiz über die drei Punkte in den Papierkorb legen und im Papierkorb wieder zurückholen.
 - [ ] Eine Audio-Notiz anlegen, ein paar Sekunden sprechen, anhalten und abspielen.
+- [ ] In der Seitenspalte „Kalender“ öffnen, über das Plus einen Termin anlegen und „Speichern“ antippen. Der Termin steht im Kalender.
 - [ ] Unter Einstellungen, Sichern und Wiederherstellen „Jetzt sichern“ antippen. Die Datei endet auf `.notesbak`.
 
 ## Erster Start
@@ -79,13 +81,6 @@ Ohne GitHub-Konto geht es auch per Mail an support@cloaki.de.
 - [ ] Der Notiz eine Farbe und einen Tag geben. Neue Tags legst du unter „Tags verwalten“ an.
 - [ ] Über die drei Punkte „Kopie erstellen“. Die Kopie liegt im Eingang. „Teilen“ öffnet die Auswahl von Android.
 - [ ] In Chrome eine Seite teilen und InNoteBox wählen. Eine neue Notiz im Eingang geht auf. Oben im Text steht der Titel der Seite, darunter ihre Adresse, und das Titelfeld bleibt leer.
-
-## Kalender
-
-- [ ] In der Seitenspalte den Kalender öffnen. Über das Plus unten rechts einen Termin anlegen, ihm einen Titel geben, die Zeile „Einmalig“ antippen und „Jede Woche“ wählen. Der Termin steht danach in jeder Woche.
-- [ ] Dort „Benutzerdefiniert…“ wählen, zum Beispiel alle zwei Wochen am Montag und Donnerstag, mit Ende nach fünf Terminen. Im Kalender stehen genau fünf Termine an diesen Tagen.
-- [ ] Über das Plus einen Geburtstag anlegen. Er ist ganztägig, steht im Kalender „Geburtstage“ und wiederholt sich jedes Jahr.
-- [ ] Über das Plus eine Aufgabe anlegen, einmal mit Datum und einmal „Ohne Datum“. Beide stehen in der Aufgabenliste oben rechts, im Kalender nur die mit Datum. Abhaken streicht sie durch.
 
 Listen:
 
@@ -154,6 +149,53 @@ Listen:
 - [ ] Eine archivierte Notiz zurückholen. Oben schlägt die App den alten Ordner vor, darunter ist jeder andere Ordner wählbar.
 - [ ] Den alten Ordner vorher löschen und die Notiz dann zurückholen. Die App sagt, dass der Ordner nicht mehr da ist, und bietet an, ihn neu anzulegen, den nächsten vorhandenen Ordner zu nehmen oder einen anderen zu wählen.
 - [ ] Das Plus im Archiv antippen. Die neue Notiz entsteht im Hauptordner, nicht im Archiv.
+
+## Kalender
+
+Ansichten:
+
+- [ ] In der Seitenspalte „Kalender“ öffnen. Über das Menü oben links zwischen Terminübersicht, Tag, 3 Tage, Woche und Monat wechseln. Seitlich wischen blättert weiter.
+- [ ] Das kleine Kalenderblatt oben rechts antippen. Der Kalender springt zurück zu heute.
+- [ ] Im Menü einen Kalender ausblenden. Seine Termine verschwinden. Wieder einblenden, und sie sind zurück.
+
+Termine:
+
+- [ ] Über das Plus unten rechts „Termin“ wählen, einen Titel eintippen und „Speichern“ antippen. Der Termin steht im Kalender, oben mit einem passenden Symbol.
+- [ ] In der Woche auf eine freie Stelle tippen. Dort erscheint ein Block, darunter geht der Editor halb auf.
+- [ ] Den Block mit dem Finger verschieben, auch in einen anderen Tag. Er bleibt unter dem Finger.
+- [ ] Den unteren Punkt des Blocks langsam nach unten ziehen. Das Ende folgt dem Finger in Viertelstunden und springt nicht bis ans Ende des Tages. Dasselbe mit dem oberen Punkt nach oben.
+- [ ] Das Blatt nach unten wegziehen und loslassen. Der Block blendet sofort aus, nicht erst, wenn das Blatt unten ist.
+- [ ] Einen gespeicherten Termin antippen. Er öffnet sich groß mit Symbol, Zeit und Ort.
+
+Wiederholen:
+
+- [ ] Einen Termin anlegen, die Zeile „Einmalig“ antippen und „Jede Woche“ wählen. Der Termin steht danach in jeder Woche.
+- [ ] Dort „Benutzerdefiniert…“ wählen, zum Beispiel alle zwei Wochen am Montag und Donnerstag, mit Ende nach fünf Terminen. Im Kalender stehen genau fünf Termine an diesen Tagen.
+
+Aufgaben und Geburtstage:
+
+- [ ] Über das Plus einen Geburtstag anlegen. Er ist ganztägig, steht im Kalender „Geburtstage“ und wiederholt sich jedes Jahr.
+- [ ] Über das Plus eine Aufgabe anlegen, einmal mit Datum und einmal „Ohne Datum“. Beide stehen in der Aufgabenliste oben rechts, im Kalender nur die mit Datum. Abhaken streicht sie durch.
+
+Wichtige Termine:
+
+- [ ] Einen Termin in zwei Minuten anlegen und „Wichtig“ einschalten. Fehlt eine Erlaubnis, sagt es der Editor und führt in die Einstellung.
+- [ ] Das Handy sperren und warten. Zur Zeit des Termins klingelt er auf dem ganzen Bildschirm, auch über dem Sperrbildschirm. Schlummern und Ausschalten funktionieren.
+
+Einstellungen:
+
+- [ ] Im Menü des Kalenders „Einstellungen“ öffnen und die Standarddauer auf 30 Minuten stellen. Ein neuer Termin ist dann 30 Minuten lang.
+- [ ] „Per Tippen ins Raster anlegen“ ausschalten. Ein Tipp auf eine freie Stelle tut nichts, das Plus legt weiter Termine an.
+- [ ] „Kalenderwochen“ einschalten. Im Monat steht links vor jeder Woche ihre Nummer, in den anderen Ansichten oben links „KW“ mit der Nummer.
+- [ ] „Wochenende ausblenden“ einschalten. Die Woche zeigt nur Montag bis Freitag, mit breiteren Spalten.
+- [ ] Unter „Meine Kalender“ einen Kalender antippen und für neue Termine eine Dauer und eine Benachrichtigung wählen. Ein neuer Termin in diesem Kalender bekommt genau diese Werte.
+- [ ] „Kalender erstellen“, einen Namen und eine der 24 Farben wählen. Der Kalender steht im Menü, seine Termine tragen die Farbe.
+
+Mit Notizen, Abgleich und Sicherung:
+
+- [ ] Einer Notiz eine Erinnerung geben. Sie steht auch im Kalender, ein Tipp darauf öffnet die Notiz.
+- [ ] Mit eingeschaltetem Abgleich auf einem zweiten Gerät nachsehen. Kalender und Termine sind auch dort.
+- [ ] Wer in Alpha 12.1 „Erinnerungen im Kalender“ eingeschaltet hatte: Nach dem Update stehen diese Termine nicht mehr im Kalender des Handys.
 
 ## Sprachnotizen
 
